@@ -1,0 +1,212 @@
+import { style } from '@vanilla-extract/css';
+
+export const folhaContainer = style({
+  width: '100%',
+  minHeight: '800px',
+  display: 'flex',
+  flexDirection: 'column'
+});
+
+export const tituloImagem = style({
+  width: '90%',
+  maxWidth: '527px',
+  margin: '10px 0',
+  display: 'flex',
+  justifyContent: 'flex-start',
+});
+
+export const tituloImagemImg = style({
+  width: '100%',
+  height: 'auto',
+  borderRadius: 0,
+});
+
+export const folha = style({
+  width: '90%',
+  backgroundColor: 'rgba(226, 226, 226, 0.336)',
+  borderRadius: '10px',
+  padding: '20px',
+  boxSizing: 'border-box',
+});
+
+export const rodadaBloco = style({
+  marginBottom: '30px',
+});
+
+export const rodadaTitulo = style({
+  marginBottom: '12px',
+  fontWeight: 'bold',
+  fontSize: '12px',
+  textTransform: 'uppercase',
+  color: '#333',
+});
+
+const componenteBase = style({
+  backgroundColor: 'white',
+  color: 'black',
+  padding: '2px 6px',
+  height: '25px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '12px',
+  border: '1px solid #f1f0f0',
+  borderRadius: '5px',
+  boxSizing: 'border-box',
+});
+
+export const jogo = style([componenteBase, { width: '30px' }]);
+export const letras = style([componenteBase, { width: '50px', height: '18px' }]);
+export const largo = style([componenteBase, { width: '220px' }]);
+export const detalhes = style([componenteBase, { width: '30px' }]);
+
+export const grupoColado = style({
+  display: 'flex',
+  gap: 0,
+});
+
+/* Participante 1 */
+export const part1 = style([
+  componenteBase,
+  largo,
+  {
+    justifyContent: 'flex-end',
+    fontWeight: 'bold',
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    borderRight: 0,
+  },
+]);
+
+export const parti1simb = style([
+  componenteBase,
+  {
+    width: '25px',
+    padding: 0,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderLeft: 0,
+    overflow: 'hidden',
+  },
+]);
+
+export const part1placar = style([
+  componenteBase,
+  { width: '15px', padding: 0, textAlign: 'center' },
+]);
+
+/* Participante 2 */
+export const part2 = style([
+  componenteBase,
+  largo,
+  {
+    justifyContent: 'flex-start',
+    fontWeight: 'bold',
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderLeft: 0,
+  },
+]);
+
+export const part2simb = style([
+  componenteBase,
+  {
+    width: '25px',
+    padding: 0,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    borderRight: 0,
+    overflow: 'hidden',
+  },
+]);
+
+export const part2placar = style([
+  componenteBase,
+  { width: '15px', padding: 0, textAlign: 'center' },
+]);
+
+export const vs = style([
+  componenteBase,
+  {
+    width: '10px',
+    padding: 0,
+    backgroundColor: 'transparent',
+    border: 'none',
+    fontWeight: 'bold',
+    fontSize: '10px',
+  },
+]);
+
+export const simboloImg = style({
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+});
+
+//Abaixo sao os styles do componente Tabela
+
+export const linhaTabelaJogos = style({
+  display: "grid",
+  gridTemplateColumns: "40px 1fr 50px 20px 50px 1fr 100px 50px 150px 80px",
+  alignItems: "center",
+  gap: "8px",
+  padding: "6px 0",
+  borderBottom: "1px solid #ccc",
+});
+
+export const itemLinha = style({
+  textAlign: "center",
+  fontWeight: "bold"
+});
+
+export const nomeSimbEsqContainer = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: 'flex-end',
+  gap: "6px",
+});
+
+export const nomeSimbDirContainer = style({
+  display: "flex",
+  alignItems: "center",
+  gap: "6px",
+});
+
+export const nome = style({
+  fontSize: "14px",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  maxWidth: "150px"
+});
+
+export const simb = style({
+  width: "25px",
+  height: "25px",
+  borderRadius: "50%",
+  objectFit: "cover"
+});
+
+export const placar = style({
+  width: "40px",
+  textAlign: "center",
+  padding: "5px",
+  backgroundColor: 'white',
+});
+
+export const data = style({
+  width: "100px",
+});
+
+export const hora = style({
+  width: "60px",
+});
+
+export const local = style({
+  width: "140px",
+});
+
+export const iconGroup = style({
+  display: "flex",
+  gap: "6px",
+});

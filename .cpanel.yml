@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/solecorp/public_html/ambiente-teste-deploy/
+    - /bin/cp dist/index.html $DEPLOYPATH
+    - /bin/cp -R dist/images $DEPLOYPATH
+    - /bin/cp -R dist/assets $DEPLOYPATH

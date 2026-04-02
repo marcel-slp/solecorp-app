@@ -1,0 +1,14 @@
+export const PontosPorVitoria = "3";
+export const PontosPorEmpate = "1";
+export const PontosPorDerrota = "0";
+export const Criterio1DesempateGrupo = "V";
+export const Criterio2DesempateGrupo = "SG";
+export const Criterio3DesempateGrupo = "GP";
+export const Criterio4DesempateGrupo = "ConfrontoDireto";
+export const Criterio5DesempateGrupo = "Ordem Alfabética";
+export const Criterio6DesempateGrupo = "TerritorialidadenoConfrontoDireto";
+export const Criterio7DesempateGrupo = "MenosCV";
+export const Criterio8DesempateGrupo = "MenosCA";
+export const Criterio9DesempateGrupo = "Artilheiro";
+export const Criterio10DesempateGrupo = "Assistente";
+export const Criterio11DesempateGrupo = "Sorteio";
