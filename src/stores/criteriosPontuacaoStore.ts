@@ -1,23 +1,14 @@
 import { create } from 'zustand';
 import { buscarCriterios, editarPontuacaoCriterio, salvarPontuacaoCriterio, deletarPontuacaoCriterio, buscarPontuacaoCriteriosPorBolaoId } from '../api';
 
-// export type ConfiguracaoExtraCriterio = {
-//   convocacao?: string, // FEATURE PARA HABITAR Criterio PARA CONVOCAÇÃO DE SELEÇÕES
-//   pontuacaoPremiosIndividuais?: string, // FEATURE PARA HABITAR PONTUAÇÃO PARA MELHOR JOGADOR, ARTILHEIRO, ETC
-//   pontuacaoMelhoresPorRanking?: string, // FEATURE PARA HABITAR PONTUAÇÃO PARA MELHOR DE CADA RANKING (POR FASE)
-//   pontuacaoBonus?: string,
-//   ranking?: string, // FEATURE PARA HABITAR VARIOS TIPOS DE RANKING (ORDENAÇÃO) POR FASE DA COPA
-//   faseExtraPlayoff?: string, // FEATURE PARA HABITAR COMPETIÇÃO PLAYOFF ENTRE OS PALPITES, POR FASE
-// }
-
 export type Criterio = {
   id: string,
   tipo: string,
   situacao: string,
   descricao?: string,
-  // pontos?: number,
-  // pontosPrimeiraFase?: number,
-  // pontosSegundaFase?: number,
+  // pontosPadrao?: number,
+  // pontosPrimeiraFasePadrao?: number,
+  // pontosSegundaFasePadrao?: number,
   condicao?: string;
 }
 

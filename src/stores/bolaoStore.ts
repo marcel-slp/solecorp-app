@@ -58,7 +58,6 @@ interface BolaoStore {
   editarBolao: (id: string, dadosBolao: NovoBolao) => Promise<boolean>
   removerBolao: (id: string) => Promise<boolean>
   aceitarConvite: (dadosConvite: Convite) => Promise<boolean>
-  //salvarPontuacaoParticipanteBolao: (participanteDTO: Partial<ParticipanteBolao>) => Promise<boolean>;
   limparTodos: () => void //TODO: limpar os registros no banco de dados
 }
 

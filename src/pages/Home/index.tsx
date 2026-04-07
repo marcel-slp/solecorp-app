@@ -6,7 +6,7 @@ export function Home() {
    return (
        <div>
            <Image
-                src={getImagemSelecoesURL('pt_fundoadministrar.jpg')}
+                src={getImagemSelecoesURL('backbolao.jpg')}
                 alt="Logo"
                 className={styles.backgroundImage}
             />

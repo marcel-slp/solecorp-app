@@ -94,7 +94,7 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
 
         <div className={styles.titleWrapper}>
           <div className={styles.titleRow}>
-            SoleCorp Sports Manager
+            {modoBolao ? "Solecorp Bolão" : "SoleCorp Sports Manager"}
 
             <Link to="/home" aria-label="Ir para home">
               <Icon as={IoMdHome} className={styles.iconSmall} />
@@ -105,9 +105,6 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
             <Link to="/inserir-placares-copa-2026" aria-label="Inserir Placares" hidden={esconderIconesBolaoAdmin}>
               <Icon as={GiTrophyCup} className={styles.iconSmall} />
             </Link>
-            {/* <Link to="/criterios-pontuacao-copa-2026" aria-label="Editar Critérios de Pontuação" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={GrConfigure } className={styles.iconSmall} />
-            </Link> */}
             <Link to="/gerenciar-perfil" aria-label="Gerenciar Perfis do Sistema" hidden={esconderIconesBolaoAdmin}>
               <Icon as={FaUsersGear } className={styles.iconSmall} />
             </Link>
@@ -132,49 +129,6 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
             <Link to="/search" aria-label="Ir para pesquisa" hidden={publicHeader}>
               <Icon as={SearchIcon} className={styles.iconSmall} marginBottom="5px"/>
             </Link>
-
-            {/* {!publicHeader && (
-              <>
-            <Link to="/home" aria-label="Ir para home">
-              <Icon as={IoMdHome} className={styles.iconSmall} />
-            </Link>
-            {modoBolao ? (
-              <>
-                <Link to="/boloes" aria-label="Ir para bolões">
-                  <Icon as={FaPeopleGroup} className={styles.iconSmall} />
-                </Link>
-                <Link to="/inserir-placares-copa-2026" aria-label="Inserir Placares">
-                  <Icon as={FcDataConfiguration} className={styles.iconSmall} />
-                </Link>
-                <Link to="/criterios-pontuacao-copa-2026" aria-label="Inserir Placares">
-                  <Icon as={MdScoreboard } className={styles.iconSmall} />
-                </Link>
-              </>
-            ) : (
-              <> 
-                <Link to="/eventos" aria-label="Ir para eventos">
-                <Icon as={MdEmojiEvents} className={styles.iconSmall} />
-                </Link>
-                <Link to="/participantes" aria-label="Ir para participantes">
-                  <Icon as={FaPeopleGroup} className={styles.iconSmall} />
-                </Link>
-                <Link to="/entidades" aria-label="Ir para novo evento">
-                  <Icon as={TbShieldFilled} className={styles.iconSmall} />
-                </Link> 
-                <Link to="/novo-participante" aria-label="Ir para novo participante">
-                  <Icon as={AddIcon} className={styles.iconSmall} marginBottom="5px"/>
-                </Link>
-              </>
-            )}
-
-              <Link to="/help" aria-label="Ir para ajuda">
-                <Icon as={QuestionOutlineIcon} className={styles.iconSmall} marginBottom="5px"/>
-              </Link>
-              <Link to="/search" aria-label="Ir para pesquisa">
-                <Icon as={SearchIcon} className={styles.iconSmall} marginBottom="5px"/>
-              </Link>
-              </>
-            )} */}
           </div>
         </div>
       </div>
@@ -182,10 +136,7 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
       
 
       <div className={styles.rightSection}>
-        <Popover
-          placement='bottom'
-          //onOpen={usuarioLogado}
-        >
+        <Popover placement='bottom'>
           <PopoverTrigger>
             <Icon as={BsPersonCircle} className={styles.iconSmall}/>
           </PopoverTrigger>
@@ -208,11 +159,7 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
           as={IoMdLogOut} 
           cursor='pointer' 
           className={styles.iconSmall} 
-          onClick={() => {
-            // if(usuarioLogado()) {
-              onOpen()
-            //}
-          }}
+          onClick={() => onOpen()}
         />
 
         {isOpen && (

@@ -1,8 +1,12 @@
 import { Image } from "@chakra-ui/icons";
 import logoSolecorp from "@/assets/images/sportsManager.ico";
-import * as styles from './styles.css'
+import * as styles from './styles.css';
 
-function Footer () {
+export type FooterProps = {
+    modoBolao?: boolean;
+};
+
+function Footer ({modoBolao}: FooterProps) {
   return (
     <div className={styles.footer}>
       <Image src={logoSolecorp} boxSize='30' alt="Logo" />
@@ -10,7 +14,7 @@ function Footer () {
       <div className={styles.footerText}
       >
         <div style={{ fontSize: "14px", fontWeight: "bold" }}>
-          SoleCorp Sports Manager
+          {modoBolao ? "Solecorp Bolão" : "SoleCorp Sports Manager"}
         </div>
         <div style={{ fontSize: "10px" }}>
           Sistema Gerenciador de Competições Esportivas

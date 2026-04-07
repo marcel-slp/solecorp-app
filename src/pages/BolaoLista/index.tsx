@@ -43,16 +43,22 @@ export default function BolaoLista() {
   const handleSalvar = async (dados: NovoBolao, id?: string) => {
     let sucesso = false;
 
-    if (id) {
-      sucesso = await editarBolao(id, dados);
-      setEditando(null);
-    } else {
-      sucesso = await adicionarBolao(dados);
-      setEditando(null);
-    }
+    try {
+      if (id) {
+        sucesso = await editarBolao(id, dados);
+        setEditando(null);
+      } else {
+        sucesso = await adicionarBolao(dados);
+        setEditando(null);
+      }
 
-    if (!sucesso) {
-      alert("Ocorreu um erro ao salvar o Bolao. Verifique os logs.");
+      if (!sucesso) {
+        alert("Ocorreu um erro ao salvar o Bolao. Verifique os logs.");
+      }
+    } catch (err) {
+      setEditando(null);
+      alert("Falha ao salvar/editar bolão.");
+      console.error(err);
     }
   };
 
@@ -70,7 +76,20 @@ export default function BolaoLista() {
 
   const handleRemoverBolao = async (bolaoId: string) => {
     handleFecharRemoverBolaoPopup();
-    await removerBolao(bolaoId);
+    let sucesso = false;
+
+    try{
+      sucesso = await removerBolao(bolaoId);
+
+      if (!sucesso) {
+        alert("Ocorreu um erro ao removre o bolão. Verifique os logs.");
+      }
+
+    } catch (err) {
+      setEditando(null);
+      alert("Falha ao remover bolão.");
+      console.error(err);
+    }
   };
 
   return (

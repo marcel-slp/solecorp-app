@@ -109,6 +109,20 @@ export function InicioBolao() {
                   >
                     Simulação de Rateio e Premiação
                   </Button>
+                  <Button 
+                    className={styles.buttonOpçõesExtras}
+                    onClick={() => navigate(`/bolao/${bolao.id}/classificacao`)}
+                    colorScheme={"blue"}
+                  >
+                    Classificação
+                  </Button>
+                  <Button 
+                    className={styles.buttonOpçõesExtras}
+                    onClick={() => navigate(`/bolao/${bolao.id}/palpite`)}
+                    colorScheme={"blue"}
+                  >
+                    Palpites
+                  </Button>
                 </Box>
               </Flex>
 

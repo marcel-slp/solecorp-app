@@ -15,7 +15,7 @@ function Layout({ modoBolao, publicHeader }: Props) {
       <main className={styles.main}>
         <Outlet />
       </main>
-      <Footer />
+      <Footer modoBolao={modoBolao}/>
     </div>
   )
 }

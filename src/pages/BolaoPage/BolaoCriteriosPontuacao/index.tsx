@@ -1,18 +1,16 @@
 import * as styles from "./styles.css";
 import TabelasCriteriosPontuacao from "../../../components/TabelasCriteriosPontuacao";
-import { retornaUserPerfil } from "../../../utils/Utils";
-import AcessoNegadoPage from "../../Erros/AcessoNegadoPage";
+import { BolaoRoles } from "../../../models/BolaoCopaDefault";
+import { bolaoStore } from "../../../stores/bolaoStore";
 
 export default function BolaoCriteriosPontuacao() {
-  const userPerfil = retornaUserPerfil();
+  const { participanteBolaoLogado } = bolaoStore();
 
-  if (userPerfil == 'a1b1c') {
-      return <AcessoNegadoPage />;
-  }
+  const pontosEditaveisInterno = participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR;
   
   return (
     <div className={styles.tableCriterioContainer}>
-      <TabelasCriteriosPontuacao pontosEditaveis/>
+      <TabelasCriteriosPontuacao pontosEditaveis={pontosEditaveisInterno}/>
     </div>
   );
 };
