@@ -19,7 +19,7 @@ import * as styles from "../BolaoForm/styles.css.ts";
 import { Bolao, NovoBolao } from "../../stores/bolaoStore.ts";
 import { ImageUploader } from "../ImageUploader/ImageUploader.tsx";
 import defaultBolao from "@/assets/images/default_bolao.jpg";
-import { EventoBase } from "../../models/BolaoCopaDefault.tsx";
+import { BolaoRoles, EventoBase } from "../../models/BolaoCopaDefault.tsx";
 import { retornaUserId } from "../../utils/Utils.ts";
 
 const desabilitarConfigExtra = false;
@@ -83,7 +83,8 @@ export default function BolaoForm({ bolao, onSalvar, onCancelar }: BolaoFormProp
       premiosIndividuais: premiosIndividuaisInterno,
       melhoresPorRanking: melhoresPorRankinInterno,
       pontuacaoBonus: pontuacaoBonusInterno,
-      faseExtraPlayoff: faseExtraPlayoffInterno
+      faseExtraPlayoff: faseExtraPlayoffInterno,
+      roleBolao: BolaoRoles.CRIADOR
     };
     
     onSalvar(novoBolao, bolao?.id);

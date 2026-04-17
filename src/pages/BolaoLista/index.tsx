@@ -26,8 +26,8 @@ import { Bolao } from "../../stores/bolaoStore";
 import { useEffect, useState } from "react";
 import { ArrowForwardIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import BolaoForm from "../../components/BolaoForm";
-import { EventoBase } from "../../models/BolaoCopaDefault";
-import { retornaUserId } from "../../utils/Utils";
+import { BolaoRoles, EventoBase } from "../../models/BolaoCopaDefault";
+import { retornaUserId, retornaUserPerfil } from "../../utils/Utils";
 import { useNavigate } from "react-router-dom";
 
 export default function BolaoLista() {
@@ -76,7 +76,7 @@ export default function BolaoLista() {
 
   const handleRemoverBolao = async (bolaoId: string) => {
     handleFecharRemoverBolaoPopup();
-    
+
     let sucesso = false;
 
     try{
@@ -92,6 +92,8 @@ export default function BolaoLista() {
       console.error(err);
     }
   };
+
+  const hideAddBolao = retornaUserPerfil() === 'a2b1c' && boloes.filter(b => b.roleBolao && b.roleBolao === BolaoRoles.CRIADOR).length >= 2;
 
   return (
     <div className={styles.tableBolaoContainer}>
@@ -143,22 +145,29 @@ export default function BolaoLista() {
             </Table>
           </TableContainer>
 
-          <Button mt={4} mb={4} colorScheme="blue" onClick={() => setEditando({ 
-            id: "", 
-            nome: "", 
-            compartilhamento: "",
-            tipoConvite: "",
-            pontuacao: "",
-            imagemBolao: null,
-            eventoBase: EventoBase.COPA_2026,
-            userId: 0,
-            convocacao: false,
-            premiosIndividuais: false,
-            melhoresPorRanking: false, 
-            pontuacaoBonus: false,
-            ranking: false,
-            faseExtraPlayoff: false,
-          })}>
+          <Button 
+            mt={4} 
+            mb={4}
+            disabled={hideAddBolao}
+            colorScheme="blue" 
+            onClick={() => setEditando({ 
+              id: "", 
+              nome: "", 
+              compartilhamento: "",
+              tipoConvite: "",
+              pontuacao: "",
+              imagemBolao: null,
+              eventoBase: EventoBase.COPA_2026,
+              userId: 0,
+              convocacao: false,
+              premiosIndividuais: false,
+              melhoresPorRanking: false, 
+              pontuacaoBonus: false,
+              ranking: false,
+              faseExtraPlayoff: false,
+              roleBolao: BolaoRoles.CRIADOR
+            })}
+          >
             Adicionar Bolao
           </Button>
 

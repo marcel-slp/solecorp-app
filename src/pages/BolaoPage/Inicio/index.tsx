@@ -12,6 +12,7 @@ import { ReactNode, useState } from 'react';
 import TabelaGerenciarParticipantesBolao from '../../../components/TabelaGerenciarParticipantesBolao/index.tsx';
 import { ModalGenerico } from '../../../components/ModalGenerico/index.tsx';
 import BolaoRegulamento from '../../../components/BolaoRegulamento/index.tsx';
+import { BolaoRoles } from '../../../models/BolaoCopaDefault.tsx';
 
 export function InicioBolao() {
   const { bolao } = useOutletContext<{ bolao: Bolao }>();
@@ -125,7 +126,7 @@ export function InicioBolao() {
                 </Box>
               </Flex>
 
-              {(participanteBolaoLogado?.roleBolao === 'criador' || participanteBolaoLogado?.roleBolao === 'gerente') && (
+              {(participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR || participanteBolaoLogado?.roleBolao === 'gerente') && (
                 <div className={styles.tituloConfigEventoContainer}>
                   <Button 
                     hidden={bolao.roleBolao === 'jogador'}
@@ -140,7 +141,7 @@ export function InicioBolao() {
                 </div>
               )}
 
-              {participanteBolaoLogado?.roleBolao === 'criador' && (
+              {participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR && (
                 <TabelaGerenciarParticipantesBolao />
               )}
 

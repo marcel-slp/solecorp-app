@@ -39,7 +39,7 @@ export type Bolao = {
   pontuacaoBonus: boolean,
   ranking?: boolean, // FEATURE PARA HABITAR VARIOS TIPOS DE RANKING (ORDENAÇÃO) POR FASE DA COPA
   faseExtraPlayoff: boolean, // FEATURE PARA HABITAR COMPETIÇÃO PLAYOFF ENTRE OS PALPITES, POR FASE
-  roleBolao?: string
+  roleBolao: string
 }
 
 export type NovoBolao = Omit<Bolao, 'id'>
@@ -53,7 +53,7 @@ interface BolaoStore {
   carregarParticipanteBolaoLogado: (bolaoId: string, userId: number) => Promise<void>
   editarParticipanteBolao: (dadosParticipante: ParticipanteBolaoDTO) => Promise<boolean>
   removerParticipanteBolao: (userId: number) => Promise<boolean>
-  adicionarBolao: (Bolao: NovoBolao) => Promise<boolean>
+  adicionarBolao: (dadosNovoBolao: NovoBolao) => Promise<boolean>
   carregarBolao: (userId: number) => Promise<void>
   editarBolao: (id: string, dadosBolao: NovoBolao) => Promise<boolean>
   removerBolao: (id: string) => Promise<boolean>
@@ -66,10 +66,10 @@ export const bolaoStore = create<BolaoStore>((set) => ({
   participantesBolao: [],
   participanteBolaoLogado: null,
 
-  adicionarBolao: async (Bolao) => {
+  adicionarBolao: async (dadosNovoBolao) => {
     const novoBolao = {
       id: crypto.randomUUID().slice(0,5),
-      ...Bolao,
+      ...dadosNovoBolao
     }
 
     try {
