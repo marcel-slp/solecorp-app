@@ -127,14 +127,14 @@ export default function BolaoLista() {
                       />
                       <IconButton
                         aria-label="Editar Bolao"
-                        hidden={bolao.roleBolao == 'jogador'}
+                        hidden={bolao.roleBolao !== 'criador'}
                         icon={<EditIcon />}
                         mr={2}
                         onClick={() => handleEntrarEditMode(bolao)}
                       />
                       <IconButton
                         aria-label="Deletar Bolao"
-                        hidden={bolao.roleBolao == 'jogador'}
+                        hidden={bolao.roleBolao !== 'criador'}
                         icon={<DeleteIcon />}
                         onClick={() => handleAbrirRemoverBolaoPopup(bolao.id)}
                       />

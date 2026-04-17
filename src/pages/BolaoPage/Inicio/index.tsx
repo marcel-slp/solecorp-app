@@ -141,7 +141,7 @@ export function InicioBolao() {
                 </div>
               )}
 
-              {participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR && (
+              {participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR || participanteBolaoLogado?.roleBolao === BolaoRoles.GERENTE && (
                 <TabelaGerenciarParticipantesBolao />
               )}
 
