@@ -4,3 +4,7 @@ export const backgroundImage = style({
   width: '-webkit-fill-available',
   height: '90vh'
 });
+
+export const mainContainerHome = style({
+  display: "flex"
+});

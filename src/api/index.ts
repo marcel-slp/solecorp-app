@@ -758,3 +758,15 @@ export const buscarRateioPorBolaoId = async (bolaoId: string): Promise<{
     };
   }
 };
+
+export const buscarFeedNoticias = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/buscar_feed_noticias.php`);
+    return { data: res.data, error: null };
+  } catch (err: unknown) {
+    return {
+      data: null,
+      error: axios.isAxiosError(err) ? err.message : "Erro desconhecido ao coletar feed de notícias",
+    };
+  }
+};

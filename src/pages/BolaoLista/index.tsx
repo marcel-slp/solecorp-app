@@ -76,6 +76,7 @@ export default function BolaoLista() {
 
   const handleRemoverBolao = async (bolaoId: string) => {
     handleFecharRemoverBolaoPopup();
+    
     let sucesso = false;
 
     try{

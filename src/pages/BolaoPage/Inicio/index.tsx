@@ -10,7 +10,6 @@ import { Bolao, bolaoStore } from '../../../stores/bolaoStore.ts';
 import { getImagemURL } from '../../../utils/Utils.ts';
 import { ReactNode, useState } from 'react';
 import TabelaGerenciarParticipantesBolao from '../../../components/TabelaGerenciarParticipantesBolao/index.tsx';
-//import TabelasCriteriosPontuacao from '../../../components/TabelasCriteriosPontuacao/index.tsx';
 import { ModalGenerico } from '../../../components/ModalGenerico/index.tsx';
 import BolaoRegulamento from '../../../components/BolaoRegulamento/index.tsx';
 
