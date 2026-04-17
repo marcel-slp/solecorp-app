@@ -3,11 +3,12 @@ import * as styles from "./styles.css";
 import TabelaOriginalJogosCopa2026 from "../../components/TabelaOriginalJogosCopa2026";
 import AcessoNegadoPage from "../Erros/AcessoNegadoPage";
 import { retornaUserPerfil } from "../../utils/Utils";
+import { PerfilSistema } from "../../models/PerfilSistema";
 
 function TabelaOriginalCopa2026() {
   const userPerfil = retornaUserPerfil();
 
-  if (userPerfil != 'a1b2c') {
+  if (userPerfil != PerfilSistema.ADMIN) {
       return <AcessoNegadoPage />;
   }
   

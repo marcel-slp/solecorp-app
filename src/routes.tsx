@@ -26,6 +26,7 @@ import GerenciarPerfil from './pages/GerenciarPerfil'
 import GerenciarUsuarios from './pages/GerenciarUsuarios'
 import { Registro } from './pages/Registro'
 import BolaoRateioPremiacoes from './pages/BolaoPage/BolaoRateioPremiacoes'
+import GerenciarBoloesAdmin from './pages/GerenciarBoloesAdmin'
 
 const modoBolao = true;
 
@@ -41,15 +42,14 @@ export function Router() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<Layout modoBolao={modoBolao} />}>
-          {/* <Route index element={<Home />} /> */}
           <Route path="home" element={<Home />} />
           <Route path="entidades" element={<EntidadesLista />} />
           <Route path="participantes" element={<Participantes />} />
           <Route path="eventos" element={<EventosLista />} />
           <Route path="inserir-placares-copa-2026" element={<TabelaOriginalCopa2026 />} />
-          {/* <Route path="criterios-pontuacao-copa-2026" element={<BolaoCriteriosPontuacao />} /> */}
           <Route path="gerenciar-perfil" element={<GerenciarPerfil />} />
           <Route path="gerenciar-usuarios" element={<GerenciarUsuarios />} />
+          <Route path="gerenciar-boloes" element={<GerenciarBoloesAdmin />} />
           <Route path="evento/:eventoId" element={<EventoPage />}>
             <Route path="inicio" element={<Inicio />} />
             <Route path="resumo" element={<Resumo />} />

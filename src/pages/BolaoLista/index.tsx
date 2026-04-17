@@ -29,16 +29,17 @@ import BolaoForm from "../../components/BolaoForm";
 import { BolaoRoles, EventoBase } from "../../models/BolaoCopaDefault";
 import { retornaUserId, retornaUserPerfil } from "../../utils/Utils";
 import { useNavigate } from "react-router-dom";
+import { PerfilSistema } from "../../models/PerfilSistema";
 
 export default function BolaoLista() {
-  const { boloes, adicionarBolao, carregarBolao, editarBolao, removerBolao } = bolaoStore();
+  const { boloes, adicionarBolao, carregarBoloesPorUserId, editarBolao, removerBolao } = bolaoStore();
   const [editando, setEditando] = useState<Bolao | null>(null);
   const [confirmarRemocaoBolaoId, setConfirmarRemocaoBolaoId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    carregarBolao(retornaUserId());
-  }, [carregarBolao]);
+    carregarBoloesPorUserId(retornaUserId());
+  }, [carregarBoloesPorUserId]);
 
   const handleSalvar = async (dados: NovoBolao, id?: string) => {
     let sucesso = false;
@@ -93,7 +94,7 @@ export default function BolaoLista() {
     }
   };
 
-  const hideAddBolao = retornaUserPerfil() === 'a2b1c' && boloes.filter(b => b.roleBolao && b.roleBolao === BolaoRoles.CRIADOR).length >= 2;
+  const hideAddBolao = retornaUserPerfil() === PerfilSistema.USER_SIMPLES && boloes.filter(b => b.roleBolao && b.roleBolao === BolaoRoles.CRIADOR).length >= 2;
 
   return (
     <div className={styles.tableBolaoContainer}>

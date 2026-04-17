@@ -3,11 +3,12 @@ import TabelasCriteriosPontuacao from "../../../components/TabelasCriteriosPontu
 import { BolaoRoles } from "../../../models/BolaoCopaDefault";
 import { bolaoStore } from "../../../stores/bolaoStore";
 import { retornaUserPerfil } from "../../../utils/Utils";
+import { PerfilSistema } from "../../../models/PerfilSistema";
 
 export default function BolaoCriteriosPontuacao() {
   const { participanteBolaoLogado } = bolaoStore();
 
-  const pontosEditaveisInterno = participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR && retornaUserPerfil() !== 'a2b1c';
+  const pontosEditaveisInterno = participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR && retornaUserPerfil() !== PerfilSistema.USER_SIMPLES;
   
   return (
     <div className={styles.tableCriterioContainer}>

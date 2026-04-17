@@ -24,6 +24,7 @@ import { NovoPerfil, Perfil, perfisStore } from "../../stores/perfisStore";
 import PerfilForm from "../../components/PerfilForm";
 import { retornaUserPerfil } from "../../utils/Utils";
 import AcessoNegadoPage from "../Erros/AcessoNegadoPage";
+import { PerfilSistema } from "../../models/PerfilSistema";
 
 export default function GerenciarPerfil() {
   const { perfis, adicionarPerfil, carregarPerfis, editarPerfil, removerPerfil } = perfisStore();
@@ -35,7 +36,7 @@ export default function GerenciarPerfil() {
     carregarPerfis();
   }, [carregarPerfis]);
 
-  if (userPerfil != 'a1b2c') {
+  if (userPerfil != PerfilSistema.ADMIN) {
       return <AcessoNegadoPage />;
   }
 

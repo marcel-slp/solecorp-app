@@ -2,20 +2,19 @@ import { useParams, useNavigate, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button, Box, Spinner, Text } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import { Bolao } from "../../stores/bolaoStore";
+import { Bolao, bolaoStore } from "../../stores/bolaoStore";
 import { BolaoLayout } from "./BolaoLayout";
-import { retornaUserId } from "../../utils/Utils";
-import { buscarBolaoPorIdUserId } from "../../api";
 
 export function BolaoPage() {
   const { bolaoId } = useParams<{ bolaoId: string }>();
+  const { carregarBolaoPorIdUserId } = bolaoStore();
   const [bolao, setBolao] = useState<Bolao | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function carregarBolao() {
+    async function carregarBoloesPorUserId() {
       setLoading(true);
       setError(null);
 
@@ -25,19 +24,19 @@ export function BolaoPage() {
         return;
       }
 
-      const responseBolao = await buscarBolaoPorIdUserId(bolaoId, retornaUserId());
+      const responseBolao = await carregarBolaoPorIdUserId(bolaoId);
 
       if (!responseBolao) {
         setError("Bolão não encontrado");
         setBolao(null);
       } else {
-        setBolao(responseBolao.data);
+        setBolao(responseBolao);
       }
       setLoading(false);
     }
 
-    carregarBolao();
-  }, [bolaoId]);
+    carregarBoloesPorUserId();
+  }, [bolaoId, carregarBolaoPorIdUserId]);
 
   if (loading) return <Spinner size="xl" color="blue.500">Carregando...</Spinner>;
   if (error || !bolao) {

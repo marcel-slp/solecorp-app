@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Participante } from '../stores/participantesStore';
 import { Evento } from '../stores/eventosStore';
 import { Entidade } from '../stores/entidadesStore';
-import { Bolao, Convite, ParticipanteBolao, ParticipanteBolaoDTO } from '../stores/bolaoStore';
+import { Bolao, BolaoListaGerenciamento, Convite, ParticipanteBolao, ParticipanteBolaoDTO } from '../stores/bolaoStore';
 import { Partida, PartidaDTO } from '../stores/partidasStore';
 import { Palpite } from '../stores/palpitesStore';
 import { Criterio, PontuacaoCriterio } from '../stores/criteriosPontuacaoStore';
@@ -251,18 +251,18 @@ export const registrarUsuario = async (nome: string, email: string, password: st
 };
 
 export const loginUsuario = async (email: string, password: string): 
-  Promise<{ success: boolean, message: string, userId?: string, email?: string, nome?: string, perfilId?: string }> => 
+  Promise<{ success: boolean, message: string, userId?: string, email?: string, nome?: string, nomePerfil?: string }> => 
 {
   try {
     const res = await axios.post<{
       userId: string | undefined; 
       email: string | undefined, 
       nome: string | undefined; 
-      perfilId: string | undefined;
+      nomePerfil: string | undefined;
       message: string
     }>(`${API_URL}/login.php`, { email, password });
     
-    return { success: true, message: res.data.message, userId: res.data.userId, email: res.data.email, nome: res.data.nome, perfilId: res.data.perfilId };
+    return { success: true, message: res.data.message, userId: res.data.userId, email: res.data.email, nome: res.data.nome, nomePerfil: res.data.nomePerfil };
   } catch (err) {
     if (axios.isAxiosError(err)) {
       const errorMessage = err.response?.data?.error ?? 'Erro desconhecido no servidor';
@@ -301,12 +301,12 @@ export const alterarSenhaUsuario = async (email: string, senha: string) => {
   }
 };
 
-export const buscarBolaoPorIdUserId = async (id: string, userId: number): Promise<{
+export const buscarBolaoPorIdUserId = async (id: string): Promise<{
   data: Bolao | null;
   error: string | null;
 }> => {
   try {
-    const res = await axios.get<Bolao>(`${API_URL}/buscar_bolao.php?id=${id}&userId=${userId}`);
+    const res = await axios.get<Bolao>(`${API_URL}/buscar_bolao.php?id=${id}`);
     return { data: res.data, error: null };
   } catch (err: unknown) {
     return {
@@ -357,6 +357,21 @@ export const buscarBoloesPorUserId = async (userId: number): Promise<{
 }> => {
   try {
     const res = await axios.get<Bolao[]>(`${API_URL}/buscar_boloes_por_userid.php?userId=${userId}`);    
+    return { data: res.data, error: null };
+  } catch (err: unknown) {
+    return {
+      data: null,
+      error: axios.isAxiosError(err) ? err.message : "Erro desconhecido",
+    };
+  }
+};
+
+export const buscarTodosBoloes = async (): Promise<{
+  data: BolaoListaGerenciamento[] | null;
+  error: string | null;
+}> => {
+  try {
+    const res = await axios.get<BolaoListaGerenciamento[]>(`${API_URL}/buscar_boloes_gerenciamento.php`);
     return { data: res.data, error: null };
   } catch (err: unknown) {
     return {

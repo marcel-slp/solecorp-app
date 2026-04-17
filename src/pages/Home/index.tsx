@@ -6,11 +6,11 @@ import NewsFeed from '../../components/NewsFeed';
 import NotificationPanel from '../../components/NotificationPanel';
 
 export function Home() {
-  const { boloes, carregarBolao } = bolaoStore();
+  const { boloes, carregarBoloesPorUserId } = bolaoStore();
 
   useEffect(() => {
-    carregarBolao(retornaUserId());
-  }, [carregarBolao]);
+    carregarBoloesPorUserId(retornaUserId());
+  }, [carregarBoloesPorUserId]);
 
    return (
 		<Box p={4} mx="auto">

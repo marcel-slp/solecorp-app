@@ -51,6 +51,8 @@ export function InicioBolao() {
     setTimeout(() => setIsSaved(false), 2000);
   };
 
+  const adminOuGerente = participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR || participanteBolaoLogado?.roleBolao === BolaoRoles.GERENTE
+
   return (
     <>
       <div style={{width:"100%"}}>
@@ -126,23 +128,22 @@ export function InicioBolao() {
                 </Box>
               </Flex>
 
-              {(participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR || participanteBolaoLogado?.roleBolao === 'gerente') && (
-                <div className={styles.tituloConfigEventoContainer}>
-                  <Button 
-                    hidden={bolao.roleBolao === 'jogador'}
-                    onClick={handleCriarConviteLink} 
-                    colorScheme={isSaved ? "green" : "blue"}
-                  >
-                    {isSaved ? 
-                      "Link copiado para a área de transferência" : 
-                      "Criar Convite-Link"
-                    }
-                  </Button>
-                </div>
-              )}
-
-              {participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR || participanteBolaoLogado?.roleBolao === BolaoRoles.GERENTE && (
-                <TabelaGerenciarParticipantesBolao />
+              {adminOuGerente && (
+                <>
+                  <div className={styles.tituloConfigEventoContainer}>
+                    <Button 
+                      hidden={bolao.roleBolao === 'jogador'}
+                      onClick={handleCriarConviteLink} 
+                      colorScheme={isSaved ? "green" : "blue"}
+                    >
+                      {isSaved ? 
+                        "Link copiado para a área de transferência" : 
+                        "Criar Convite-Link"
+                      }
+                    </Button>
+                  </div>
+                  <TabelaGerenciarParticipantesBolao />
+                </>
               )}
 
               <ModalGenerico 

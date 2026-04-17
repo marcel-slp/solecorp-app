@@ -26,13 +26,13 @@ export function Login() {
 			const userId = res.userId;
 			const nome = res.nome;
 			const email = res.email;
-			const perfilId = res.perfilId;
+			const nomePerfil = res.nomePerfil;
 			localStorage.setItem("auth",
 				JSON.stringify({
 					userId,
 					nome,
 					email,
-					perfilId,
+					nomePerfil,
 					expiresAt: Date.now() + 1000 * 60 * 60
 				})
 			);

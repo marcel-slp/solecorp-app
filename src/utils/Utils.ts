@@ -26,7 +26,7 @@ export const retornaUserId = (): number => {
 
 export const retornaUserPerfil = (): string => {
   const auth = JSON.parse(localStorage.getItem("auth") ?? "{}");
-  return auth.perfilId;
+  return auth.nomePerfil;
 };
 
 export const retornaUserHabilitarPalpite = (): string => {
@@ -36,3 +36,14 @@ export const retornaUserHabilitarPalpite = (): string => {
 
 export const recordToArray = <T>(obj?: Record<string, T>): T[] =>
   Object.values(obj ?? {});
+
+export const formatarDataHoraBrasil = (dataString: string | null | undefined): string => {
+  if (!dataString) return '—';
+  return new Date(dataString).toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};

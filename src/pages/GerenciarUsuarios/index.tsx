@@ -29,6 +29,7 @@ import { retornaUserPerfil } from "../../utils/Utils";
 import AcessoNegadoPage from "../Erros/AcessoNegadoPage";
 import UsuarioForm from "../../components/UsuarioForm";
 import BuscaUsuario from "../../components/BuscaUsuario";
+import { PerfilSistema } from "../../models/PerfilSistema";
 
 export default function GerenciarUsuarios() {
   const { usuarios, carregarUsuarios, editarUsuario, removerUsuario } = usuariosStore();
@@ -62,7 +63,7 @@ export default function GerenciarUsuarios() {
     setUsuariosFiltrados(filtrados);
   }, [usuarios, textoBusca]);
 
-  if (userPerfil != 'a1b2c') {
+  if (userPerfil != PerfilSistema.ADMIN) {
       return <AcessoNegadoPage />;
   }
 

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { deletarBolao, editarBolao, buscarBoloesPorUserId, salvarBolao, aceitarConvite, deletarParticipanteBolao, editarParticipanteBolao, buscarParticipantesBolaoPorBolaoId, buscarParticipanteBolaoLogado } from '../api';
+import { deletarBolao, editarBolao, buscarBoloesPorUserId, salvarBolao, aceitarConvite, deletarParticipanteBolao, editarParticipanteBolao, buscarParticipantesBolaoPorBolaoId, buscarParticipanteBolaoLogado, buscarTodosBoloes, buscarBolaoPorIdUserId } from '../api';
 import { EventoBase } from '../models/BolaoCopaDefault';
 
 export type Convite = {
@@ -42,6 +42,16 @@ export type Bolao = {
   roleBolao: string
 }
 
+export type BolaoListaGerenciamento = {
+  id: string;
+  nome: string;
+  criador: string;
+  numeroParticipantes: number;
+  eventoBase: string;
+  palpitesRealizados: number;
+  dataCriacao: string;
+};
+
 export type NovoBolao = Omit<Bolao, 'id'>
 export type NovoParticipanteBolao = Omit<ParticipanteBolao, 'userId'>
 
@@ -49,12 +59,15 @@ interface BolaoStore {
   boloes: Bolao[]
   participantesBolao: ParticipanteBolao[]
   participanteBolaoLogado: ParticipanteBolao | null
+  boloesGerenciamento: BolaoListaGerenciamento[]
   carregarParticipantesBolao: (bolaoId: string, userId: number) => Promise<void>
   carregarParticipanteBolaoLogado: (bolaoId: string, userId: number) => Promise<void>
   editarParticipanteBolao: (dadosParticipante: ParticipanteBolaoDTO) => Promise<boolean>
   removerParticipanteBolao: (userId: number) => Promise<boolean>
   adicionarBolao: (dadosNovoBolao: NovoBolao) => Promise<boolean>
-  carregarBolao: (userId: number) => Promise<void>
+  carregarBoloesPorUserId: (userId: number) => Promise<void>
+  carregarBoloesGerenciamento: () => Promise<void>
+  carregarBolaoPorIdUserId: (bolaoId: string) => Promise<Bolao | null>
   editarBolao: (id: string, dadosBolao: NovoBolao) => Promise<boolean>
   removerBolao: (id: string) => Promise<boolean>
   aceitarConvite: (dadosConvite: Convite) => Promise<boolean>
@@ -64,6 +77,7 @@ interface BolaoStore {
 export const bolaoStore = create<BolaoStore>((set) => ({
   boloes: [],
   participantesBolao: [],
+  boloesGerenciamento: [],
   participanteBolaoLogado: null,
 
   adicionarBolao: async (dadosNovoBolao) => {
@@ -95,7 +109,7 @@ export const bolaoStore = create<BolaoStore>((set) => ({
     }
   },
 
-  carregarBolao: async (userId: number) => {
+  carregarBoloesPorUserId: async (userId: number) => {
     try {
       const response = await buscarBoloesPorUserId(userId);
       if (response.data) {
@@ -105,6 +119,36 @@ export const bolaoStore = create<BolaoStore>((set) => ({
       }
     } catch (err) {
       console.error('Erro ao carregar boloes:', err);
+    }
+  },
+
+  carregarBoloesGerenciamento: async () => {
+    try {
+      const response = await buscarTodosBoloes();
+
+      if (response.data) {
+        set({ boloesGerenciamento: response.data });
+      } else {
+        console.error("Erro ao carregar boloes:", response.error);
+      }
+    } catch (err) {
+      console.error("Erro ao carregar boloes para gerenciamento:", err);
+    }
+  },
+
+  carregarBolaoPorIdUserId: async (bolaoId: string): Promise<Bolao | null> => {
+    try {
+      const response = await buscarBolaoPorIdUserId(bolaoId);
+
+      if (response.data) {
+        return response.data;
+      } else {
+        console.warn("Bolão não encontrado");
+        return null;
+      }
+    } catch (err) {
+      console.error("Erro ao carregar bolão por ID:", err);
+      return null;
     }
   },
 

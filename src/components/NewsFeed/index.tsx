@@ -68,7 +68,7 @@ export default function NewsFeed() {
   return (
     <Box mb={10} display={"grid"}>
       <Heading size="lg" mb={5} display="flex" alignItems="center" gap={2}>
-        📰 Últimas Notícias da Copa 2026
+        📰 Últimas Notícias do Esporte
       </Heading>
 
       <VStack spacing={4} align="stretch">

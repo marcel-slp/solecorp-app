@@ -30,8 +30,10 @@ import { TbShieldFilled } from "react-icons/tb";
 //import { GrConfigure } from "react-icons/gr";
 import { GiTrophyCup } from "react-icons/gi";
 import { RiUserSettingsFill } from "react-icons/ri";
+import { FaClipboardList } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { PerfilSistema } from "../../models/PerfilSistema";
 
 export type Props = {
     modoBolao?: boolean;
@@ -54,10 +56,10 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth") ?? "{}");    
     
-    if (auth.nome && auth.email && auth.perfilId) {
+    if (auth.nome && auth.email && auth.nomePerfil) {
       setNomeUsuario(auth.nome);
       setEmailUsuario(auth.email);
-      setPerfilUsuario(auth.perfilId);
+      setPerfilUsuario(auth.nomePerfil);
     } else {
       setNomeUsuario(null);
       setEmailUsuario(null);
@@ -81,7 +83,7 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
   //   }
   // };
 
-  const esconderIconesBolaoAdmin = publicHeader || (modoBolao && perfilUsuario != 'a1b2c');
+  const esconderIconesBolaoAdmin = publicHeader || (modoBolao && perfilUsuario != PerfilSistema.ADMIN);
   const esconderIconesBolaoUser = publicHeader || !modoBolao;
   const esconderIconesManager = publicHeader || modoBolao;
   
@@ -110,6 +112,9 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
             </Link>
             <Link to="/gerenciar-usuarios" aria-label="Gerenciar Usuários do Sistema" hidden={esconderIconesBolaoAdmin}>
               <Icon as={RiUserSettingsFill } className={styles.iconSmall} />
+            </Link>
+            <Link to="/gerenciar-boloes" aria-label="Gerenciar Todos os Bolões do Sistema" hidden={esconderIconesBolaoAdmin}>
+              <Icon as={FaClipboardList } className={styles.iconSmall} />
             </Link>
             <Link to="/eventos" aria-label="Ir para eventos" hidden={esconderIconesManager}>
             <Icon as={MdEmojiEvents} className={styles.iconSmall} />
