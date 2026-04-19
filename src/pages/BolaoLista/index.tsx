@@ -1,12 +1,5 @@
 import {
   Heading,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
   Button,
   Modal,
   ModalOverlay,
@@ -16,7 +9,6 @@ import {
   ModalCloseButton,
   ModalFooter
 } from "@chakra-ui/react";
-import { IconButton } from '@chakra-ui/react'
 import * as styles from "./styles.css";
 import {
   NovoBolao,
@@ -24,12 +16,12 @@ import {
 } from "../../stores/bolaoStore";
 import { Bolao } from "../../stores/bolaoStore";
 import { useEffect, useState } from "react";
-import { ArrowForwardIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import BolaoForm from "../../components/BolaoForm";
 import { BolaoRoles, EventoBase } from "../../models/BolaoCopaDefault";
 import { retornaUserId, retornaUserPerfil } from "../../utils/Utils";
 import { useNavigate } from "react-router-dom";
 import { PerfilSistema } from "../../models/PerfilSistema";
+import BolaoTable from "../../components/BolaoTable";
 
 export default function BolaoLista() {
   const { boloes, adicionarBolao, carregarBoloesPorUserId, editarBolao, removerBolao } = bolaoStore();
@@ -103,48 +95,12 @@ export default function BolaoLista() {
       {!editando ? (
         <>
           <Heading size="md" my={4}>Bolões Cadastrados/Convidados</Heading>
-          <TableContainer>
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th>ID</Th>
-                  <Th>Nome</Th>
-                  <Th>Evento-Base</Th>
-                  <Th>Ações</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {boloes.map((bolao) => (
-                  <Tr key={bolao.id}>
-                    <Td>{bolao.id}</Td>
-                    <Td>{bolao.nome}</Td>
-                    <Td>{bolao.eventoBase}</Td>
-                    <Td>
-                      <IconButton
-                        aria-label="Entrar no Bolao"
-                        icon={<ArrowForwardIcon />}
-                        style={{marginRight: '10px'}}
-                        onClick={() => navigate(`/bolao/${bolao.id}/inicio`)}
-                      />
-                      <IconButton
-                        aria-label="Editar Bolao"
-                        hidden={bolao.roleBolao !== 'criador'}
-                        icon={<EditIcon />}
-                        mr={2}
-                        onClick={() => handleEntrarEditMode(bolao)}
-                      />
-                      <IconButton
-                        aria-label="Deletar Bolao"
-                        hidden={bolao.roleBolao !== 'criador'}
-                        icon={<DeleteIcon />}
-                        onClick={() => handleAbrirRemoverBolaoPopup(bolao.id)}
-                      />
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+          <BolaoTable
+            boloes={boloes}
+            onEnter={(id) => navigate(`/bolao/${id}/inicio`)}
+            onEdit={(b) => handleEntrarEditMode(b)}
+            onDelete={(id) => handleAbrirRemoverBolaoPopup(id)}
+          />
 
           <Button 
             mt={4} 

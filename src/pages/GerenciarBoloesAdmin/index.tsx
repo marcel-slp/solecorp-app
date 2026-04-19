@@ -1,12 +1,5 @@
 import {
   Heading,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
   Button,
   Modal,
   ModalOverlay,
@@ -19,7 +12,6 @@ import {
   Select,
   Text
 } from "@chakra-ui/react";
-import { IconButton } from '@chakra-ui/react'
 import * as styles from "./styles.css";
 import {
   BolaoListaGerenciamento,
@@ -28,24 +20,14 @@ import {
 } from "../../stores/bolaoStore";
 import { Bolao } from "../../stores/bolaoStore";
 import { useEffect, useState } from "react";
-import { ArrowForwardIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import BolaoForm from "../../components/BolaoForm";
 import { BolaoRoles, EventoBase } from "../../models/BolaoCopaDefault";
-import { formatarDataHoraBrasil, retornaUserPerfil } from "../../utils/Utils";
+import { retornaUserPerfil } from "../../utils/Utils";
 import { useNavigate } from "react-router-dom";
 import AcessoNegadoPage from "../Erros/AcessoNegadoPage";
 import { PerfilSistema } from "../../models/PerfilSistema";
 import BuscaUsuario from "../../components/BuscaUsuario";
-
-// export type BolaoListaGerenciamento = {
-//   id: string,
-//   nome: string,
-//   criador: string;
-//   numeroParticipantes: number;
-//   eventoBase: EventoBase.COPA_2026;
-//   palpitesRealizados: number;
-//   dataCriacao: string;
-// }
+import BolaoTable from "../../components/BolaoTable";
 
 export default function GerenciarBoloesAdmin() {
   const { boloesGerenciamento, carregarBolaoPorIdUserId, carregarBoloesGerenciamento, adicionarBolao, editarBolao, removerBolao } = bolaoStore();
@@ -101,15 +83,17 @@ export default function GerenciarBoloesAdmin() {
     try {
       if (id) {
         sucesso = await editarBolao(id, dados);
-        setEditando(null);
       } else {
         sucesso = await adicionarBolao(dados);
-        setEditando(null);
       }
 
-      if (!sucesso) {
+      if (sucesso) {
+        await carregarBoloesGerenciamento();
+        setEditando(null);
+      } else {
         alert("Ocorreu um erro ao salvar o bolão. Verifique os logs.");
       }
+
     } catch (err) {
       setEditando(null);
       alert("Falha ao salvar/editar bolão.");
@@ -154,6 +138,8 @@ export default function GerenciarBoloesAdmin() {
         alert("Ocorreu um erro ao removre o bolão. Verifique os logs.");
       }
 
+      await carregarBoloesGerenciamento();
+
     } catch (err) {
       setEditando(null);
       alert("Falha ao remover bolão.");
@@ -171,55 +157,13 @@ export default function GerenciarBoloesAdmin() {
 
           <BuscaUsuario onBuscar={handleBuscar} />
 
-          <TableContainer>
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th textAlign="center">ID</Th>
-                  <Th textAlign="center">Nome</Th>
-                  <Th textAlign="center">Evento-Base</Th>
-                  <Th textAlign="center">Número de Participantes</Th>
-                  <Th textAlign="center">Palpites Realizados</Th>
-                  <Th textAlign="center">Criador</Th>
-                  <Th textAlign="center">Data de Criação</Th>
-                  <Th textAlign="center">Ações</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {/* {boloesGerenciamento.map((bolao) => ( */}
-                {boloesPaginados.map((bolao) => (
-                  <Tr key={bolao.id}>
-                    <Td textAlign="center">{bolao.id}</Td>
-                    <Td textAlign="center">{bolao.nome}</Td>
-                    <Td textAlign="center">{bolao.eventoBase}</Td>
-                    <Td textAlign="center">{bolao.numeroParticipantes}</Td>
-                    <Td textAlign="center">{bolao.palpitesRealizados}</Td>
-                    <Td textAlign="center">{bolao.criador}</Td>
-                    <Td textAlign="center">{formatarDataHoraBrasil(bolao.dataCriacao)}</Td>
-                    <Td>
-                      <IconButton
-                        aria-label="Entrar no Bolao"
-                        icon={<ArrowForwardIcon />}
-                        style={{marginRight: '10px'}}
-                        onClick={() => navigate(`/bolao/${bolao.id}/inicio`)}
-                      />
-                      <IconButton
-                        aria-label="Editar Bolao"
-                        icon={<EditIcon />}
-                        mr={2}
-                        onClick={() => handleEntrarEditMode(bolao.id)}
-                      />
-                      <IconButton
-                        aria-label="Deletar Bolao"
-                        icon={<DeleteIcon />}
-                        onClick={() => handleAbrirRemoverBolaoPopup(bolao.id)}
-                      />
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+          <BolaoTable
+            boloes={boloesPaginados}
+            isAdmin
+            onEnter={(id) => navigate(`/bolao/${id}/inicio`)}
+            onEdit={(b) => handleEntrarEditMode(b.id)}
+            onDelete={(id) => handleAbrirRemoverBolaoPopup(id)}
+          />
 
           <HStack mt={6} justify="space-between" align="center">
             <HStack>
