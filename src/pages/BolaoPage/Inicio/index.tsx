@@ -285,7 +285,7 @@ export function InicioBolao() {
                               </Badge>
                             ) : (
                               <Badge colorScheme="red" fontSize="xs" px={4} py={1}>
-                                {jogo.palpitesFaltantes} palpites faltantes
+                                {jogo.palpitesFaltantes == 1 ? `1 palpite faltando` : `${jogo.palpitesFaltantes} palpites faltantes`}
                               </Badge>
                             )}
                           </HStack>
