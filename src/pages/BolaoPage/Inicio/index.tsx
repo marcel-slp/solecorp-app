@@ -26,6 +26,7 @@ import { GiTrophyCup } from "react-icons/gi";
 import { FaArrowTrendUp, FaCircleCheck } from "react-icons/fa6";
 import { classificacaoStore } from '../../../stores/classificacaoStore.ts';
 import { palpitesStore } from '../../../stores/palpitesStore.ts';
+import defaultParticipante from "@/assets/images/default_participante.jpeg";
 
 export function InicioBolao() {
   const { bolao } = useOutletContext<{ bolao: Bolao }>();
@@ -50,7 +51,7 @@ export function InicioBolao() {
     carregarParticipantesBolao(bolao.id, loggedUserId);
     carregarPalpitesPorBolao(bolao.id);
     carregarPartidas(1);
-  }, [bolao.id, carregarPalpitesPorBolao, carregarPartidas]);
+  }, [bolao.id, carregarPalpitesPorBolao, carregarParticipantesBolao, carregarPartidas, loggedUserId]);
 
   useEffect(() => {
     carregarClassificacao(bolao.id);
@@ -239,7 +240,7 @@ export function InicioBolao() {
                             <HStack>
                               <Image 
                                 src={jogo.simboloCasa}
-                                fallbackSrc="/images/default_participante.jpeg"
+                                fallbackSrc={defaultParticipante}
                                 boxSize="28px" 
                                 borderRadius="full"
                               />
@@ -257,7 +258,7 @@ export function InicioBolao() {
                             <HStack>
                               <Image 
                                 src={jogo.simboloFora}
-                                fallbackSrc="/images/default_participante.jpeg"
+                                fallbackSrc={defaultParticipante}
                                 boxSize="28px" 
                                 borderRadius="full"
                               />
