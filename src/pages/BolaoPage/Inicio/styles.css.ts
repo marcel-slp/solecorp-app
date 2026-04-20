@@ -22,6 +22,10 @@ export const simboloTorneioContainer = style({
   display: "flex",
 });
 
+export const jogosDoDiaContainer = style({
+  display: "flex",
+});
+
 export const simboloTorneio = style({
   borderRadius: "10px",
 });

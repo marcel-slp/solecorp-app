@@ -23,8 +23,8 @@ export default function BolaoTable({
       <Table variant="simple">
         <Thead>
           <Tr>
-            <Th textAlign="center">ID</Th>
-            <Th textAlign="center">Nome</Th>
+            <Th textAlign={isAdmin ? "center" : "start"}>ID</Th>
+            <Th textAlign={isAdmin ? "center" : "start"}>Nome</Th>
 
             {isAdmin && (
               <>
@@ -42,8 +42,8 @@ export default function BolaoTable({
         <Tbody>
           {boloes.map((bolao: any) => (
             <Tr key={bolao.id}>
-              <Td textAlign="center">{bolao.id}</Td>
-              <Td textAlign="center">{bolao.nome}</Td>
+              <Td textAlign={isAdmin ? "center" : "start"}>{bolao.id}</Td>
+              <Td textAlign={isAdmin ? "center" : "start"}>{bolao.nome}</Td>
 
               {isAdmin && (
                 <>

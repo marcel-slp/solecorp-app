@@ -1,22 +1,38 @@
 import { 
+  Badge,
   Box, 
   Button, 
   Flex, 
+  Heading, 
+  HStack, 
+  Icon, 
   Image, 
-  useDisclosure } from '@chakra-ui/react'
+  SimpleGrid,
+  Text, 
+  useDisclosure, 
+  VStack} from '@chakra-ui/react'
 import * as styles from "./styles.css.ts";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Bolao, bolaoStore } from '../../../stores/bolaoStore.ts';
-import { getImagemURL } from '../../../utils/Utils.ts';
-import { ReactNode, useState } from 'react';
+import { getImagemURL, retornaUserId } from '../../../utils/Utils.ts';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import TabelaGerenciarParticipantesBolao from '../../../components/TabelaGerenciarParticipantesBolao/index.tsx';
 import { ModalGenerico } from '../../../components/ModalGenerico/index.tsx';
 import BolaoRegulamento from '../../../components/BolaoRegulamento/index.tsx';
 import { BolaoRoles } from '../../../models/BolaoCopaDefault.tsx';
+import { partidasStore } from '../../../stores/partidasStore.ts';
+import { IoIosFootball } from "react-icons/io";
+import { GiTrophyCup } from "react-icons/gi";
+import { FaArrowTrendUp, FaCircleCheck } from "react-icons/fa6";
+import { classificacaoStore } from '../../../stores/classificacaoStore.ts';
+import { palpitesStore } from '../../../stores/palpitesStore.ts';
 
 export function InicioBolao() {
   const { bolao } = useOutletContext<{ bolao: Bolao }>();
-  const { participanteBolaoLogado } = bolaoStore();
+  const { participanteBolaoLogado, participantesBolao, carregarParticipantesBolao } = bolaoStore();
+  const { partidas, carregarPartidas } = partidasStore();
+  const { palpitesBolao, carregarPalpitesPorBolao } = palpitesStore();
+  const { carregarClassificacao, getRankingAoRedorUsuario, getTopN } = classificacaoStore();
   const [isSaved, setIsSaved] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -24,6 +40,62 @@ export function InicioBolao() {
   const [modalConteudo, setModalConteudo] = useState<ReactNode>(null);
 
   const navigate = useNavigate();
+
+  const loggedUserId = retornaUserId();
+
+  const adminOuGerente = participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR || 
+                        participanteBolaoLogado?.roleBolao === BolaoRoles.GERENTE;
+
+  useEffect(() => {
+    carregarParticipantesBolao(bolao.id, loggedUserId);
+    carregarPalpitesPorBolao(bolao.id);
+    carregarPartidas(1);
+  }, [bolao.id, carregarPalpitesPorBolao, carregarPartidas]);
+
+  useEffect(() => {
+    carregarClassificacao(bolao.id);
+  }, [bolao.id, carregarClassificacao]);
+
+  const jogosDoDia = useMemo(() => {
+    const hoje = new Date().toISOString().split('T')[0];
+
+    return Object.values(partidas).filter(partida => {
+      if (!partida.dataJogo) return false;
+      return partida.dataJogo.split('T')[0] === hoje;
+    });
+  }, [partidas]);
+
+  const jogosComStatusPalpites = useMemo(() => {
+    const totalParticipantes = participantesBolao.length;
+
+    return jogosDoDia.map((jogo) => {
+      let palpitesFeitos = 0;
+
+      Object.values(palpitesBolao).forEach(palpitesDoUsuario => {
+        const palpiteParaEsteJogo = palpitesDoUsuario.find(
+          p => p.partidaId === jogo.id
+        );
+
+        if (palpiteParaEsteJogo && 
+            (palpiteParaEsteJogo.placarCasa !== null || 
+            palpiteParaEsteJogo.placarFora !== null)) {
+          palpitesFeitos++;
+        }
+      });
+
+      const faltantes = totalParticipantes - palpitesFeitos;
+
+      return {
+        ...jogo,
+        palpitesFeitos,
+        palpitesFaltantes: faltantes,
+        estaCompleto: faltantes === 0 && totalParticipantes > 0
+      };
+    });
+  }, [jogosDoDia, palpitesBolao, participantesBolao.length]);
+
+  const rankingAoRedorUsuario = getRankingAoRedorUsuario(loggedUserId, 5);
+  const top10Geral = getTopN(10);
 
   const abrirModal = (titulo: string, conteudo: ReactNode) => {
     setModalTitulo(titulo);
@@ -51,14 +123,12 @@ export function InicioBolao() {
     setTimeout(() => setIsSaved(false), 2000);
   };
 
-  const adminOuGerente = participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR || participanteBolaoLogado?.roleBolao === BolaoRoles.GERENTE
-
   return (
     <>
       <div style={{width:"100%"}}>
           <div className={styles.folhaContainer}>
             <div className={styles.quadroInicial}> 
-              <Flex direction="row" gap={4} wrap="nowrap" >
+              <Flex direction="row" gap={4} wrap="nowrap">
                 <Box flex="1" maxWidth="20%">
                   <div className={styles.simboloTorneioContainer}>
                     <Image
@@ -128,9 +198,298 @@ export function InicioBolao() {
                 </Box>
               </Flex>
 
+              <Box mt={10}>
+                <Heading size="md" mb={4} display="flex" alignItems="center" gap={2}>
+                  <Icon as={IoIosFootball} />
+                  Jogos de Hoje
+                  {jogosComStatusPalpites.length > 0 && (
+                    <Badge colorScheme="green">{jogosComStatusPalpites.length}</Badge>
+                  )}
+                </Heading>
+
+                <Box 
+                  height="260px" 
+                  overflowX="auto" 
+                  borderWidth="1px" 
+                  borderRadius="lg" 
+                  p={4}
+                  bg="white"
+                  whiteSpace="nowrap"
+                >
+                  {jogosComStatusPalpites.length === 0 ? (
+                    <Text color="gray.500" textAlign="center" py={10}>
+                      Não há jogos agendados para hoje.
+                    </Text>
+                  ) : (
+                    <HStack spacing={4} align="stretch">
+                      {jogosComStatusPalpites.map((jogo) => (
+                        <Box 
+                          key={jogo.id} 
+                          minW="320px" 
+                          p={5} 
+                          borderWidth="1px" 
+                          borderRadius="lg" 
+                          bg="gray.50"
+                        >
+                          <HStack justify="space-between" mb={3}>
+                            <Badge colorScheme="blue">{jogo.grupo || jogo.fase}</Badge>
+                            <Text fontSize="xs" color="gray.500">{jogo.horaJogo || '—'}</Text>
+                          </HStack>
+                          <VStack align="stretch" spacing={3}>
+                            <HStack>
+                              <Image 
+                                src={jogo.simboloCasa}
+                                fallbackSrc="/images/default_participante.jpeg"
+                                boxSize="28px" 
+                                borderRadius="full"
+                              />
+                              <Text fontWeight="medium" flex={1}>{jogo.timeCasa}</Text>
+                              <Text fontWeight="bold" minW="30px" textAlign="center">
+                                {jogo.placarCasa !== null ? jogo.placarCasa : '-'}
+                              </Text>
+                              {jogo.placarPenaltisCasa && (
+                                <Text fontWeight="bold" minW="30px" textAlign="center" color="blue.400">
+                                {jogo.placarPenaltisCasa !== null ? jogo.placarPenaltisCasa : '-'}
+                              </Text>
+                              )}
+                            </HStack>
+
+                            <HStack>
+                              <Image 
+                                src={jogo.simboloFora}
+                                fallbackSrc="/images/default_participante.jpeg"
+                                boxSize="28px" 
+                                borderRadius="full"
+                              />
+                              <Text fontWeight="medium" flex={1}>{jogo.timeFora}</Text>
+                              <Text fontWeight="bold" minW="30px" textAlign="center">
+                                {jogo.placarFora !== null ? jogo.placarFora : '-'}
+                              </Text>
+                              {jogo.placarPenaltisFora && (
+                                <Text fontWeight="bold" minW="30px" textAlign="center" color="blue.400">
+                                {jogo.placarPenaltisFora !== null ? jogo.placarPenaltisFora : '-'}
+                              </Text>
+                              )}
+                            </HStack>
+                          </VStack>
+                          <HStack mt={4} justify="center">
+                            {jogo.estaCompleto ? (
+                              <Badge colorScheme="green" fontSize="xs" px={4} py={1}>
+                                <Icon as={FaCircleCheck} mr={1}/>
+                                Todos palpitaram
+                              </Badge>
+                            ) : (
+                              <Badge colorScheme="red" fontSize="xs" px={4} py={1}>
+                                {jogo.palpitesFaltantes} palpites faltantes
+                              </Badge>
+                            )}
+                          </HStack>
+                        </Box>
+                      ))}
+                    </HStack>
+                  )}
+                </Box>
+              </Box>
+
+              <Box mt={10} mb={4}>
+              <Heading size="md" mb={6}>
+                <Icon as={GiTrophyCup} mr={2}/>
+                Rankings
+              </Heading>
+
+              <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8}>
+                <Box>
+                  <Text fontWeight="bold" mb={4}>
+                    <Icon as={FaArrowTrendUp} mr={2}/>
+                    Sua Posição no Ranking
+                  </Text>
+                  <VStack spacing={3} align="stretch">
+                    {rankingAoRedorUsuario.map((item) => (
+                      <HStack 
+                        key={item.userId}
+                        p={4}
+                        bg={item.userId === loggedUserId ? "blue.50" : "white"}
+                        borderRadius="md"
+                        borderWidth={item.userId === loggedUserId ? "2px" : "1px"}
+                        borderColor={item.userId === loggedUserId ? "blue.500" : "gray.200"}
+                      >
+                        <Text fontWeight="bold" w="40px">#{item.posicao}</Text>
+                        <Text flex={1}>{item.nome}</Text>
+                        <Text fontWeight="bold">{item.ptsTotalParticipante} pts</Text>
+                      </HStack>
+                    ))}
+                  </VStack>
+                </Box>
+
+                <Box>
+                  <Text fontWeight="bold" mb={4}>Top 10 Geral</Text>
+                  <VStack spacing={3} align="stretch">
+                    {top10Geral.map((item) => (
+                      <HStack 
+                        key={item.userId} 
+                        p={4} 
+                        bg="white" 
+                        borderRadius="md" 
+                        borderWidth="1px"
+                      >
+                        <Text fontWeight="bold" w="40px" color={item.posicao && item.posicao <= 3 ? "gold" : "inherit"}>
+                          #{item.posicao}
+                        </Text>
+                        <Text flex={1}>{item.nome}</Text>
+                        <Text fontWeight="bold">{item.ptsTotalParticipante} pts</Text>
+                      </HStack>
+                    ))}
+                  </VStack>
+                </Box>
+              </SimpleGrid>
+            </Box>
+
+              {/* <Box mt={10} mb={4}>
+                <SimpleGrid 
+                  columns={{ base: 1, xl: 3 }} 
+                  spacing={6}
+                  templateColumns={{ base: "1fr", xl: "380px 1fr 1fr" }}
+                >
+                  <Box>
+                    <Heading size="md" mb={4} display="flex" alignItems="center" gap={2}>
+                      <Icon as={IoIosFootball} />
+                      Jogos de Hoje
+                      {jogosComStatusPalpites.length > 0 && <Badge colorScheme="green">{jogosComStatusPalpites.length}</Badge>}
+                    </Heading>
+
+                    <Box 
+                      height="400px" 
+                      overflowY="auto" 
+                      borderWidth="1px" 
+                      borderRadius="lg" 
+                      p={4}
+                      bg="white"
+                    >
+                      {jogosComStatusPalpites.length === 0 ? (
+                        <Text color="gray.500" textAlign="center" py={10}>
+                          Não há jogos agendados para hoje.
+                        </Text>
+                      ) : (
+                        <VStack spacing={4} align="stretch">
+                          {jogosComStatusPalpites.map((jogo) => (
+                            <Box key={jogo.id} p={4} borderWidth="1px" borderRadius="md" bg="gray.50">
+                              <HStack justify="space-between" mb={3}>
+                                <Badge colorScheme="blue">{jogo.grupo || jogo.fase}</Badge>
+                                <Text fontSize="xs" color="gray.500">{jogo.horaJogo || '—'}</Text>
+                              </HStack>
+                              <VStack align="stretch" spacing={3}>
+                                <HStack>
+                                  <Image 
+                                    src={jogo.simboloCasa}
+                                    fallbackSrc="/images/default_participante.jpeg"
+                                    boxSize="28px" 
+                                    borderRadius="full"
+                                  />
+                                  <Text fontWeight="medium" flex={1}>{jogo.timeCasa}</Text>
+                                  <Text fontWeight="bold" minW="30px" textAlign="center">
+                                    {jogo.placarCasa !== null ? jogo.placarCasa : '-'}
+                                  </Text>
+                                  {jogo.placarPenaltisCasa && (
+                                    <Text fontWeight="bold" minW="30px" textAlign="center" color="blue.400">
+                                    {jogo.placarPenaltisCasa !== null ? jogo.placarPenaltisCasa : '-'}
+                                  </Text>
+                                  )}
+                                </HStack>
+
+                                <HStack>
+                                  <Image 
+                                    src={jogo.simboloFora}
+                                    fallbackSrc="/images/default_participante.jpeg"
+                                    boxSize="28px" 
+                                    borderRadius="full"
+                                  />
+                                  <Text fontWeight="medium" flex={1}>{jogo.timeFora}</Text>
+                                  <Text fontWeight="bold" minW="30px" textAlign="center">
+                                    {jogo.placarFora !== null ? jogo.placarFora : '-'}
+                                  </Text>
+                                  {jogo.placarPenaltisFora && (
+                                    <Text fontWeight="bold" minW="30px" textAlign="center" color="blue.400">
+                                    {jogo.placarPenaltisFora !== null ? jogo.placarPenaltisFora : '-'}
+                                  </Text>
+                                  )}
+                                </HStack>
+                              </VStack>
+
+                              <Text mt={3} fontSize="sm" color="gray.600" textAlign="center">
+                                {jogo.localJogo || 'Local não definido'}
+                              </Text>
+                              <HStack mt={4} justify="center">
+                                {jogo.estaCompleto ? (
+                                  <Badge colorScheme="green" fontSize="sm" px={4} py={1}>
+                                    ✓ Todos palpitaram
+                                  </Badge>
+                                ) : (
+                                  <Badge colorScheme="red" fontSize="sm" px={4} py={1}>
+                                    {jogo.palpitesFaltantes} palpites faltantes
+                                  </Badge>
+                                )}
+                              </HStack>
+                            </Box>
+                          ))}
+                        </VStack>
+                      )}
+                    </Box>
+                  </Box>
+
+                  <Box>
+                    <Heading size="md" mb={4}>
+                      <Icon as={GiTrophyCup} mr={2}/>
+                      Top 10 Geral
+                    </Heading>
+                    <VStack spacing={3} align="stretch">
+                      {top10Geral.map((item) => (
+                        <HStack 
+                          key={item.userId} 
+                          p={4} 
+                          bg="white" 
+                          borderRadius="md" 
+                          borderWidth="1px"
+                        >
+                          <Text fontWeight="bold" w="40px" color={item.posicao && item.posicao <= 3 ? "gold" : "inherit"}>
+                            #{item.posicao}
+                          </Text>
+                          <Text flex={1} fontWeight="medium">{item.nome}</Text>
+                          <Text fontWeight="bold">{item.ptsTotalParticipante} pts</Text>
+                        </HStack>
+                      ))}
+                    </VStack>
+                  </Box>
+
+                  <Box>
+                    <Heading size="md" mb={4}>
+                      <Icon as={FaArrowTrendUp} mr={2}/>
+                      Sua Posição no Ranking
+                    </Heading>
+                    <VStack spacing={3} align="stretch">
+                      {rankingAoRedorUsuario.map((item) => (
+                        <HStack 
+                          key={item.userId}
+                          p={4}
+                          bg={item.userId === loggedUserId ? "blue.50" : "white"}
+                          borderRadius="md"
+                          borderWidth={item.userId === loggedUserId ? "2px" : "1px"}
+                          borderColor={item.userId === loggedUserId ? "blue.500" : "gray.200"}
+                        >
+                          <Text fontWeight="bold" w="40px">#{item.posicao}</Text>
+                          <Text flex={1}>{item.nome}</Text>
+                          <Text fontWeight="bold">{item.ptsTotalParticipante} pts</Text>
+                        </HStack>
+                      ))}
+                    </VStack>
+                  </Box>
+
+                </SimpleGrid>
+              </Box> */}
+
               {adminOuGerente && (
                 <>
                   <div className={styles.tituloConfigEventoContainer}>
+                    
                     <Button 
                       hidden={bolao.roleBolao === 'jogador'}
                       onClick={handleCriarConviteLink} 

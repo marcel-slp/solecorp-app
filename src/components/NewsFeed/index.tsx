@@ -39,7 +39,7 @@ export default function NewsFeed() {
         const normalizedNews = (data.articles || data).map((item: any) => ({
           id: item.id,
           title: item.title,
-          description: item.description || item.summary || '',
+          //description: item.description || item.summary || '',
           url: item.url,
           publishedAt: item.publishedAt || item.pubDate,
           source: typeof item.source === 'object' ? item.source.name : item.source || 'Desconhecido',

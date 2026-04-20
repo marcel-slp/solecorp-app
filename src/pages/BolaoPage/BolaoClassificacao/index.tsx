@@ -1,16 +1,17 @@
 
 import * as styles from "./styles.css.ts";
-import { Image, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Box, Image, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
 import tituloClassificacao from "@/assets/images/tituloClassificacao.jpg";
 import TabelaClassificacaoBolao from "../../../components/TabelaClassificacaoBolao/index.tsx";
 import { useOutletContext } from "react-router-dom";
-import { Bolao, bolaoStore } from "../../../stores/bolaoStore.ts";
+import { Bolao } from "../../../stores/bolaoStore.ts";
 import { retornaUserId } from "../../../utils/Utils.ts";
-import { partidasStore } from "../../../stores/partidasStore.ts";
-import { palpitesStore } from "../../../stores/palpitesStore.ts";
-import { criteriosPontuacaoStore } from "../../../stores/criteriosPontuacaoStore.ts";
-import { useEffect, useMemo } from "react";
-import { calcularPontuacoesParticipantes } from "../../../components/TabelaClassificacaoBolao/scoreParticipantes.ts";
+// import { partidasStore } from "../../../stores/partidasStore.ts";
+// import { palpitesStore } from "../../../stores/palpitesStore.ts";
+// import { criteriosPontuacaoStore } from "../../../stores/criteriosPontuacaoStore.ts";
+import { useEffect } from "react";
+//import { calcularPontuacoesParticipantes } from "../../../components/TabelaClassificacaoBolao/scoreParticipantes.ts";
+import { classificacaoStore } from "../../../stores/classificacaoStore.ts";
 
 const CRITERIOS_ABAS = [
   { key: "Placar Cravado", label: "Placar Cravado" },
@@ -45,35 +46,62 @@ export interface PontuacaoParticipante {
   // ptsBonus2: number;
   // ptsBonus3: number;
   ptsTotalParticipante: number;
+  posicao?: number
 }
 
 function BolaoClassificacao() {
-  const { bolao } = useOutletContext<{ bolao: Bolao }>();
-  const { partidas, carregarPartidas } = partidasStore();
-  const { palpitesBolao, carregarPalpitesPorBolao } = palpitesStore();
-  const { pontuacaoCriterios, carregarPontuacaoCriterios } = criteriosPontuacaoStore();
-  const { participantesBolao, carregarParticipantesBolao } = bolaoStore();
+  // const { bolao } = useOutletContext<{ bolao: Bolao }>();
+  // const { partidas, carregarPartidas } = partidasStore();
+  // const { palpitesBolao, carregarPalpitesPorBolao } = palpitesStore();
+  // const { pontuacaoCriterios, carregarPontuacaoCriterios } = criteriosPontuacaoStore();
+  // const { participantesBolao, carregarParticipantesBolao } = bolaoStore();
 
+  // const loggedUserId = retornaUserId();
+
+  // useEffect(() => {
+  //   carregarParticipantesBolao(bolao.id, loggedUserId);
+  //   carregarPalpitesPorBolao(bolao.id);
+  //   carregarPartidas(1);
+  //   carregarPontuacaoCriterios(bolao.id);
+  // }, [bolao.id, carregarPontuacaoCriterios, carregarPalpitesPorBolao, carregarParticipantesBolao, carregarPartidas, loggedUserId]);
+
+  // const pontuacoes = useMemo(() => {
+  //   if (!participantesBolao.length) return [];
+
+  //   return calcularPontuacoesParticipantes(
+  //     participantesBolao,
+  //     palpitesBolao,
+  //     partidas,
+  //     pontuacaoCriterios
+  //   ) as PontuacaoParticipante[];
+
+  // }, [participantesBolao, palpitesBolao, partidas, pontuacaoCriterios]);
+
+  const { bolao } = useOutletContext<{ bolao: Bolao }>();
   const loggedUserId = retornaUserId();
 
+  const { loading, error, carregarClassificacao } = classificacaoStore();
+
   useEffect(() => {
-    carregarParticipantesBolao(bolao.id, loggedUserId);
-    carregarPalpitesPorBolao(bolao.id);
-    carregarPartidas(1);
-    carregarPontuacaoCriterios(bolao.id);
-  }, [bolao.id, carregarPontuacaoCriterios, carregarPalpitesPorBolao, carregarParticipantesBolao, carregarPartidas, loggedUserId]);
+    carregarClassificacao(bolao.id);
+  }, [bolao.id, carregarClassificacao]);
 
-  const pontuacoes = useMemo(() => {
-    if (!participantesBolao.length) return [];
+  if (loading) {
+    return (
+      <Box textAlign="center" py={20}>
+        <Spinner size="xl" color="blue.500" />
+        <Text mt={4}>Calculando pontuações...</Text>
+      </Box>
+    );
+  }
 
-    return calcularPontuacoesParticipantes(
-      participantesBolao,
-      palpitesBolao,
-      partidas,
-      pontuacaoCriterios
-    ) as PontuacaoParticipante[];
-
-  }, [participantesBolao, palpitesBolao, partidas, pontuacaoCriterios]);
+  if (error) {
+    return (
+      <Box textAlign="center" py={20}>
+        <Text color="red.500">{error}</Text>
+      </Box>
+    );
+  }
   
   return (
     <div className={styles.classificacaoContainer}>
@@ -94,8 +122,10 @@ function BolaoClassificacao() {
                 <TabelaClassificacaoBolao
                   bolao={bolao}
                   loggedUserId={loggedUserId}
-                  pontuacoes={pontuacoes}
+                  //pontuacoes={pontuacoes}
+                  //rankingGeral={rankingGeral}
                   criterioFiltro={aba.key}
+                  
                 />
               </TabPanel>
             ))}
