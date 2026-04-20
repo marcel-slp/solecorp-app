@@ -14,7 +14,7 @@ import {
 import * as styles from "./styles.css.ts";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Bolao, bolaoStore } from '../../../stores/bolaoStore.ts';
-import { getImagemURL, retornaUserId } from '../../../utils/Utils.ts';
+import { getImagemSelecoesURL, getImagemURL, retornaUserId } from '../../../utils/Utils.ts';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import TabelaGerenciarParticipantesBolao from '../../../components/TabelaGerenciarParticipantesBolao/index.tsx';
 import { ModalGenerico } from '../../../components/ModalGenerico/index.tsx';
@@ -70,6 +70,8 @@ export function InicioBolao() {
     const totalParticipantes = participantesBolao.length;
 
     return jogosDoDia.map((jogo) => {
+      console.log("jogo: ", jogo);
+      
       let palpitesFeitos = 0;
 
       Object.values(palpitesBolao).forEach(palpitesDoUsuario => {
@@ -88,6 +90,8 @@ export function InicioBolao() {
 
       return {
         ...jogo,
+        simboloCasa: getImagemSelecoesURL(jogo.simboloCasa),
+        simboloFora: getImagemSelecoesURL(jogo.simboloFora),
         palpitesFeitos,
         palpitesFaltantes: faltantes,
         estaCompleto: faltantes === 0 && totalParticipantes > 0
