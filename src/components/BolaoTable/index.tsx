@@ -2,6 +2,7 @@
 import { IconButton, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { Bolao, BolaoListaGerenciamento } from "../../stores/bolaoStore";
 import { ArrowForwardIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { BolaoRoles } from "../../models/BolaoCopaDefault";
 
 type BolaoTableProps = {
   boloes: Bolao[] | BolaoListaGerenciamento[];
@@ -72,6 +73,7 @@ export default function BolaoTable({
                       aria-label="Editar"
                       icon={<EditIcon />}
                       mr={2}
+                      hidden={bolao.roleBolao !== BolaoRoles.CRIADOR}
                       onClick={() => onEdit(bolao)}
                     />
                   )}
@@ -80,6 +82,7 @@ export default function BolaoTable({
                     <IconButton
                       aria-label="Excluir"
                       icon={<DeleteIcon />}
+                      hidden={bolao.roleBolao !== BolaoRoles.CRIADOR}
                       onClick={() => onDelete(bolao.id)}
                     />
                   )}
