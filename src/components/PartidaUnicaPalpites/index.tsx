@@ -3,7 +3,6 @@ import {
   Image,
   Flex,
   Badge,
-  //Grid,
   Text,
   Button,
   useDisclosure,
@@ -123,6 +122,19 @@ export function PartidaUnicaPalpites({
     return agora >= umaHoraAntes;
   }, [partida.dataJogo, partida.horaJogo]);
 
+  const exibirPenaltis = useMemo(() => {
+    return participantesBolao.some((p) => {
+      const palpite = palpitesBolao[p.userId]?.find(
+        (pal) => pal.partidaId === partida.id
+      );
+
+      return (
+        palpite?.placarPenaltisCasa != null &&
+        palpite?.placarPenaltisFora != null
+      );
+    });
+  }, [participantesBolao, palpitesBolao, partida.id]);
+
   const handleClickVerPalpites = async () => {
     if(participantesBolao.length == 0) {
       carregarParticipantesBolao(bolaoId, loggedUserId);
@@ -164,7 +176,7 @@ export function PartidaUnicaPalpites({
         onChange={(e) => atualizarPlacarPalpite(placarCasaInterno, e.target.value)} />
 
       <div className={styles.nomeSimbDirContainer}>
-        <Image src={partida.simboloFora} className={styles.simb} fallbackSrc="/images/default_participante.jpeg" />
+        <Image src={partida.simboloFora} className={styles.simb} fallbackSrc={defaultParticipante} />
         <div className={styles.nome}>{timeForaInterno}</div>
       </div>
 
@@ -280,7 +292,9 @@ export function PartidaUnicaPalpites({
                   <Tr>
                     <Th>Participante</Th>
                     <Th textAlign="center">Palpite</Th>
-                    <Th textAlign="center">Pênaltis</Th>
+                    {exibirPenaltis && (
+                      <Th textAlign="center">Pênaltis</Th>
+                    )}
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -297,7 +311,7 @@ export function PartidaUnicaPalpites({
                             <Image 
                               src={partida.simboloCasa} 
                               className={styles.simb} 
-                              fallbackSrc="/images/default_participante.jpeg" 
+                              fallbackSrc={defaultParticipante}
                               boxSize="24px"
                             />
                             <Text fontWeight="medium">
@@ -306,30 +320,35 @@ export function PartidaUnicaPalpites({
                             <Image 
                               src={partida.simboloFora} 
                               className={styles.simb} 
-                              fallbackSrc="/images/default_participante.jpeg" 
+                              fallbackSrc={defaultParticipante}
                               boxSize="24px"
                             />
                           </Flex>
                         </Td>
-                        <Td textAlign="center">
-                          <Flex align="center" justify="center" gap={2}>
-                            <Image 
-                              src={partida.simboloCasa} 
-                              className={styles.simb} 
-                              fallbackSrc="/images/default_participante.jpeg" 
-                              boxSize="24px"
-                            />
-                            <Text fontWeight="medium" color="blue.400">
-                              {palpite?.placarPenaltisCasa ?? "-"} × {palpite?.placarPenaltisFora ?? "-"}
-                            </Text>
-                            <Image 
-                              src={partida.simboloFora} 
-                              className={styles.simb} 
-                              fallbackSrc="/images/default_participante.jpeg" 
-                              boxSize="24px"
-                            />
-                          </Flex>
-                        </Td>
+                        {exibirPenaltis && (
+                          <Td textAlign="center">
+                            {palpite?.placarPenaltisCasa != null &&
+                            palpite?.placarPenaltisFora != null ? (
+                              <Flex align="center" justify="center" gap={2}>
+                                <Image 
+                                  src={partida.simboloCasa} 
+                                  fallbackSrc={defaultParticipante}
+                                  boxSize="24px"
+                                />
+                                <Text fontWeight="medium" color="blue.400">
+                                  {palpite.placarPenaltisCasa} × {palpite.placarPenaltisFora}
+                                </Text>
+                                <Image 
+                                  src={partida.simboloFora} 
+                                  fallbackSrc={defaultParticipante}
+                                  boxSize="24px"
+                                />
+                              </Flex>
+                            ) : (
+                              "-"
+                            )}
+                          </Td>
+                        )}
                       </Tr>
                     );
                   })}

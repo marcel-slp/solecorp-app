@@ -1,8 +1,5 @@
 import { create } from 'zustand';
 import { PontuacaoParticipante } from '../pages/BolaoPage/BolaoClassificacao';
-//import { Palpite } from './palpitesStore';
-//import { Partida } from './partidasStore';
-//import { PontuacaoCriterio } from './criteriosPontuacaoStore';
 import { calcularPontuacoesParticipantes } from '../components/TabelaClassificacaoBolao/scoreParticipantes';
 import { bolaoStore } from './bolaoStore';
 import { palpitesStore } from './palpitesStore';
@@ -15,6 +12,29 @@ type PontuacaoParticipanteComPosicao = {
   participante: string,
   pts: number,
   userId: number,
+}
+
+function aplicarRankingComEmpate<T>(
+  lista: T[],
+  getPontos: (item: T) => number
+) {
+  let posicaoAtual = 1;
+  let ultimaPontuacao: number | null = null;
+
+  return lista.map((item, index) => {
+    const pontos = getPontos(item);
+
+    if (ultimaPontuacao !== null && pontos < ultimaPontuacao) {
+      posicaoAtual = index + 1;
+    }
+
+    ultimaPontuacao = pontos;
+
+    return {
+      ...item,
+      posicao: posicaoAtual,
+    };
+  });
 }
 
 interface ClassificacaoStore {
@@ -68,9 +88,12 @@ export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
         pontuacaoCriterios
       ) as PontuacaoParticipante[];
 
-      const rankingOrdenado = [...pontuacoesCalculadas].sort((a, b) => 
-        b.ptsTotalParticipante - a.ptsTotalParticipante || a.nome.localeCompare(b.nome)
+      const ordenado = [...pontuacoesCalculadas].sort((a, b) =>
+          b.ptsTotalParticipante - a.ptsTotalParticipante ||
+          a.nome.localeCompare(b.nome)
       );
+
+      const rankingOrdenado = aplicarRankingComEmpate(ordenado,(item) => item.ptsTotalParticipante);
 
       set({
         pontuacoes: pontuacoesCalculadas,
@@ -134,11 +157,7 @@ export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
       return a.participante.localeCompare(b.participante);
     });
 
-    lista.forEach((item, i) => {
-      item.posicao = i + 1;
-    });
-
-    return lista;
+    return aplicarRankingComEmpate(lista, (item) => item.pts);
   },
 
   getRankingAoRedorUsuario: (userId: number, range: number = 5) => {
@@ -154,7 +173,16 @@ export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
   },
 
   getTopN: (n: number = 10) => {
-    return get().rankingGeral.slice(0, n)
-  }
+    const { rankingGeral } = get();
 
+    if (!rankingGeral.length) return [];
+
+    const posicoes = [...new Set(rankingGeral.map(r => r.posicao))];
+
+    const posicaoLimite = posicoes.find(p => p && p >= n);
+
+    if (!posicaoLimite) return rankingGeral;
+
+    return rankingGeral.filter(r => r.posicao && r.posicao <= posicaoLimite);
+  }
 }));

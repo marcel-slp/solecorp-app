@@ -47,3 +47,20 @@ export const formatarDataHoraBrasil = (dataString: string | null | undefined): s
     minute: '2-digit'
   });
 };
+
+export function getDataHoraPartida(dataJogo: string, horaJogo?: string) {
+  if (!dataJogo) return null;
+
+  const [ano, mes, dia] = dataJogo.split("-").map(Number);
+
+  let hora = 0;
+  let minuto = 0;
+
+  if (horaJogo) {
+    const [h, m] = horaJogo.split(":").map(Number);
+    hora = h;
+    minuto = m;
+  }
+
+  return new Date(ano, mes - 1, dia, hora, minuto);
+}

@@ -1,19 +1,19 @@
 
 import * as styles from "./styles.css.ts";
-import { Box, Image, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
+import { Box, 
+  //Button, Icon, 
+  Image, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
 import tituloClassificacao from "@/assets/images/tituloClassificacao.jpg";
 import TabelaClassificacaoBolao from "../../../components/TabelaClassificacaoBolao/index.tsx";
 import { useOutletContext } from "react-router-dom";
 import { Bolao } from "../../../stores/bolaoStore.ts";
 import { retornaUserId } from "../../../utils/Utils.ts";
-// import { partidasStore } from "../../../stores/partidasStore.ts";
-// import { palpitesStore } from "../../../stores/palpitesStore.ts";
-// import { criteriosPontuacaoStore } from "../../../stores/criteriosPontuacaoStore.ts";
 import { useEffect } from "react";
-//import { calcularPontuacoesParticipantes } from "../../../components/TabelaClassificacaoBolao/scoreParticipantes.ts";
 import { classificacaoStore } from "../../../stores/classificacaoStore.ts";
+//import { BsFillPrinterFill } from "react-icons/bs";
 
 const CRITERIOS_ABAS = [
+  { key: "Geral", label: "Classificação Geral" },
   { key: "Placar Cravado", label: "Placar Cravado" },
   { key: "Diferença", label: "Diferença" },
   { key: "Gols", label: "Gols" },
@@ -23,7 +23,6 @@ const CRITERIOS_ABAS = [
   // { key: "Bônus 1", label: "Líder" },
   // { key: "Bônus 2", label: "Último isolado" },
   // { key: "Bônus 3", label: "Sem pontos no dia" },
-  { key: "Geral", label: "Classificação Geral" },
 ];
 
 export interface PontuacaoParticipante {
@@ -50,33 +49,6 @@ export interface PontuacaoParticipante {
 }
 
 function BolaoClassificacao() {
-  // const { bolao } = useOutletContext<{ bolao: Bolao }>();
-  // const { partidas, carregarPartidas } = partidasStore();
-  // const { palpitesBolao, carregarPalpitesPorBolao } = palpitesStore();
-  // const { pontuacaoCriterios, carregarPontuacaoCriterios } = criteriosPontuacaoStore();
-  // const { participantesBolao, carregarParticipantesBolao } = bolaoStore();
-
-  // const loggedUserId = retornaUserId();
-
-  // useEffect(() => {
-  //   carregarParticipantesBolao(bolao.id, loggedUserId);
-  //   carregarPalpitesPorBolao(bolao.id);
-  //   carregarPartidas(1);
-  //   carregarPontuacaoCriterios(bolao.id);
-  // }, [bolao.id, carregarPontuacaoCriterios, carregarPalpitesPorBolao, carregarParticipantesBolao, carregarPartidas, loggedUserId]);
-
-  // const pontuacoes = useMemo(() => {
-  //   if (!participantesBolao.length) return [];
-
-  //   return calcularPontuacoesParticipantes(
-  //     participantesBolao,
-  //     palpitesBolao,
-  //     partidas,
-  //     pontuacaoCriterios
-  //   ) as PontuacaoParticipante[];
-
-  // }, [participantesBolao, palpitesBolao, partidas, pontuacaoCriterios]);
-
   const { bolao } = useOutletContext<{ bolao: Bolao }>();
   const loggedUserId = retornaUserId();
 
@@ -108,6 +80,16 @@ function BolaoClassificacao() {
       <div className={styles.tituloImagem}>
         <Image src={tituloClassificacao} />
       </div>
+      {/* <Button
+        leftIcon={<Icon as={BsFillPrinterFill } />}
+        colorScheme="blue"
+        onClick={() => window.print()}
+        width={60}
+        left={1080}
+        mb={4}
+      >
+        Imprimir Todos os Rankings
+      </Button> */}
       <div className={styles.folha}>
         <Tabs variant="soft-rounded" >
           <TabList>
@@ -122,8 +104,6 @@ function BolaoClassificacao() {
                 <TabelaClassificacaoBolao
                   bolao={bolao}
                   loggedUserId={loggedUserId}
-                  //pontuacoes={pontuacoes}
-                  //rankingGeral={rankingGeral}
                   criterioFiltro={aba.key}
                   
                 />

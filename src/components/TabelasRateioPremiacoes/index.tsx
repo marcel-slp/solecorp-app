@@ -1,6 +1,6 @@
 
 //import * as styles from "./styles.css";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Heading,
   Table,
@@ -18,22 +18,18 @@ import {
   SimpleGrid,
   InputRightElement,
   InputGroup,
-  InputLeftElement
+  InputLeftElement,
+  Button,
+  Progress
 } from "@chakra-ui/react";
 import { Rateio, rateiosStore } from "../../stores/rateiosStore";
 import { TipoCriterioPremiacaoBolao } from "../../models/TipoCriterioBolao";
-
-import { Bolao, bolaoStore } from "../../stores/bolaoStore";
-import { criteriosPontuacaoStore } from "../../stores/criteriosPontuacaoStore";
-import { palpitesStore } from "../../stores/palpitesStore";
-import { partidasStore } from "../../stores/partidasStore";
-import { retornaUserId } from "../../utils/Utils";
-import { calcularPontuacoesParticipantes } from "../TabelaClassificacaoBolao/scoreParticipantes";
-import { PontuacaoParticipante } from "../../pages/BolaoPage/BolaoClassificacao";
+import { classificacaoStore } from "../../stores/classificacaoStore";
 
 interface TabelasRateioPremiacoesProps {
   rateioEditavel?: boolean;
-  bolao: Bolao;
+  bolaoId: string;
+  rateio: Rateio | null;
 }
 
 const CRITERIOS_PREMIACAO = [
@@ -49,137 +45,157 @@ const CRITERIOS_PREMIACAO = [
   { key: TipoCriterioPremiacaoBolao.VENCEDOR_RANK_PLACAR, label: "Vencedor Placar Cravado", condicao: "Mais acertos de Placar Cravado", habilitar: true },
   { key: TipoCriterioPremiacaoBolao.VENCEDOR_1_FASE, label: "Vencedor 1ª Fase", condicao: "Melhor colocado na 1ª Fase", habilitar: true },
   { key: TipoCriterioPremiacaoBolao.VENCEDOR_2_FASE, label: "Vencedor 2ª Fase", condicao: "Melhor colocado na 2ª Fase", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_1, label: "1º Lugar Playoff", condicao: "1º Lugar no Playoff", habilitar: false },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_2, label: "2º Lugar Playoff", condicao: "2º Lugar no Playoff", habilitar: false },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_3, label: "3º Lugar Playoff", condicao: "3º Lugar no Playoff", habilitar: false },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_GRUPOS_1, label: "1º Lugar Grupos", condicao: "1º Lugar na Fase de Grupos", habilitar: false },
+  { key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_1, label: "Vencedor do PlayOff Principal", condicao: "1º Lugar no Playoff", habilitar: false },
+  { key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_2, label: "Vencedor do PlayOff Secundário", condicao: "2º Lugar no Playoff", habilitar: false },
+  { key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_3, label: "Vencedor do PlayOff Terciário", condicao: "3º Lugar no Playoff", habilitar: false },
+  { key: TipoCriterioPremiacaoBolao.LUGAR_GRUPOS_1, label: "Vencedor do módulo Grupos", condicao: "1º Lugar na Fase de Grupos", habilitar: false },
 ];
 
-export default function TabelasRateioPremiacoes({ rateioEditavel, bolao }: TabelasRateioPremiacoesProps) {
+export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, rateio }: TabelasRateioPremiacoesProps) {
   
-  const { rateio, atualizarRateio } = rateiosStore();
-  const { palpitesBolao, carregarPalpitesPorBolao } = palpitesStore();
-  const { pontuacaoCriterios, carregarPontuacaoCriterios } = criteriosPontuacaoStore();
-  const { participantesBolao, carregarParticipantesBolao } = bolaoStore();
-  const { partidas, carregarPartidas } = partidasStore();
+  const { editarRateio, salvarRateio } = rateiosStore();
+  const { carregarClassificacao, getClassificacaoPorCriterio, getTopN } = classificacaoStore();
 
-  const loggedUserId = retornaUserId();
-  
+  const [rateioInterno, setRateioInterno] = useState<Rateio>({
+    id: "",
+    bolaoId: bolaoId,
+    cota: 0,
+    qtdParticipantes: 0,
+    taxaAdm: 10
+  });
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
   useEffect(() => {
-    carregarParticipantesBolao(bolao.id, loggedUserId);
-    carregarPalpitesPorBolao(bolao.id);
-    carregarPartidas(1);
-    carregarPontuacaoCriterios(bolao.id);
-  }, [bolao.id, carregarPontuacaoCriterios, carregarPalpitesPorBolao, carregarParticipantesBolao, carregarPartidas, loggedUserId]);
+    carregarClassificacao(bolaoId);
 
+    if (rateio) setRateioInterno(rateio);
+  }, [bolaoId, rateio, carregarClassificacao]);
+  
   const valorTotalPremiacao = useMemo(() => {
-    if (!rateio) return 0;
+    if (!rateioInterno) return 0;
 
-    return (rateio.cota || 0) *
-          (rateio.qtdParticipantes || 0) *
-          (1 - (rateio.taxaAdm || 0) / 100);
-  }, [rateio]);
+    return (rateioInterno.cota || 0) *
+          (rateioInterno.qtdParticipantes || 0) *
+          (1 - (rateioInterno.taxaAdm || 0) / 100);
+  }, [rateioInterno]);
 
-  const pontuacoesParticipantes = useMemo(() => {
-    if (!participantesBolao.length || !pontuacaoCriterios.length) return [];
-    return calcularPontuacoesParticipantes(
-      participantesBolao,
-      palpitesBolao,
-      partidas,
-      pontuacaoCriterios
-    ) as PontuacaoParticipante[];
-  }, [participantesBolao, palpitesBolao, partidas, pontuacaoCriterios]);
+  const totalPercentualDistribuido = useMemo(() => {
+    if (!rateioInterno) return 0;
+
+    return CRITERIOS_PREMIACAO.reduce((acc, criterio) => {
+      const val = rateioInterno[criterio.key] as number | undefined;
+      return acc + (val || 0);
+    }, 0);
+  }, [rateioInterno]);
+
+  const getParticipantesPorPosicao = (posicao: number) => {
+    const lista = getTopN(posicao);
+
+    return lista
+      .filter(p => p.posicao === posicao)
+      .map(p => p.nome)
+      .join(", ") || "-";
+  };
 
   const premiacoes = useMemo(() => {
-    if (!pontuacoesParticipantes.length) return [];
-
-    const rankingGeral = [...pontuacoesParticipantes].sort(
-      (a, b) => b.ptsTotalParticipante - a.ptsTotalParticipante
-    );
+    const topGeral = getTopN(10);
 
     return CRITERIOS_PREMIACAO.flatMap((criterioPremiacao) => {
-      const porcentagem = (rateio?.[criterioPremiacao.key]) || 0;
-      const valorPremio = (valorTotalPremiacao * porcentagem) / 100;
+
+      const porcentagem = rateioInterno?.[criterioPremiacao.key];
+      const valor = porcentagem ? (valorTotalPremiacao * porcentagem) / 100 : 0;
 
       if (criterioPremiacao.key === TipoCriterioPremiacaoBolao.LUGAR_GERAL_6_10) {
-        return [5, 6, 7, 8, 9].map((pos) => {
-          const participante = rankingGeral[pos]?.nome || "—";
-
-          return {
-            criterio: `${pos + 1}º Lugar Geral`,
-            condicao: `${pos + 1}º Lugar na Classificação Geral`,
-            habilitar: criterioPremiacao.habilitar,
-            participante,
-            valor: valorPremio,
-            porcentagem,
-          };
-        });
+        return topGeral.slice(5, 10).map((p, i) => ({
+          criterio: `${i + 6}º Lugar`,
+          participante: p?.nome || "-",
+          valor,
+          habilitar: criterioPremiacao.habilitar
+        }));
       }
 
-      let participante = "—";
+      if (criterioPremiacao.label.toString().includes("Lugar Geral")) {
+        const posicao = Number(criterioPremiacao.label.slice(0, 1));
 
-      switch (criterioPremiacao.key) {
-        case TipoCriterioPremiacaoBolao.LUGAR_GERAL_1:
-          participante = rankingGeral[0]?.nome || "—";
-          break;
-        case TipoCriterioPremiacaoBolao.LUGAR_GERAL_2:
-          participante = rankingGeral[1]?.nome || "—";
-          break;
-        case TipoCriterioPremiacaoBolao.LUGAR_GERAL_3:
-          participante = rankingGeral[2]?.nome || "—";
-          break;
-        case TipoCriterioPremiacaoBolao.LUGAR_GERAL_4:
-          participante = rankingGeral[3]?.nome || "—";
-          break;
-        case TipoCriterioPremiacaoBolao.LUGAR_GERAL_5:
-          participante = rankingGeral[4]?.nome || "—";
-          break;
-
-        default: {
-          let ptsField: keyof PontuacaoParticipante = "ptsTotalParticipante";
-
-          switch (criterioPremiacao.key) {
-            case TipoCriterioPremiacaoBolao.VENCEDOR_RANK_DIFERENCA_GOLS:
-              ptsField = "ptsDiferencaGols";
-              break;
-            case TipoCriterioPremiacaoBolao.VENCEDOR_RANK_GOLS:
-              ptsField = "ptsGols";
-              break;
-            case TipoCriterioPremiacaoBolao.VENCEDOR_RANK_RESULTADO:
-              ptsField = "ptsResultado";
-              break;
-            case TipoCriterioPremiacaoBolao.VENCEDOR_RANK_PLACAR:
-              ptsField = "ptsPlacarCravado";
-              break;
-          }
-
-          const ranking = [...pontuacoesParticipantes].sort(
-            (a, b) => b[ptsField] - a[ptsField]
-          );
-
-          participante = ranking[0]?.nome || "—";
-        }
+        return [{
+          criterio: criterioPremiacao.label,
+          participante: getParticipantesPorPosicao(posicao),
+          valor,
+          habilitar: criterioPremiacao.habilitar
+        }];
       }
+
+      const mapa: Partial<Record<TipoCriterioPremiacaoBolao, string>> = {
+        [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_GOLS]: "Gols",
+        [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_RESULTADO]: "Resultado",
+        [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_PLACAR]: "Placar Cravado",
+        [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_DIFERENCA_GOLS]: "Diferença",
+      };
+
+      const ranking = getClassificacaoPorCriterio(mapa[criterioPremiacao.key] || "");
 
       return [{
         criterio: criterioPremiacao.label,
-        condicao: criterioPremiacao.condicao,
-        habilitar: criterioPremiacao.habilitar,
-        participante,
-        valor: valorPremio,
-        porcentagem,
+        participante: ranking[0]?.participante || "—",
+        valor,
+        habilitar: criterioPremiacao.habilitar
       }];
     });
-  }, [pontuacoesParticipantes, rateio, valorTotalPremiacao]);
+  }, [getClassificacaoPorCriterio, getTopN, rateioInterno, valorTotalPremiacao]);
 
-  const updateConfig = (field: keyof Rateio, value: number | undefined) => {
-    atualizarRateio({ [field]: value });
+  
+
+  const handleChange = (key: keyof Rateio, novoValor?: number) => {
+    setRateioInterno((prev) => {
+      if (!prev) return prev;
+
+      const atualizado = {
+        ...prev,
+        [key]: novoValor ?? undefined,
+      };
+
+      return atualizado;
+    });
+  };
+
+  const podeSalvar = totalPercentualDistribuido <= 100;
+
+  const handleSalvar = async () => {
+    setIsSaving(true);
+    setIsSaved(false);
+
+    let sucesso;
+    try {
+      if (rateioInterno?.id) {
+        sucesso = await editarRateio(rateioInterno);
+        setIsSaving(false);
+        if (sucesso) {
+          setIsSaved(true);
+          setTimeout(() => setIsSaved(false), 2000);
+        } else {
+          alert("Erro ao editar rateio");
+        }
+      } else {
+        sucesso = await salvarRateio(rateioInterno);
+        setIsSaving(false);
+        
+        if (sucesso) {
+          setIsSaved(true);
+          setTimeout(() => setIsSaved(false), 2000);
+        } else { 
+          alert("Erro ao salvar rateio");
+        }
+      }
+    } catch (err) {
+      setIsSaving(false);
+      alert("Falha ao salvar/editar partida.");
+      console.error(err);
+    }
   };
   
   return (
-    <Box p={6}>
-      <Heading size="lg" mb={6}>Simulação de Rateio e Premiações - {bolao.nome}</Heading>
-
+    <Box>
       <Flex gap={6} mb={8} wrap="wrap">
         <Box>
            <Text fontWeight="bold" mb={1}>Valor da Cota (R$)</Text>
@@ -190,9 +206,10 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolao }: Tabel
             <Input
               width={"50%"}
               textAlign={"center"}
-             value={rateio?.cota || ""}
-              onChange={(e) => updateConfig("cota", e.target.value ? Number(e.target.value) : undefined)}
+              disabled={!rateioEditavel}
               placeholder="0,00"
+              value={rateioInterno?.cota || ""}
+              onChange={(e) => handleChange("cota", e.target.value ? Number(e.target.value) : undefined)}
             />
           </InputGroup>
         </Box>
@@ -203,9 +220,9 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolao }: Tabel
             width={"30%"}
             textAlign={"center"}
             disabled={!rateioEditavel}
-            value={rateio?.qtdParticipantes || ""}
-            onChange={(e) => updateConfig("qtdParticipantes", e.target.value ? Number(e.target.value) : undefined)}
             placeholder="0"
+            value={rateioInterno?.qtdParticipantes || ""}
+            onChange={(e) => handleChange("qtdParticipantes", e.target.value ? Number(e.target.value) : undefined)}
           />
         </Box>
 
@@ -215,8 +232,9 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolao }: Tabel
             <Input
               width={"40%"}
               textAlign={"center"}
-              value={rateio?.taxaAdm || 10}
-              onChange={(e) => updateConfig("taxaAdm", Number(e.target.value))}
+              disabled={!rateioEditavel}
+              value={rateioInterno?.taxaAdm || ""}
+              onChange={(e) => handleChange("taxaAdm", Number(e.target.value))}
               pr={8}
             />
             <InputRightElement pr={120}>
@@ -234,6 +252,49 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolao }: Tabel
             })}
           </Text>
         </Box>
+
+        <Box ml={8}>
+          <Text fontWeight="bold" mb={1}>
+            Distribuição do Rateio
+          </Text>
+
+          <Progress
+            value={totalPercentualDistribuido}
+            max={100}
+            size="lg"
+            borderRadius="md"
+            colorScheme={
+              totalPercentualDistribuido > 100
+                ? "red"
+                : totalPercentualDistribuido === 100
+                ? "green"
+                : "blue"
+            }
+          />
+
+          <Flex justify="space-between" mt={1}>
+            <Text fontSize="sm" color="gray.600">
+              0%
+            </Text>
+            <Text
+              fontSize="sm"
+              fontWeight="bold"
+              color={
+                totalPercentualDistribuido > 100
+                  ? "red.500"
+                  : totalPercentualDistribuido === 100
+                  ? "green.600"
+                  : "blue.500"
+              }
+            >
+              {totalPercentualDistribuido.toFixed(2)}%
+            </Text>
+            <Text fontSize="sm" color="gray.600">
+              100%
+            </Text>
+          </Flex>
+        </Box>
+
       </Flex>
 
       <Divider mb={10} />
@@ -255,8 +316,11 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolao }: Tabel
               </Thead>
               <Tbody>
                 {CRITERIOS_PREMIACAO.map((criterioPremiacao) => {
-                  const porcentagem = (rateio?.[criterioPremiacao.key] as number) || 0;
-                  const valorPremiacaoRateio = (valorTotalPremiacao * porcentagem) / 100;
+                  const porcentagem = (rateioInterno?.[criterioPremiacao.key] as number);
+                  const valorPremiacaoRateio = porcentagem != null ? (valorTotalPremiacao * porcentagem) / 100 : 0;
+                  const maxPermitido = 100 - (totalPercentualDistribuido - porcentagem);
+                  const atingiuLimite = totalPercentualDistribuido >= 100;
+                  const campoVazio = porcentagem == null;
 
                   return (
                     <Tr key={criterioPremiacao.key}>
@@ -264,24 +328,27 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolao }: Tabel
                       <Td textAlign="center" px={1}>
                         <Input
                           type="number"
-                          value={porcentagem}
+                          value={porcentagem || ""}
                           placeholder="%"
-                          backgroundColor={"white"}
-                          borderColor={"gray.400"}
+                          bg={atingiuLimite && campoVazio ? "gray.100" : "white"}
+                          title={atingiuLimite && campoVazio ? "Percentual máximo atingido" : ""}
+                          borderColor={totalPercentualDistribuido > 100 ? "red.500" : "gray.400"}
                           borderRadius="md"
-                          max={100}
+                          max={maxPermitido}
                           width="70px"
                           size="sm"
                           textAlign="center"
-                          disabled={!rateioEditavel || !criterioPremiacao.habilitar}
-                          onChange={(e) => updateConfig(criterioPremiacao.key, e.target.value ? Number(e.target.value) : undefined)}
+                          disabled={!rateioEditavel || !criterioPremiacao.habilitar || (atingiuLimite && campoVazio)}
+                          onChange={(e) => 
+                            handleChange(criterioPremiacao.key, e.target.value === "" ? undefined : Number(e.target.value))
+                          }
                         />
                       </Td>
                       <Td textAlign="center" fontWeight="bold" fontSize="sm" px={2}>
                         R$ {valorPremiacaoRateio.toLocaleString('pt-BR', {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
-                        })}
+                        }) ?? 0}
                       </Td>
                       <Td fontSize="sm" px={2} whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
                         {criterioPremiacao.condicao}
@@ -320,6 +387,23 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolao }: Tabel
           </TableContainer>
         </Box>
       </SimpleGrid>
+
+      {totalPercentualDistribuido > 100 && (
+        <Text color="red.500" fontWeight="bold" mt={2}>
+          O total de percentuais não pode ultrapassar 100%
+        </Text>
+      )}
+
+      <Button
+        colorScheme={isSaved ? "green" : "blue"}
+        mt={4}
+        isLoading={isSaving}
+        isDisabled={!podeSalvar}
+        size="md"
+        onClick={handleSalvar}
+      >
+        {isSaved ? "Salvo!" : "Salvar Configuração de Rateio"}
+      </Button>
     </Box>
   );
 };

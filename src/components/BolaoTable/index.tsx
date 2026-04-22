@@ -6,6 +6,7 @@ import { ArrowForwardIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 type BolaoTableProps = {
   boloes: Bolao[] | BolaoListaGerenciamento[];
   isAdmin?: boolean;
+  isHome?: boolean;
   onEdit?: (bolao: any) => void;
   onDelete?: (id: string) => void;
   onEnter?: (id: string) => void;
@@ -14,6 +15,7 @@ type BolaoTableProps = {
 export default function BolaoTable({
   boloes,
   isAdmin = false,
+  isHome = false,
   onEdit,
   onDelete,
   onEnter
@@ -23,8 +25,8 @@ export default function BolaoTable({
       <Table variant="simple">
         <Thead>
           <Tr>
-            <Th textAlign={isAdmin ? "center" : "start"}>ID</Th>
-            <Th textAlign={isAdmin ? "center" : "start"}>Nome</Th>
+            <Th textAlign={isAdmin || isHome ? "center" : "start"}>ID</Th>
+            <Th textAlign={isAdmin || isHome  ? "center" : "start"}>Nome</Th>
 
             {isAdmin && (
               <>
@@ -35,7 +37,9 @@ export default function BolaoTable({
               </>
             )}
 
-            <Th textAlign="center">Ações</Th>
+            {!isHome && (
+              <Th textAlign="center">Ações</Th>
+            )}
           </Tr>
         </Thead>
 
@@ -54,31 +58,33 @@ export default function BolaoTable({
                 </>
               )}
 
-              <Td textAlign="center">
-                <IconButton
-                  aria-label="Entrar"
-                  icon={<ArrowForwardIcon />}
-                  mr={2}
-                  onClick={() => onEnter?.(bolao.id)}
-                />
-
-                {onEdit && (
+              {!isHome && (
+                <Td textAlign="center">
                   <IconButton
-                    aria-label="Editar"
-                    icon={<EditIcon />}
+                    aria-label="Entrar"
+                    icon={<ArrowForwardIcon />}
                     mr={2}
-                    onClick={() => onEdit(bolao)}
+                    onClick={() => onEnter?.(bolao.id)}
                   />
-                )}
 
-                {onDelete && (
-                  <IconButton
-                    aria-label="Excluir"
-                    icon={<DeleteIcon />}
-                    onClick={() => onDelete(bolao.id)}
-                  />
-                )}
-              </Td>
+                  {onEdit && (
+                    <IconButton
+                      aria-label="Editar"
+                      icon={<EditIcon />}
+                      mr={2}
+                      onClick={() => onEdit(bolao)}
+                    />
+                  )}
+
+                  {onDelete && (
+                    <IconButton
+                      aria-label="Excluir"
+                      icon={<DeleteIcon />}
+                      onClick={() => onDelete(bolao.id)}
+                    />
+                  )}
+                </Td>
+              )}
             </Tr>
           ))}
         </Tbody>
