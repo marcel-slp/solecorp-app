@@ -44,7 +44,7 @@ export function HeaderNav({ nome, imagem, modoBolao }: Props) {
         to="./inicio"
         className={styles.itemLink}
         style={{
-          backgroundColor: isActive("/inicio") || currentPath.endsWith(`/evento/${location.pathname.split('/')[2]}`) ? "#024edbff" : "transparent",
+          backgroundColor: isActive("/inicio") || currentPath.endsWith(`/evento/${location.pathname.split('/')[2]}`) ? "rgb(5, 98, 39)" : "transparent",
           color: isActive("/inicio") || currentPath.endsWith(`/evento/${location.pathname.split('/')[2]}`) ? "white" : "white",
         }}
       >
@@ -55,7 +55,7 @@ export function HeaderNav({ nome, imagem, modoBolao }: Props) {
         to="./classificacao"
         className={styles.itemLink}
         style={{
-          backgroundColor: isActive("classificacao") ? "#024edbff" : "transparent",
+          backgroundColor: isActive("classificacao") ? "rgb(5, 98, 39)" : "transparent",
           color: isActive("classificacao") ? "white" : "white",
         }}
       >
@@ -67,7 +67,7 @@ export function HeaderNav({ nome, imagem, modoBolao }: Props) {
         className={styles.itemLink}
         hidden={!usuarioLogadoPalpiteHabilitado}
         style={{
-          backgroundColor: isActive("tabela") ? "#024edbff" : "transparent",
+          backgroundColor: isActive("tabela") || isActive("palpite") ? "rgb(5, 98, 39)" : "transparent",
           color: isActive("tabela") ? "white" : "white",
         }}
       >
@@ -80,7 +80,7 @@ export function HeaderNav({ nome, imagem, modoBolao }: Props) {
             to="./estatistica"
             className={styles.itemLink}
             style={{
-              backgroundColor: isActive("estatistica") ? "#024edbff" : "transparent",
+              backgroundColor: isActive("estatistica") ? "rgb(5, 98, 39)" : "transparent",
               color: isActive("estatistica") ? "white" : "white",
             }}
           >
@@ -91,7 +91,7 @@ export function HeaderNav({ nome, imagem, modoBolao }: Props) {
             to="./grafico"
             className={styles.itemLink}
             style={{
-              backgroundColor: isActive("grafico") ? "#024edbff" : "transparent",
+              backgroundColor: isActive("grafico") ? "rgb(5, 98, 39)" : "transparent",
               color: isActive("grafico") ? "white" : "white",
             }}
           >
@@ -102,7 +102,7 @@ export function HeaderNav({ nome, imagem, modoBolao }: Props) {
             to="./resumo"
             className={styles.itemLink}
             style={{
-              backgroundColor: isActive("resumo") ? "#024edbff" : "transparent",
+              backgroundColor: isActive("resumo") ? "rgb(5, 98, 39)" : "transparent",
               color: isActive("resumo") ? "white" : "white",
             }}
           >

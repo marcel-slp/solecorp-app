@@ -7,7 +7,6 @@ import { BolaoRoles } from "../../models/BolaoCopaDefault";
 type BolaoTableProps = {
   boloes: Bolao[] | BolaoListaGerenciamento[];
   isAdmin?: boolean;
-  isHome?: boolean;
   onEdit?: (bolao: any) => void;
   onDelete?: (id: string) => void;
   onEnter?: (id: string) => void;
@@ -16,7 +15,6 @@ type BolaoTableProps = {
 export default function BolaoTable({
   boloes,
   isAdmin = false,
-  isHome = false,
   onEdit,
   onDelete,
   onEnter
@@ -26,9 +24,8 @@ export default function BolaoTable({
       <Table variant="simple">
         <Thead>
           <Tr>
-            <Th textAlign={isAdmin || isHome ? "center" : "start"}>ID</Th>
-            <Th textAlign={isAdmin || isHome  ? "center" : "start"}>Nome</Th>
-
+            <Th textAlign={isAdmin ? "center" : "start"}>ID</Th>
+            <Th textAlign={isAdmin? "center" : "start"}>Nome</Th>
             {isAdmin && (
               <>
                 <Th textAlign="center">Criador</Th>
@@ -37,10 +34,7 @@ export default function BolaoTable({
                 <Th textAlign="center">Data de Criação</Th>
               </>
             )}
-
-            {!isHome && (
-              <Th textAlign="center">Ações</Th>
-            )}
+            <Th textAlign="center">Ações</Th>
           </Tr>
         </Thead>
 
@@ -58,36 +52,33 @@ export default function BolaoTable({
                   <Td textAlign="center">{bolao.dataCriacao}</Td>
                 </>
               )}
+              <Td textAlign="center">
+                <IconButton
+                  aria-label="Entrar"
+                  icon={<ArrowForwardIcon />}
+                  mr={2}
+                  onClick={() => onEnter?.(bolao.id)}
+                />
 
-              {!isHome && (
-                <Td textAlign="center">
+                {onEdit && (
                   <IconButton
-                    aria-label="Entrar"
-                    icon={<ArrowForwardIcon />}
+                    aria-label="Editar"
+                    icon={<EditIcon />}
                     mr={2}
-                    onClick={() => onEnter?.(bolao.id)}
+                    hidden={bolao.roleBolao !== BolaoRoles.CRIADOR}
+                    onClick={() => onEdit(bolao)}
                   />
+                )}
 
-                  {onEdit && (
-                    <IconButton
-                      aria-label="Editar"
-                      icon={<EditIcon />}
-                      mr={2}
-                      hidden={bolao.roleBolao !== BolaoRoles.CRIADOR}
-                      onClick={() => onEdit(bolao)}
-                    />
-                  )}
-
-                  {onDelete && (
-                    <IconButton
-                      aria-label="Excluir"
-                      icon={<DeleteIcon />}
-                      hidden={bolao.roleBolao !== BolaoRoles.CRIADOR}
-                      onClick={() => onDelete(bolao.id)}
-                    />
-                  )}
-                </Td>
-              )}
+                {onDelete && (
+                  <IconButton
+                    aria-label="Excluir"
+                    icon={<DeleteIcon />}
+                    hidden={bolao.roleBolao !== BolaoRoles.CRIADOR}
+                    onClick={() => onDelete(bolao.id)}
+                  />
+                )}
+              </Td>
             </Tr>
           ))}
         </Tbody>

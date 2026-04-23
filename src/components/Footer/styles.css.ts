@@ -2,13 +2,13 @@ import { style } from '@vanilla-extract/css';
 
 export const footer = style({
   width: "100%",
-  backgroundColor: "#0e5bebff",
+  backgroundColor: "rgb(19, 150, 67)",
   display: "flex",
   alignItems: "flex-start",
   justifyContent: "flex-start",
   padding: "5px",
   boxSizing: "border-box",
-  borderTop: "3px solid rgb(192, 0, 0)"
+  borderTop: "3px solid white"
 });
 
 export const footerText = style({

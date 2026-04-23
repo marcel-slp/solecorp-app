@@ -29,60 +29,63 @@ export default function ListaJogosDia({
   palpites = {},
   mostrarPalpites = true
 }: ListaJogosDiaProps) {
-
-  const proximosJogos = useMemo(() => {
-    const agora = new Date();
+  const { jogosProcessados, titulo } = useMemo(() => {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const hojeTime = hoje.getTime();
 
     const partidasArray = Object.values(partidas)
-      .map((p) => ({
-        ...p,
-        dataHora: getDataHoraPartida(p.dataJogo, p.horaJogo)
-      }))
-      .filter((p) => p.dataHora)
-      .sort((a, b) => a.dataHora!.getTime() - b.dataHora!.getTime());
+      .map((p) => {
+        const dataHora = getDataHoraPartida(p.dataJogo, p.horaJogo);
+        if (!dataHora) return null;
 
-    const jogosHoje = partidasArray.filter((p) => {
-      return (
-        p.dataHora!.toDateString() === agora.toDateString() &&
-        p.dataHora! >= agora
-      );
-    });
+        const data = new Date(dataHora);
+        data.setHours(0, 0, 0, 0);
 
-    if (jogosHoje.length > 0) return jogosHoje;
+        return {
+          ...p,
+          dataHora,
+          dataSomente: data.getTime()
+        };
+      })
+      .filter((p): p is NonNullable<typeof p> => p !== null)
+      .sort((a, b) => a.dataHora.getTime() - b.dataHora.getTime());
 
-    const proximo = partidasArray.find((p) => p.dataHora! >= agora);
-    if (!proximo) return [];
+    const jogosHoje = partidasArray.filter(p => p.dataSomente === hojeTime);
 
-    const dataAlvo = proximo.dataHora!.toDateString();
+    const jogosBase = jogosHoje.length
+      ? jogosHoje
+      : (() => {
+          const proxima = partidasArray.find(p => p.dataSomente > hojeTime);
+          if (!proxima) return [];
+          return partidasArray.filter(p => p.dataSomente === proxima.dataSomente);
+        })();
 
-    return partidasArray.filter(
-      (p) => p.dataHora!.toDateString() === dataAlvo
-    );
-  }, [partidas]);
+    let titulo = "Próximos Jogos";
 
-  const titulo = useMemo(() => {
-    if (!proximosJogos.length) return "Próximos Jogos";
+    if (jogosBase.length) {
+      const dataRef = new Date(jogosBase[0].dataJogo);
 
-    const hoje = new Date();
-    const data = new Date(proximosJogos[0].dataJogo);
+      titulo =
+        dataRef.toDateString() === hoje.toDateString()
+          ? "Jogos de Hoje"
+          : `Próximos Jogos (${dataRef.toLocaleDateString()})`;
+    }
 
-    return data.toDateString() === hoje.toDateString()
-      ? "Jogos de Hoje"
-      : `Próximos Jogos (${data.toLocaleDateString()})`;
-  }, [proximosJogos]);
-
-  const jogosProcessados = useMemo(() => {
-    return proximosJogos.map((jogo) => {
+    const jogosProcessados = jogosBase.map((jogo) => {
       let palpitesFeitos = 0;
 
       if (mostrarPalpites) {
-        Object.values(palpites).forEach((lista: Palpite[]) => {
+        for (const lista of Object.values(palpites)) {
           const palpite = lista.find(p => p.partidaId === jogo.id);
 
-          if (palpite && (palpite.placarCasa !== null || palpite.placarFora !== null)) {
+          if (
+            palpite &&
+            (palpite.placarCasa !== null || palpite.placarFora !== null)
+          ) {
             palpitesFeitos++;
           }
-        });
+        }
       }
 
       const faltantes = participantesQtd - palpitesFeitos;
@@ -96,7 +99,10 @@ export default function ListaJogosDia({
         estaCompleto: faltantes === 0 && participantesQtd > 0
       };
     });
-  }, [proximosJogos, palpites, participantesQtd, mostrarPalpites]);
+
+    return { jogosProcessados, titulo };
+
+  }, [partidas, palpites, participantesQtd, mostrarPalpites]);
 
   return (
     <>
@@ -109,12 +115,11 @@ export default function ListaJogosDia({
       </Heading>
 
       <Box
-        //height="210px"
         overflowX="auto"
         borderWidth="1px"
         borderRadius="lg"
         p={4}
-        bg="white"
+        bg="whiteAlpha.500"
         whiteSpace="nowrap"
       >
         {jogosProcessados.length === 0 ? (

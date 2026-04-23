@@ -21,7 +21,7 @@ export const leftSection = style({
 
 export const menuIcon = style({
   fontSize: '20px',
-  color: 'rgb(192, 0, 0)',
+  color: 'white',
   cursor: 'pointer',
   marginBottom: '7px'
 });

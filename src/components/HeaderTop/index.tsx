@@ -13,8 +13,7 @@ import {
   Popover,
   PopoverBody,
   PopoverContent,
-  PopoverTrigger, 
-  QuestionOutlineIcon, 
+  PopoverTrigger,
   SearchIcon,
   useDisclosure
 } from "@chakra-ui/icons";
@@ -22,13 +21,11 @@ import {
   Text
 } from "@chakra-ui/react";
 import * as styles from "./styles.css";
-import {IoMdCart, IoMdHome, IoMdLogOut} from 'react-icons/io';
+import {IoMdCart, IoMdLogOut} from 'react-icons/io';
 import { BsPersonCircle } from "react-icons/bs";
-import { MdEmojiEvents, MdScoreboard } from "react-icons/md";
-import { FaPeopleGroup, FaUsersGear  } from "react-icons/fa6";
+import { MdEmojiEvents } from "react-icons/md";
+import { FaFutbol, FaHouse, FaPeopleGroup, FaRegCircleQuestion, FaTableList, FaUsersGear  } from "react-icons/fa6";
 import { TbShieldFilled } from "react-icons/tb";
-//import { GrConfigure } from "react-icons/gr";
-import { GiTrophyCup } from "react-icons/gi";
 import { RiUserSettingsFill } from "react-icons/ri";
 import { FaClipboardList } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -67,22 +64,6 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
     }
   }, []);
 
-  // const usuarioLogado = (): boolean => {
-  //   const auth = JSON.parse(localStorage.getItem("auth") ?? "{}");
-    
-  //   if (auth.nome && auth.email && auth.perfilBolao) {
-  //     setNomeUsuario(auth.nome);
-  //     setEmailUsuario(auth.email);
-  //     setPerfilBolaoUsuario(auth.perfilBolao);
-  //     return true;
-  //   } else {
-  //     setNomeUsuario(null);
-  //     setEmailUsuario(null);
-  //     setPerfilBolaoUsuario(null);
-  //     return false;
-  //   }
-  // };
-
   const esconderIconesBolaoAdmin = publicHeader || (modoBolao && perfilUsuario != PerfilSistema.ADMIN);
   const esconderIconesBolaoUser = publicHeader || !modoBolao;
   const esconderIconesManager = publicHeader || modoBolao;
@@ -96,25 +77,25 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
 
         <div className={styles.titleWrapper}>
           <div className={styles.titleRow}>
-            {modoBolao ? "Solecorp Bolão" : "SoleCorp Sports Manager"}
+            {modoBolao ? "Bolão Control" : "SoleCorp Sports Manager"}
 
             <Link to="/home" aria-label="Ir para home">
-              <Icon as={IoMdHome} className={styles.iconSmall} />
+              <Icon as={FaHouse} className={styles.iconSmall} />
             </Link>
             <Link to="/boloes" aria-label="Ir para bolões" hidden={esconderIconesBolaoUser}>
-              <Icon as={MdScoreboard} className={styles.iconSmall} />
+              <Icon as={FaFutbol} className={styles.iconSmall} />
             </Link>
             <Link to="/inserir-placares-copa-2026" aria-label="Inserir Placares" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={GiTrophyCup} className={styles.iconSmall} />
+              <Icon as={FaTableList} className={styles.iconSmall} />
             </Link>
             <Link to="/gerenciar-perfil" aria-label="Gerenciar Perfis do Sistema" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={FaUsersGear } className={styles.iconSmall} />
+              <Icon as={FaUsersGear} className={styles.iconSmall} />
             </Link>
             <Link to="/gerenciar-usuarios" aria-label="Gerenciar Usuários do Sistema" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={RiUserSettingsFill } className={styles.iconSmall} />
+              <Icon as={RiUserSettingsFill} className={styles.iconSmall} />
             </Link>
             <Link to="/gerenciar-boloes" aria-label="Gerenciar Todos os Bolões do Sistema" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={FaClipboardList } className={styles.iconSmall} />
+              <Icon as={FaClipboardList} className={styles.iconSmall} />
             </Link>
             <Link to="/eventos" aria-label="Ir para eventos" hidden={esconderIconesManager}>
             <Icon as={MdEmojiEvents} className={styles.iconSmall} />
@@ -129,7 +110,7 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
               <Icon as={AddIcon} className={styles.iconSmall} marginBottom="5px"/>
             </Link>
             <Link to="/help" aria-label="Ir para ajuda">
-              <Icon as={QuestionOutlineIcon} className={styles.iconSmall} marginBottom="5px"/>
+              <Icon as={FaRegCircleQuestion} className={styles.iconSmall} />
             </Link>
             <Link to="/search" aria-label="Ir para pesquisa" hidden={publicHeader}>
               <Icon as={SearchIcon} className={styles.iconSmall} marginBottom="5px"/>
@@ -137,8 +118,6 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
           </div>
         </div>
       </div>
-
-      
 
       <div className={styles.rightSection}>
         <Popover placement='bottom'>

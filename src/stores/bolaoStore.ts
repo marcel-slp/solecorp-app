@@ -1,5 +1,17 @@
 import { create } from 'zustand';
-import { deletarBolao, editarBolao, buscarBoloesPorUserId, salvarBolao, aceitarConvite, deletarParticipanteBolao, editarParticipanteBolao, buscarParticipantesBolaoPorBolaoId, buscarParticipanteBolaoLogado, buscarTodosBoloes, buscarBolaoPorIdUserId } from '../api';
+import { 
+  deletarBolao, 
+  editarBolao, 
+  buscarBoloesPorUserId, 
+  salvarBolao, 
+  aceitarConvite, 
+  deletarParticipanteBolao, 
+  editarParticipanteBolao, 
+  buscarParticipantesBolaoPorBolaoId, 
+  buscarParticipanteBolaoLogado, 
+  buscarTodosBoloes, 
+  buscarBolaoPorIdUserId
+} from '../api';
 import { EventoBase } from '../models/BolaoCopaDefault';
 
 export type Convite = {
@@ -50,6 +62,7 @@ export type BolaoListaGerenciamento = {
   eventoBase: string;
   palpitesRealizados: number;
   dataCriacao: string;
+  compartilhamento?: string;
 };
 
 export type NovoBolao = Omit<Bolao, 'id'>

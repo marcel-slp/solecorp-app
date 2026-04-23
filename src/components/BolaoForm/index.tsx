@@ -22,7 +22,7 @@ import defaultBolao from "@/assets/images/default_bolao.jpg";
 import { BolaoRoles, EventoBase } from "../../models/BolaoCopaDefault.tsx";
 import { retornaUserId } from "../../utils/Utils.ts";
 
-const desabilitarConfigExtra = false;
+const desabilitarConfigExtra = true;
 
 interface BolaoFormProps {
   bolao?: Bolao | null;
@@ -38,8 +38,8 @@ export default function BolaoForm({ bolao, onSalvar, onCancelar }: BolaoFormProp
   const [imagemBolaoInterno, setImagemBolaoInterno] = useState<File|string|null>(null);
   const [eventoBaseInterno, setEventoBaseInterno] = useState<EventoBase>(EventoBase.COPA_2026);
   const [convocacaoInterno, setConvocacaoInterno] = useState<boolean>(false);
-  const [premiosIndividuaisInterno, setPremiosIndividuaisInterno] = useState<boolean>(false);
-  const [melhoresPorRankinInterno, setMelhoresPorRankingInterno] = useState<boolean>(false);
+  const [premiosIndividuaisInterno, setPremiosIndividuaisInterno] = useState<boolean>(true);
+  const [melhoresPorRankinInterno, setMelhoresPorRankingInterno] = useState<boolean>(true);
   const [pontuacaoBonusInterno, setPontuacaoBonusInterno] = useState<boolean>(false);
   const [faseExtraPlayoffInterno, setFaseExtraPlayoffInterno] = useState<boolean>(false);
   const [mensagemAlerta, setMensagemAlerta] = useState<string|null>(null);

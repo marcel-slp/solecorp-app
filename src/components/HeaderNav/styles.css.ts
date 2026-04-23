@@ -3,7 +3,7 @@ import { style } from '@vanilla-extract/css'
 export const navigationContainer = style({
   height: "60px",
   width: "100%",
-  backgroundColor: "#0e5bebff",
+  backgroundColor: "rgb(19, 150, 67)",
   display: "flex",
   alignItems: "center",
   paddingLeft: "5px",
@@ -12,7 +12,7 @@ export const navigationContainer = style({
   position: "sticky",
   top: 0,
   zIndex: 1000,
-  borderTop: "3px solid rgb(192, 0, 0)",
+  borderTop: "3px solid white",
 });
 
 export const imageLink = style({

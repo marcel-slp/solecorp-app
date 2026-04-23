@@ -371,7 +371,7 @@ export const buscarTodosBoloes = async (): Promise<{
   error: string | null;
 }> => {
   try {
-    const res = await axios.get<BolaoListaGerenciamento[]>(`${API_URL}/buscar_boloes_gerenciamento.php`);
+    const res = await axios.get<BolaoListaGerenciamento[]>(`${API_URL}/buscar_boloes_todos.php`);
     return { data: res.data, error: null };
   } catch (err: unknown) {
     return {

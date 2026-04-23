@@ -7,7 +7,8 @@ import {
   Image,
   Link,
   VStack,
-  Text
+  Text,
+  Icon
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,12 +18,13 @@ import { retornaUserId } from "../../utils/Utils";
 import ListaJogosDia from "../../components/ListaJogosDoDia";
 import backgroundBlack from "@/assets/images/backbolao.jpg";
 import jogadorHome from "@/assets/images/jogador_homebolao.png";
-import logoSmall from "@/assets/images/sportsManager.ico";
+import logoSmall from "@/assets/images/logosolecorp-2.jpg";
 import NewsFeed from "../../components/NewsFeed";
-import BolaoTable from "../../components/BolaoTable";
+import { FaBell, FaFileCirclePlus, FaFolder } from "react-icons/fa6";
+import BolaoTableHome from "../../components/BolaoTableHome";
 
 export function Home() {
-  const { boloes, carregarBoloesPorUserId } = bolaoStore();
+  const { carregarBoloesPorUserId } = bolaoStore();
   const { partidas, carregarPartidas } = partidasStore();
 
   const navigate = useNavigate();
@@ -45,7 +47,7 @@ export function Home() {
         <GridItem>
           <Flex direction="column" gap={6}>
             <Grid templateColumns="1fr 1fr 1fr" gap={6}>
-              <Box bg="whiteAlpha.100">
+              <Box>
 								<Text fontSize="md" fontWeight="bold" color={"white"}>
 									Solecorp
 								</Text>
@@ -61,6 +63,7 @@ export function Home() {
 										color="white"
 										onClick={() => navigate("/boloes")}
 									>
+                    <Icon color='white' as={FaFileCirclePlus} mr={2}/>
 										Criar Bolão
 									</Link>
 
@@ -68,10 +71,12 @@ export function Home() {
 										color="white"
 										onClick={() => navigate("/boloes")}
 									>
+                    <Icon color='white' as={FaFolder} mr={2}/>
 										Meus Bolões
 									</Link>
 
-									<Link color="white">
+									<Link color="white"> 
+                    <Icon color='white' as={FaBell} mr={2}/>
 										Notificações
 									</Link>
 								</VStack>
@@ -92,7 +97,7 @@ export function Home() {
 										Bolões Abertos
 									</Heading>
 
-									<BolaoTable isHome boloes={boloes} />
+									<BolaoTableHome />
                 </VStack>
               </Box>
             </Grid>
