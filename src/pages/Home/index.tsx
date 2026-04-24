@@ -43,7 +43,7 @@ export function Home() {
       backgroundSize="cover"
       backgroundPosition="center"
     >
-      <Grid templateColumns="60% 40%" gap={6}>
+      <Grid templateColumns="69% 31%" gap={6}>
         <GridItem>
           <Flex direction="column" gap={6}>
             <Grid templateColumns="1fr 1fr 1fr" gap={6}>
