@@ -138,6 +138,7 @@ export function InicioBolao() {
                 display="flex"
                 flexDirection="column"
                 gap={4}
+                alignItems={"center"}
               >
                 <Button
                   className={styles.buttonOpçõesExtras}
@@ -177,6 +178,21 @@ export function InicioBolao() {
                   Palpites
                 </Button>
               </Box>
+              {adminOuGerente && (
+                <div className={styles.botaoLinkConviteContainer}>
+                  <Button
+                    size={"lg"}
+                    hidden={bolao.roleBolao === "jogador"}
+                    onClick={handleCriarConviteLink}
+                    colorScheme={isSaved ? "green" : "blue"}
+                    height={'50%'}
+                  >
+                    {isSaved
+                      ? "Link copiado"
+                      : "Criar Convite-Link"}
+                  </Button>
+                </div>
+                )}
             </Flex>
             
             <Box mt={10}>
@@ -188,7 +204,7 @@ export function InicioBolao() {
               />
             </Box>
 
-            <Box mt={10} mb={4}>
+            <Box mt={10} mb={6}>
               <Heading size="md" mb={6}>
                 <Icon as={GiTrophyCup} mr={2} />
                 Rankings
@@ -263,17 +279,6 @@ export function InicioBolao() {
 
             {adminOuGerente && (
               <>
-                <div className={styles.tituloConfigEventoContainer}>
-                  <Button
-                    hidden={bolao.roleBolao === "jogador"}
-                    onClick={handleCriarConviteLink}
-                    colorScheme={isSaved ? "green" : "blue"}
-                  >
-                    {isSaved
-                      ? "Link copiado para a área de transferência"
-                      : "Criar Convite-Link"}
-                  </Button>
-                </div>
                 <TabelaGerenciarParticipantesBolao />
               </>
             )}

@@ -16,7 +16,8 @@ import {
   ModalCloseButton,
   ModalFooter,
   Checkbox,
-  Select
+  Select,
+  Icon
 } from "@chakra-ui/react";
 import { IconButton } from '@chakra-ui/react'
 import { DeleteIcon } from '@chakra-ui/icons'
@@ -26,6 +27,7 @@ import { bolaoStore, ParticipanteBolao, ParticipanteBolaoDTO } from "../../store
 import { BolaoRoles } from "../../models/BolaoCopaDefault";
 import { useParams } from "react-router-dom";
 import { retornaUserId } from "../../utils/Utils";
+import { FaUserGear } from "react-icons/fa6";
 
 export default function TabelaGerenciarParticipantesBolao() {
   const { participantesBolao, editarParticipanteBolao, removerParticipanteBolao, carregarParticipantesBolao } = bolaoStore();
@@ -68,12 +70,14 @@ export default function TabelaGerenciarParticipantesBolao() {
 
   return (
     <div className={styles.tableBolaoContainer}>
-      <Heading size="md" my={4}>Gerenciar Participantes do Bolão</Heading>
+      <Heading size="md" my={4}>
+        <Icon as={FaUserGear} mr={2} />
+        Gerenciar Participantes do Bolão
+      </Heading>
       <TableContainer>
         <Table variant="simple">
           <Thead>
             <Tr>
-              
               <Th>Nome</Th>
               <Th>E-mail</Th>
               <Th>Papel</Th>

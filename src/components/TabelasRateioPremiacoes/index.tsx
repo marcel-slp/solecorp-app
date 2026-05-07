@@ -142,6 +142,7 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
         habilitar: criterioPremiacao.habilitar
       }];
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getClassificacaoPorCriterio, getTopN, rateioInterno, valorTotalPremiacao]);
 
   
@@ -324,7 +325,11 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
 
                   return (
                     <Tr key={criterioPremiacao.key}>
-                      <Td textAlign="center" fontSize="sm" width={"20%"}>{criterioPremiacao.label}</Td>
+                      <Td textAlign="center" fontSize="sm" width={"20%"}>
+                        <Text color={criterioPremiacao.habilitar ? 'black' : 'grey'}>
+                          {criterioPremiacao.label}
+                        </Text>
+                      </Td>
                       <Td textAlign="center" px={1}>
                         <Input
                           type="number"
@@ -345,13 +350,17 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
                         />
                       </Td>
                       <Td textAlign="center" fontWeight="bold" fontSize="sm" px={2}>
-                        R$ {valorPremiacaoRateio.toLocaleString('pt-BR', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        }) ?? 0}
+                        <Text color={criterioPremiacao.habilitar ? 'black' : 'grey'}>
+                          R$ {valorPremiacaoRateio.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          }) ?? 0}
+                        </Text>
                       </Td>
                       <Td fontSize="sm" px={2} whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
-                        {criterioPremiacao.condicao}
+                        <Text color={criterioPremiacao.habilitar ? 'black' : 'grey'}>
+                          {criterioPremiacao.condicao}
+                        </Text>
                       </Td>
                     </Tr>
                   );

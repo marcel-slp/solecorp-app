@@ -13,6 +13,7 @@ import {
   Divider,
   IconButton,
   Box,
+  Text
 } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 import { Criterio, criteriosPontuacaoStore } from "../../stores/criteriosPontuacaoStore";
@@ -102,6 +103,11 @@ export default function TabelasCriteriosPontuacao({ pontosEditaveis = true }: Ta
     }));
   };
 
+  function criterioNaoImplementados (criterio: string): boolean {
+     return criterio === "Classificação para 2ª Fase" || criterio === "Classificação Grupos" ||
+      criterio === "Convocação" || criterio === "Bônus 1" || criterio === "Bônus 2" || criterio === "Bônus 3";
+  }
+
   const renderTabelaPorJogo = (titulo: string) => (
     <>
       <Heading size="md" my={4}>{titulo}</Heading>
@@ -184,24 +190,36 @@ export default function TabelasCriteriosPontuacao({ pontosEditaveis = true }: Ta
               const pontuacao = pontuacoesInterno[criterio.id] || {};
               return (
                 <Tr key={criterio.id}>
-                  <Td textAlign={"center"}>{criterio.situacao}</Td>
-                  <Td textAlign={"center"}>{criterio.descricao}</Td>
+                  <Td textAlign={"center"}>
+                    <Text color={!criterioNaoImplementados(criterio.situacao) ? 'black' : 'grey'}>
+                      {criterio.situacao}
+                    </Text>
+                  </Td>
+                  <Td textAlign={"center"}>
+                    <Text color={!criterioNaoImplementados(criterio.situacao) ? 'black' : 'grey'}>
+                      {criterio.descricao}
+                    </Text>
+                  </Td>
                   <Td textAlign={"center"}>
                     <Input
                       bg={"white"}
                       width={"60px"}
                       textAlign={"center"}
                       border={"1px solid grey"}
-                      disabled={!pontosEditaveis}
+                      disabled={!pontosEditaveis || criterioNaoImplementados(criterio.situacao)}
                       value={pontuacao.pontos ?? ""}
                       onChange={(e) => handleLocalChange(criterio.id, 'pontos', Number(e.target.value))}
                     />
                   </Td>
-                  <Td textAlign={"center"}>{criterio.condicao}</Td>
+                  <Td textAlign={"center"}>
+                    <Text color={!criterioNaoImplementados(criterio.situacao) ? 'black' : 'grey'}>
+                      {criterio.condicao}
+                    </Text>
+                  </Td>
                   <Td textAlign={"center"}>
                     <IconButton
                       aria-label="Salvar critério"
-                      hidden={!pontosEditaveis}
+                      hidden={!pontosEditaveis || criterioNaoImplementados(criterio.situacao)}
                       icon={<CheckIcon />}
                       colorScheme="blue"
                       variant="ghost"

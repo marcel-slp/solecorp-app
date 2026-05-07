@@ -54,7 +54,6 @@ export const patrocinadoresItem = style({
 });
 
 export const tituloConfigEventoContainer = style({
-  //backgroundColor: "white",
   border: "1px solid silver",
   borderRadius: "5px",
   padding: "10px",
@@ -62,6 +61,11 @@ export const tituloConfigEventoContainer = style({
   textAlign: "center",
   fontWeight: "bold",
   fontSize: "16px",
+});
+
+export const botaoLinkConviteContainer = style({
+  padding: "10px",
+  height: 'auto'
 });
 
 export const areaFasesContainer = style({
@@ -129,5 +133,5 @@ export const quadroDireitaBoxInferior = style({
 });
 
 export const buttonOpçõesExtras = style({
-  width: "45%",
+  width: "60%",
 });
