@@ -64,7 +64,7 @@ export default function GerenciarSelecoes() {
       {!editando ? (
         <>
           <Heading size="md" my={4}>
-            Seleções Cadastradas
+            Seleções Cadastradas para Prêmios Individuais
           </Heading>
 
           <TableContainer whiteSpace={"normal"}>
@@ -73,9 +73,6 @@ export default function GerenciarSelecoes() {
                 <Tr>
                   <Th textAlign="center">ID</Th>
                   <Th textAlign="center">Nome</Th>
-                  {/* <Th textAlign="center">Campeão</Th>
-                  <Th textAlign="center">Vice</Th>
-                  <Th textAlign="center">3º Lugar</Th> */}
                   <Th textAlign="center">Data</Th>
                   <Th textAlign="center">Ações</Th>
                 </Tr>

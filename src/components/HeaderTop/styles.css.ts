@@ -34,7 +34,6 @@ export const titleWrapper = style({
 
 export const titleRow = style({
   display: 'flex',
-  //alignItems: 'center',
   gap: '20px',
   fontSize: '16px',
   fontWeight: 'normal',
@@ -47,6 +46,17 @@ export const iconSmall = style({
   fontSize: '18px',
   ':hover': {
     opacity: 0.8,
+  },
+});
+
+export const iconAdmin = style({
+  marginTop: '10px',
+  color: 'white',
+  cursor: 'pointer',
+  fontSize: '18px',
+  ':hover': {
+    opacity: 0.8,
+    color: '#2B6CB0 !important'
   },
 });
 

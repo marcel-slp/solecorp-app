@@ -93,31 +93,13 @@ export default function GerenciarJogadores() {
     }
   };
 
-  // const atualizarUnico = async (
-  //   campo: "melhorJogador" | "melhorGoleiro" | "artilheiro",
-  //   selecionadoId: string
-  // ) => {
-  //   await Promise.all(
-  //     jogadoresArray.map((s) =>
-  //       editarJogador(s.id, {
-  //         ...s,
-  //         [campo]: s.id === selecionadoId
-  //       })
-  //     )
-  //   );
-  // };
-
-  // const melhorJogadorSelecionado = jogadoresArray.find(s => s.melhorJogador)?.id || "";
-  // const melhorGoleiroSelecionado = jogadoresArray.find(s => s.melhorGoleiro)?.id || "";
-  // const artilheiroSelecionado = jogadoresArray.find(s => s.artilheiro)?.id || "";
-
   return (
     <div className={styles.tableJoagdorContainer}>
       <Heading mt={4}>Jogadores da Copa do Mundo 2026</Heading>
 
       {!editando ? (
         <>
-          <Heading size="md" my={4}>Jogadores Cadastrados</Heading>
+          <Heading size="md" my={4}>Jogadores Cadastrados para Prêmios Individuais</Heading>
           <TableContainer whiteSpace={"normal"}>
             <Table variant="simple">
               <Thead>
@@ -129,9 +111,6 @@ export default function GerenciarJogadores() {
                   <Th textAlign="center">Lista Melhor Jogador</Th>
                   <Th textAlign="center">Lista Melhor Goleiro</Th>
                   <Th textAlign="center">Lista Artilheiro</Th>
-                  {/* <Th textAlign="center">É o melhor jogador?</Th>
-                  <Th textAlign="center">É o melhor goleiro?</Th>
-                  <Th textAlign="center">É o artilheiro?</Th> */}
                   <Th textAlign="center">Data de Criação</Th>
                   <Th textAlign="center">Ações</Th>
                 </Tr>
@@ -172,51 +151,6 @@ export default function GerenciarJogadores() {
                         }, jogador.id)}
                       />
                     </Td>
-                    {/* <Td textAlign="center">
-                      <Radio
-                        isChecked={melhorJogadorSelecionado === jogador.id}
-                        onChange={() => atualizarUnico("melhorJogador", jogador.id)}
-                      />
-                    </Td>
-                    <Td textAlign="center">
-                      <Radio
-                        isChecked={melhorGoleiroSelecionado === jogador.id}
-                        onChange={() => atualizarUnico("melhorGoleiro", jogador.id)}
-                      />
-                    </Td>
-                    <Td textAlign="center">
-                      <Radio
-                        isChecked={artilheiroSelecionado === jogador.id}
-                        onChange={() => atualizarUnico("artilheiro", jogador.id)}
-                      />
-                    </Td> */}
-                    {/* <Td textAlign="center">
-                      <Checkbox
-                        isChecked={jogador.melhorJogador}
-                        onChange={(e) => handleSalvar({
-                          ...jogador,
-                          melhorJogador: e.target.checked
-                        }, jogador.id)}
-                      />
-                    </Td> */}
-                    {/* <Td textAlign="center">
-                      <Checkbox
-                        isChecked={jogador.melhorGoleiro}
-                        onChange={(e) => handleSalvar({
-                          ...jogador,
-                          melhorGoleiro: e.target.checked
-                        }, jogador.id)}
-                      />
-                    </Td>
-                    <Td textAlign="center">
-                      <Checkbox
-                        isChecked={jogador.artilheiro}
-                        onChange={(e) => handleSalvar({
-                          ...jogador,
-                          artilheiro: e.target.checked
-                        }, jogador.id)}
-                      />
-                    </Td> */}
                     <Td textAlign="center">{jogador.dataCriacao}</Td>
                     <Td textAlign="center" paddingInline={"inherit"}>      
                         <IconButton

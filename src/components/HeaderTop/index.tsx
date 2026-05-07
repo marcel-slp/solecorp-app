@@ -1,7 +1,6 @@
 import { 
   AddIcon,
-  Button, 
-  //ChevronDownIcon, 
+  Button,
   HamburgerIcon, 
   Icon, 
   Modal, 
@@ -16,28 +15,22 @@ import {
   PopoverContent,
   PopoverTrigger,
   SearchIcon,
-  //SettingsIcon,
   useDisclosure
 } from "@chakra-ui/icons";
 import {
-  // IconButton,
-  // Menu,
-  // MenuButton,
-  // MenuItem,
-  // MenuList,
+  Box,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Text
 } from "@chakra-ui/react";
 import * as styles from "./styles.css";
 import {IoMdCart, IoMdLogOut} from 'react-icons/io';
 import { BsPersonCircle } from "react-icons/bs";
 import { MdEmojiEvents } from "react-icons/md";
-import { FaFutbol, FaHouse, FaPeopleGroup, FaRegCircleQuestion, 
-  FaTableList, FaUsersGear  
-} from "react-icons/fa6";
+import { FaFutbol, FaGear, FaHouse, FaPeopleGroup, FaRegCircleQuestion } from "react-icons/fa6";
 import { TbShieldFilled } from "react-icons/tb";
-import { RiUserSettingsFill } from "react-icons/ri";
-import { FaClipboardList } from "react-icons/fa";
-import { GiBabyfootPlayers, GiBrazilFlag, GiPodium } from "react-icons/gi";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PerfilSistema } from "../../models/PerfilSistema";
@@ -47,32 +40,36 @@ export type Props = {
     publicHeader?: boolean;
 };
 
-// const paginasGerenciamento = [
-//   {
-//     label: "Inserir Placares",
-//     path: "/inserir-placares-copa-2026"
-//   },
-//   {
-//     label: "Gerenciar Perfis",
-//     path: "/gerenciar-perfil"
-//   },
-//   {
-//     label: "Gerenciar Usuários",
-//     path: "/gerenciar-usuarios"
-//   },
-//   {
-//     label: "Gerenciar Bolões",
-//     path: "/gerenciar-boloes"
-//   },
-//   {
-//     label: "Gerenciar Jogadores",
-//     path: "/gerenciar-jogadores"
-//   },
-//   {
-//     label: "Gerenciar Seleções",
-//     path: "/gerenciar-selecoes"
-//   }
-// ];
+const paginasGerenciamento = [
+  {
+    label: "Inserir Placares",
+    path: "/inserir-placares-copa-2026"
+  },
+  {
+    label: "Gerenciar Perfis",
+    path: "/gerenciar-perfil"
+  },
+  {
+    label: "Gerenciar Usuários",
+    path: "/gerenciar-usuarios"
+  },
+  {
+    label: "Gerenciar Bolões",
+    path: "/gerenciar-boloes"
+  },
+  {
+    label: "Gerenciar Jogadores",
+    path: "/gerenciar-jogadores"
+  },
+  {
+    label: "Gerenciar Seleções",
+    path: "/gerenciar-selecoes"
+  },
+  {
+    label: "Gerenciar Prêmios Individuais",
+    path: "/gerenciar-premios-individuais"
+  }
+];
 
 export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -114,7 +111,9 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
 
         <div className={styles.titleWrapper}>
           <div className={styles.titleRow}>
-            {modoBolao ? "Bolão Control" : "SoleCorp Sports Manager"}
+            <Text style={{marginTop: '5px'}}>
+              {modoBolao ? "Bolão Control" : "SoleCorp Sports Manager"}
+            </Text>
 
             <Link to="/home" aria-label="Ir para home">
               <Icon as={FaHouse} className={styles.iconSmall} />
@@ -122,30 +121,33 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
             <Link to="/boloes" aria-label="Ir para bolões" hidden={esconderIconesBolaoUser}>
               <Icon as={FaFutbol} className={styles.iconSmall} />
             </Link>
-            {/* <Menu>
-              <MenuButton
-                as={IconButton}
-                icon={<SettingsIcon/>}
-                aria-label="Gerenciamento"
-                //variant="outline"
-                bg={"whiteAlpha.100"}
-                color={"white"}
-                hidden={esconderIconesBolaoAdmin}
-              />
 
-              <MenuList>
+            <Menu>
+              <MenuButton as={Box} cursor={"pointer"}>
+                {!esconderIconesBolaoAdmin && (
+                  <Icon 
+                    as={FaGear} 
+                    className={styles.iconAdmin}
+                    aria-label="Admin"
+                  />
+                )}
+              </MenuButton>
+
+              <MenuList bg={'whiteAlpha'}>
                 {paginasGerenciamento.map((pagina) => (
                   <MenuItem
                     key={pagina.path}
+                    bg={'green.500'}
+                    //marginBottom={1}
                     onClick={() => navigate(pagina.path)}
                   >
                     {pagina.label}
                   </MenuItem>
                 ))}
               </MenuList>
-            </Menu> */}
+            </Menu>
 
-            <Link to="/inserir-placares-copa-2026" aria-label="Inserir Placares" hidden={esconderIconesBolaoAdmin}>
+            {/* <Link to="/inserir-placares-copa-2026" aria-label="Inserir Placares" hidden={esconderIconesBolaoAdmin}>
               <Icon as={FaTableList} className={styles.iconSmall} />
             </Link>
             <Link to="/gerenciar-perfil" aria-label="Gerenciar Perfis do Sistema" hidden={esconderIconesBolaoAdmin}>
@@ -165,7 +167,7 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
             </Link>
             <Link to="/gerenciar-premios-individuais" aria-label="Gerenciar Prêmios Individuais" hidden={esconderIconesBolaoAdmin}>
               <Icon as={GiPodium } className={styles.iconSmall} />
-            </Link>
+            </Link> */}
             <Link to="/eventos" aria-label="Ir para eventos" hidden={esconderIconesManager}>
             <Icon as={MdEmojiEvents} className={styles.iconSmall} />
             </Link>
