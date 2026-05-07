@@ -1,62 +1,83 @@
-//import { Placar } from "../../models/generateCopa2026";
 import { PontuacaoCriterio } from "../../stores/criteriosPontuacaoStore";
-//import { Palpite } from "../../stores/palpitesStore";
-//import { Partida } from "../../stores/partidasStore";
+import { PremiosIndividuais } from "../../stores/premiosIndividuaisStore";
 
 export interface PontuacaoParticipanteExtra2 {
-  ptsMelhorTime1Fase: number;
-  ptsAtaqueArtilheiro: number;
-  ptsMVPs: number;
-  ptsPodio: number;
+  ptsMelhorJogador: number;
+  ptsMelhorGoleiro: number;
+  ptsArtilheiro: number;
+  ptsCampeao: number;
+  ptsViceCampeao: number;
+  ptsTerceiroLugar: number;
+  ptsMelhor1Fase: number;
 }
 
 export function calcularPontosExtra2(
-  // partida: Partida,
-  // palpite: Placar,
-  criteriosExtra2: PontuacaoCriterio[]
+  premiosIndividuaisPalpite: PremiosIndividuais,
+  premiosIndividuaisOriginal: PremiosIndividuais,
+  criteriosExtra2: PontuacaoCriterio[],
 ): PontuacaoParticipanteExtra2 {
-  
-  const pontos = {
-    ptsMelhorTime1Fase: 0,
-    ptsAtaqueArtilheiro: 0,
-    ptsMVPs: 0,
-    ptsPodio: 0
+
+  const pontos: PontuacaoParticipanteExtra2 = {
+    ptsMelhorJogador: 0,
+    ptsMelhorGoleiro: 0,
+    ptsArtilheiro: 0,
+    ptsCampeao: 0,
+    ptsViceCampeao: 0,
+    ptsTerceiroLugar: 0,
+    ptsMelhor1Fase: 0
   };
 
-  // if (
-  //   partida.placarCasa == null ||
-  //   partida.placarFora == null ||
-  //   palpite.placarCasa == null ||
-  //   palpite.placarFora == null
-  // ) {
-  //   return pontos;
-  // }
+  const acertou = (palpite?: string, original?: string) =>
+    palpite && original && palpite === original;
 
   criteriosExtra2.forEach((criterio) => {
-    const valorPontos = criterio.pontos ?? 0;
-
-    if (valorPontos === 0) return;
-
-    //let pontosGanhos = 0;
+    const valor = criterio.pontos ?? 0;
+    if (!valor) return;
 
     switch (criterio.situacao) {
+
+      case "Melhor Goleiro":
+        if (acertou(premiosIndividuaisPalpite.melhorGoleiro, premiosIndividuaisOriginal.melhorGoleiro)) {
+          pontos.ptsMelhorGoleiro += valor;
+        }
+        break;
+
+      case "Artilheiro":
+        if (acertou(premiosIndividuaisPalpite.artilheiro, premiosIndividuaisOriginal.artilheiro)) {
+          pontos.ptsArtilheiro += valor;
+        }
+        break;
+
+      case "Melhor Jogador":
+        if (acertou(premiosIndividuaisPalpite.melhorJogador, premiosIndividuaisOriginal.melhorJogador)) {
+          pontos.ptsMelhorJogador += valor;
+        }
+        break;
+
+      case "Campeão":
+        if (acertou(premiosIndividuaisPalpite.campeao, premiosIndividuaisOriginal.campeao)) {
+          pontos.ptsCampeao += valor;
+        }
+        break;
+
+      case "Vice Campeão":
+        if (acertou(premiosIndividuaisPalpite.viceCampeao, premiosIndividuaisOriginal.viceCampeao)) {
+          pontos.ptsViceCampeao += valor;
+        }
+        break;
+
+      case "Terceiro Lugar":
+        if (acertou(premiosIndividuaisPalpite.terceiroLugar, premiosIndividuaisOriginal.terceiroLugar)) {
+          pontos.ptsTerceiroLugar += valor;
+        }
+        break;
+
       case "Melhor time 1ª Fase":
-        //TODO: FAZER LÓGICA QUANDO TIVER PLACAR DOS PENALTIS
+        if (acertou(premiosIndividuaisPalpite.melhor1Fase, premiosIndividuaisOriginal.melhor1Fase)) {
+          pontos.ptsMelhor1Fase += valor;
+        }
         break;
-
-      case "Ataque/Artilheiro":
-        //TODO: FAZER LÓGICA QUANDO TIVER PLACAR DOS PENALTIS
-        break;
-
-      // case "MVPs":
-      //   //TODO: FAZER LÓGICA QUANDO TIVER LÓGICA DOS GRUPOS
-      //   break;
-
-      // case "Pódio":
-      //   //TODO: FAZER LÓGICA QUANDO TIVER LÓGICA DOS GRUPOS
-      //   break;
     }
-
   });
 
   return pontos;

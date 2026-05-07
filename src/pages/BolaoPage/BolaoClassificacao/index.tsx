@@ -20,6 +20,7 @@ const CRITERIOS_ABAS = [
   { key: "Resultado", label: "Resultado" },
   { key: "Placar Cravado Pênaltis", label: "Placar Cravado Pênaltis" },
   { key: "Classificação Pênaltis", label: "Classificação Pênaltis" },
+  { key: "Extra", label: "Extra" },
   // { key: "Bônus 1", label: "Líder" },
   // { key: "Bônus 2", label: "Último isolado" },
   // { key: "Bônus 3", label: "Sem pontos no dia" },
@@ -34,12 +35,16 @@ export interface PontuacaoParticipante {
   ptsDiferencaGols: number;
   ptsClassificacaoPenaltis: number;
   ptsPlacarCravadoPenaltis: number;
+  ptsTotalExtra2: number;
   // //ptsClassificacaoGrupos: number;
   // //ptsClassificacao2Fase: number;
   // //ptsMelhorTime1fase: number;
-  // //ptsAtaqueArtilheiro: number;
-  // //ptsMVPs: number;
-  // //ptsPodio: number;
+  // ptsMelhorJogador: number;
+  // ptsMelhorGoleiro: number;
+  // ptsArtilheiro: number;
+  // ptsCampeao: number;
+  // ptsViceCampeao: number;
+  // ptsTerceiroLugar: number;
   // //ptsConvocacao: number;
   // ptsBonus1: number;
   // ptsBonus2: number;

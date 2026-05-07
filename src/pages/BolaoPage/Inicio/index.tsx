@@ -37,8 +37,7 @@ export function InicioBolao() {
   } = bolaoStore();
   const { partidas, carregarPartidas } = partidasStore();
   const { palpitesBolao, carregarPalpitesPorBolao } = palpitesStore();
-  const { carregarClassificacao, getRankingAoRedorUsuario, getTopN } =
-    classificacaoStore();
+  const { carregarClassificacao, getRankingAoRedorUsuario, getTopN } = classificacaoStore();
   const [isSaved, setIsSaved] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();

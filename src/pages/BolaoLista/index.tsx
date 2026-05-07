@@ -76,7 +76,7 @@ export default function BolaoLista() {
       sucesso = await removerBolao(bolaoId);
 
       if (!sucesso) {
-        alert("Ocorreu um erro ao removre o bolão. Verifique os logs.");
+        alert("Ocorreu um erro ao remover o bolão. Verifique os logs.");
       }
 
     } catch (err) {

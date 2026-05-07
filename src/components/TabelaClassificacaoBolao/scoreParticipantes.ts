@@ -1,8 +1,11 @@
+import { TipoCriterioPontuacaoBolao } from "../../models/TipoCriterioBolao";
 import { PontuacaoParticipante } from "../../pages/BolaoPage/BolaoClassificacao";
 import { ParticipanteBolao } from "../../stores/bolaoStore";
 import { PontuacaoCriterio } from "../../stores/criteriosPontuacaoStore";
 import { Palpite } from "../../stores/palpitesStore";
 import { Partida } from "../../stores/partidasStore";
+import { PremiosIndividuais, PremiosIndividuaisPalpite } from "../../stores/premiosIndividuaisStore";
+import { calcularPontosExtra2 } from "./scoreExtra2";
 import { calcularPontuacaoPorPartida } from "./scorePorPartida";
 
 export interface PlacarPalpitePontuacao {
@@ -21,11 +24,10 @@ export function calcularPontuacoesParticipantes(
   participantes: ParticipanteBolao | ParticipanteBolao[],
   palpitesBolao: Record<number, Palpite[]>,
   partidas: Record<string, Partida>,
+  premiosIndividuaisPalpite: PremiosIndividuaisPalpite,
+  premiosIndividuaisOriginal: PremiosIndividuais,
   pontuacaoCriterios: PontuacaoCriterio[]
 ): PontuacaoParticipante | PontuacaoParticipante[] {
-  
-  // const criteriosPorJogo = criterios.filter(c => c.tipo === "porJogo");
-  // const criteriosExtra1 = criterios.filter(c => c.tipo === "extra1");
 
   const calcularUm = (participante: ParticipanteBolao) => {
     const palpitesDoUsuario = palpitesBolao[participante.userId] || [];
@@ -36,6 +38,8 @@ export function calcularPontuacoesParticipantes(
     let ptsDiferencaGols = 0;
     let ptsClassificacaoPenaltis = 0;
     let ptsPlacarCravadoPenaltis = 0;
+    let ptsTotalExtra2 = 0;
+    let ptsTotalPartidas = 0;
     let ptsTotalParticipante = 0;
 
     palpitesDoUsuario.forEach((palpite) => {
@@ -55,8 +59,18 @@ export function calcularPontuacoesParticipantes(
       ptsClassificacaoPenaltis += pontosDaPartida.ptsClassificacaoPenaltis;
       ptsPlacarCravadoPenaltis += pontosDaPartida.ptsPlacarCravadoPenaltis;
 
-      ptsTotalParticipante += pontosDaPartida.ptsTotalPartida;
+      ptsTotalPartidas += pontosDaPartida.ptsTotalPartida;
     });
+
+    const pontosExtra2 = calcularPontosExtra2(premiosIndividuaisPalpite,
+      premiosIndividuaisOriginal,     
+      pontuacaoCriterios.filter(pc => pc.tipo === TipoCriterioPontuacaoBolao.EXTRA_2)
+    );
+
+    ptsTotalExtra2 = pontosExtra2.ptsMelhorJogador + pontosExtra2.ptsMelhorGoleiro + pontosExtra2.ptsArtilheiro +
+                       pontosExtra2.ptsCampeao + pontosExtra2.ptsViceCampeao + pontosExtra2.ptsTerceiroLugar + pontosExtra2.ptsMelhor1Fase
+
+    ptsTotalParticipante = ptsTotalPartidas + ptsTotalExtra2;
 
     return {
       userId: participante.userId,
@@ -67,6 +81,7 @@ export function calcularPontuacoesParticipantes(
       ptsDiferencaGols,
       ptsClassificacaoPenaltis,
       ptsPlacarCravadoPenaltis,
+      ptsTotalExtra2,
       ptsTotalParticipante
     };
   };

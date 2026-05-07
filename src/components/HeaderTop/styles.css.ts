@@ -41,7 +41,7 @@ export const titleRow = style({
 });
 
 export const iconSmall = style({
-  marginTop: '5px',
+  marginTop: '10px',
   color: 'white',
   cursor: 'pointer',
   fontSize: '18px',

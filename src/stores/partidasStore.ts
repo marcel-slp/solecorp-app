@@ -55,7 +55,7 @@ interface PartidasStore {
   limparTodos: () => void
 }
 
-export type NovaPatida = Omit<Partida, 'id'>
+export type NovaPartida = Omit<Partida, 'id'>
 
 export const partidasStore = create<PartidasStore>((set) => ({
   partidas: {},

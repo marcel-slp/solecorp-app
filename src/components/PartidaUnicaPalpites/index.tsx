@@ -180,8 +180,10 @@ export function PartidaUnicaPalpites({
         <div className={styles.nome}>{timeForaInterno}</div>
       </div>
 
-      <Flex width={"max-content"} align="center" gap={2} fontSize="sm" mt={2}>
-        Placar da Partida:
+      <Flex align="center" justifyContent="start" gap={2} fontSize="sm" mt={2}>
+        <Text>
+          Placar da Partida:
+        </Text>
         <Badge
           colorScheme="blue"
           px={3}
@@ -206,10 +208,14 @@ export function PartidaUnicaPalpites({
           )}
         </Badge>
 
-        Pontos:
-        <Badge colorScheme="green" fontSize="md" px={3} py={1}>
-          {pontuacaoPartida}
-        </Badge>
+        <Flex align="center" justifyContent="start">
+          <Text>
+            Pontos:
+          </Text>
+          <Badge colorScheme="green" fontSize="md" px={3} py={1}>
+            {pontuacaoPartida}
+          </Badge>
+        </Flex>
       </Flex>
 
       <Input isDisabled backgroundColor="white" textAlign="center" type="date" value={dataJogoInterno} />

@@ -86,7 +86,7 @@ export default function BolaoForm({ bolao, onSalvar, onCancelar }: BolaoFormProp
       faseExtraPlayoff: faseExtraPlayoffInterno,
       roleBolao: BolaoRoles.CRIADOR
     };
-    
+
     onSalvar(novoBolao, bolao?.id);
   };
 
@@ -176,16 +176,12 @@ export default function BolaoForm({ bolao, onSalvar, onCancelar }: BolaoFormProp
             <Text>Convocação da Seleção:</Text>
             <div className={styles.eventoAccordionDropdown}>
               <Switch
-                //placeholder="Selecione"
                 key={"convocacao"}
                 disabled={desabilitarConfigExtra}
                 isChecked={convocacaoInterno}
                 name="convocacao"
                 onChange={(e) => setConvocacaoInterno(e.target.checked)}
               />
-                {/* <option value='sim'>Sim</option>
-                <option value='nao'>Não</option>
-              </Switch> */}
             </div>
 
             <Text>Pontuação Prêmios Individuais:</Text>
@@ -197,57 +193,39 @@ export default function BolaoForm({ bolao, onSalvar, onCancelar }: BolaoFormProp
                 name="premiosIndividuais"
                 onChange={(e) => setPremiosIndividuaisInterno(e.target.checked)}
               />
-                {/* <option value='sim'>Sim</option>
-                <option value='nao'>Não</option>
-              </Select> */}
             </div>
 
             <Text>Pontuação Melhores Por Ranking:</Text>
             <div className={styles.eventoAccordionDropdown}>
               <Switch
-                //placeholder="Selecione" 
-                //value={String(configExtraBolaoInterno.pontuacaoMelhoresPorRanking)}
                 key={"melhoresPorRanking"}
                 isChecked={melhoresPorRankinInterno}
                 disabled={desabilitarConfigExtra}
                 name="melhoresPorRanking"
                 onChange={(e) => setMelhoresPorRankingInterno(e.target.checked)}
               />
-                {/* <option value='sim'>Sim</option>
-                <option value='nao'>Não</option>
-              </Select> */}
             </div>
 
             <Text>Pontuação Bônus:</Text>
             <div className={styles.eventoAccordionDropdown}>
               <Switch
-                //placeholder="Selecione" 
-                //value={String(configExtraBolaoInterno.pontuacaoBonus)}
                 key={"pontuacaoBonus"}
                 isChecked={pontuacaoBonusInterno}
                 disabled={desabilitarConfigExtra}
                 name="pontuacaoBonus"
                 onChange={(e) => setPontuacaoBonusInterno(e.target.checked)}
               />
-                {/* <option value='sim'>Sim</option>
-                <option value='nao'>Não</option>
-              </Select> */}
             </div>
 
             <Text>Fase Extra Play-Off:</Text>
             <div className={styles.eventoAccordionDropdown}>
               <Switch
-                //placeholder="Selecione" 
-                //value={String(configExtraBolaoInterno.faseExtraPlayoff)}
                 key={"faseExtraPlayoff"}
                 isChecked={faseExtraPlayoffInterno}
                 disabled={desabilitarConfigExtra}
                 name="faseExtraPlayoff"
                 onChange={(e) => setFaseExtraPlayoffInterno(e.target.checked)}
               />
-                {/* <option value='sim'>Sim</option>
-                <option value='nao'>Não</option>
-              </Select> */}
             </div>
           </AccordionPanel>
         </AccordionItem>

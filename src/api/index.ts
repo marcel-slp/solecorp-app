@@ -9,6 +9,9 @@ import { Criterio, PontuacaoCriterio } from '../stores/criteriosPontuacaoStore';
 import { Perfil } from '../stores/perfisStore';
 import { NovoUsuario, Usuario } from '../stores/usuariosStore';
 import { Rateio, RateioDTO } from '../stores/rateiosStore';
+import { PremiosIndividuais, PremiosIndividuaisPalpite } from '../stores/premiosIndividuaisStore';
+import { Selecao } from '../stores/selecoesStore';
+import { Jogador } from '../stores/jogadoresStore';
 
 const API_URL = 'https://solecorp.com.br/ambiente/api';
 
@@ -34,7 +37,7 @@ const buildParticipanteFormData = (participante: Participante): FormData => {
   return formData;
 };
 
-const buildFormData = (evento: Evento | Entidade | Bolao): FormData => {
+const buildFormData = (evento: Evento | Entidade | Bolao | Jogador | Selecao): FormData => {
   const formData = new FormData();
   for (const [key, value] of Object.entries(evento)) {
     if (value === undefined || value === null) continue;    
@@ -783,5 +786,177 @@ export const buscarFeedNoticias = async () => {
       data: null,
       error: axios.isAxiosError(err) ? err.message : "Erro desconhecido ao coletar feed de notícias",
     };
+  }
+};
+
+export const buscarSelecoes = async (): Promise<{
+  data: Selecao[] | null;
+  error: string | null;
+}> => {
+  try {
+    const res = await axios.get<Selecao[]>(`${API_URL}/buscar_selecoes.php`);
+    return { data: res.data, error: null };
+  } catch (err: unknown) {
+    return {
+      data: null,
+      error: axios.isAxiosError(err) ? err.message : "Erro ao buscar seleções",
+    };
+  }
+};
+
+export const salvarSelecao = async (selecao: Selecao): Promise<{ success: boolean, message?: string }> => {
+  try {
+    const formData = buildFormData(selecao);
+    
+    await axios.post(`${API_URL}/salvar_selecao.php`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+};
+
+export const editarSelecao = async (selecao: Selecao) => {
+  try {
+    const formData = buildFormData(selecao);
+    
+    await axios.post(`${API_URL}/editar_selecao.php`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+};
+
+export const deletarSelecao = async (id: string) => {
+  try {
+    await axios.delete(`${API_URL}/deletar_selecao.php?id=${id}`);
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+};
+
+export const buscarJogadores = async (): Promise<{
+  data: Jogador[] | null;
+  error: string | null;
+}> => {
+  try {
+    const res = await axios.get<Jogador[]>(`${API_URL}/buscar_jogadores.php`);
+    return { data: res.data, error: null };
+  } catch (err: unknown) {
+    return {
+      data: null,
+      error: axios.isAxiosError(err) ? err.message : "Erro ao buscar jogadores",
+    };
+  }
+};
+
+export const salvarJogador = async (jogador: Jogador): Promise<{ success: boolean, message?: string }> => {
+  try {
+    const formData = buildFormData(jogador);
+    
+    await axios.post(`${API_URL}/salvar_jogador.php`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+};
+
+export const editarJogador = async (jogador: Jogador) => {
+  try {
+    const formData = buildFormData(jogador);
+    
+    await axios.post(`${API_URL}/editar_jogador.php`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+};
+
+export const deletarJogador = async (id: string) => {
+  try {
+    await axios.delete(`${API_URL}/deletar_jogador.php?id=${id}`);
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+};
+
+export const buscarPremiosIndividuaisPalpite = async (bolaoId: string, userId: number): Promise<{
+  data: PremiosIndividuaisPalpite | null;
+  error: string | null;
+}> => {
+  try {
+    const res = await axios.get<PremiosIndividuaisPalpite>(`${API_URL}/buscar_premios_individuais_palpite_bolaoid_userid.php?bolaoId=${bolaoId}&userId=${userId}`);
+    return { data: res.data, error: null };
+  } catch (err: unknown) {
+    return {
+      data: null,
+      error: axios.isAxiosError(err) ? err.message : "Erro ao buscar jogadores",
+    };
+  }
+};
+
+export const editarPremiosIndividuaisPalpite = async (premiosIndividuaisPalpite: PremiosIndividuais) => {
+  try {
+    await axios.post(`${API_URL}/editar_premios_individuais_palpite.php`, premiosIndividuaisPalpite, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+};
+
+export const buscarPremiosIndividuaisOriginal = async (campeonatoId: number): Promise<{
+  data: PremiosIndividuais | null;
+  error: string | null;
+}> => {
+  try {
+    const res = await axios.get<PremiosIndividuais>(`${API_URL}/buscar_premios_individuais_original_campeonatoid.php?campeonatoId=${campeonatoId}`);
+    return { data: res.data, error: null };
+  } catch (err: unknown) {
+    return {
+      data: null,
+      error: axios.isAxiosError(err) ? err.message : "Erro ao buscar jogadores",
+    };
+  }
+};
+
+export const salvarPremiosIndividuaisOriginal = async (premiosIndividuaisOriginal: PremiosIndividuais): Promise<{ success: boolean, message?: string }> => {
+  try {
+    await axios.post(`${API_URL}/salvar_premios_individuais_original.php`, premiosIndividuaisOriginal, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+};
+
+export const editarPremiosIndividuaisOriginal = async (premiosIndividuaisOriginal: PremiosIndividuais) => {
+  try {
+    await axios.post(`${API_URL}/editar_premios_individuais_original.php`, premiosIndividuaisOriginal, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+};
+
+export const deletarPremiosIndividuaisOriginal = async (id: string) => {
+  try {
+    await axios.delete(`${API_URL}/deletar_premios_individuais_original.php?id=${id}`);
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
   }
 };

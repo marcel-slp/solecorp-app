@@ -32,9 +32,6 @@ export default function BolaoTableHome() {
     carregarTodosOsBoloes();
   }, []);
 
-  console.log("boloesTodos: ", boloesTodos);
-  
-
   return (
     <TableContainer>
       <Table variant="simple">

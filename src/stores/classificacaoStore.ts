@@ -6,6 +6,7 @@ import { palpitesStore } from './palpitesStore';
 import { partidasStore } from './partidasStore';
 import { criteriosPontuacaoStore } from './criteriosPontuacaoStore';
 import { retornaUserId } from '../utils/Utils';
+import { premiosIndividuaisStore } from './premiosIndividuaisStore';
 
 type PontuacaoParticipanteComPosicao = {
   posicao: number,
@@ -63,28 +64,39 @@ export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
       const { carregarPalpitesPorBolao } = palpitesStore.getState();
       const { carregarPartidas } = partidasStore.getState();
       const { carregarPontuacaoCriterios } = criteriosPontuacaoStore.getState();
+      const { carregarPremiosIndividuaisOriginal, carregarPremiosIndividuaisPalpite } = premiosIndividuaisStore.getState();
 
       await Promise.all([
         carregarParticipantesBolao(bolaoId, retornaUserId()),
         carregarPalpitesPorBolao(bolaoId),
         carregarPartidas(1),
         carregarPontuacaoCriterios(bolaoId),
+        carregarPremiosIndividuaisOriginal(1),
+        carregarPremiosIndividuaisPalpite(bolaoId, retornaUserId())
       ]);
 
       const { participantesBolao } = bolaoStore.getState();
       const { palpitesBolao } = palpitesStore.getState();
       const { partidas } = partidasStore.getState();
       const { pontuacaoCriterios } = criteriosPontuacaoStore.getState();
+      const { premiosIndividuaisOriginal } = premiosIndividuaisStore.getState();
+      const { premiosIndividuaisPalpite } = premiosIndividuaisStore.getState();
 
       if (participantesBolao.length === 0) {
         set({ pontuacoes: [], rankingGeral: [], loading: false });
         return;
       }
 
+      if(premiosIndividuaisPalpite === null || premiosIndividuaisOriginal === null) {
+        return;
+      } 
+
       const pontuacoesCalculadas = calcularPontuacoesParticipantes(
         participantesBolao,
         palpitesBolao,
         partidas,
+        premiosIndividuaisPalpite,
+        premiosIndividuaisOriginal,
         pontuacaoCriterios
       ) as PontuacaoParticipante[];
 
@@ -138,6 +150,9 @@ export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
             break;
           case "Classificação Pênaltis":
             pts = p.ptsClassificacaoPenaltis;
+            break;
+          case "Extra":
+            pts = p.ptsTotalExtra2;
             break;
           default:
             pts = 0;

@@ -54,11 +54,11 @@ export function Home() {
 
 								<Image src={logoSmall} boxSize="40px" alignSelf={"flex-start"}/>
 
-								<Heading size="lg" mt={6} color={"green.400"} fontWeight={"bold"} justifySelf={"center"}>
+								<Heading size="lg" mt={6} color={"green.400"} fontWeight={"bold"} justifySelf={"start"}>
 									Bolão Control
 								</Heading>
 
-								<VStack spacing={6} mt={6}>
+								<VStack spacing={6} mt={6} justifySelf={"start"}>
 									<Link
 										color="white"
 										onClick={() => navigate("/boloes")}

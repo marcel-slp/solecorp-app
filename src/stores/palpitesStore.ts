@@ -13,6 +13,9 @@ export interface Palpite {
   placarPenaltisCasa?: number | null;
   placarPenaltisFora?: number | null;
   userId: number;
+  melhorJogador?: string;
+  melhorGoleiro?: string;
+  artilheiro?: string;
 }
 
 interface PalpitesStore {

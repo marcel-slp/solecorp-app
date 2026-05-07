@@ -1,90 +1,125 @@
-import { Box, Button, Flex, Heading, Spinner, VStack, Text } from "@chakra-ui/react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Spinner,
+  Text,
+  SimpleGrid,
+} from "@chakra-ui/react";
 import { PartidaUnicaPalpites } from "../PartidaUnicaPalpites";
 import { useEffect, useMemo, useState } from "react";
-import { generateGroupGamesFromDB, generateNextRoundFromDB, generateScoresFromDB } from "../../models/generateCopa2026";
+import {
+  generateGroupGamesFromDB,
+  generateNextRoundFromDB,
+  generateScoresFromDB
+} from "../../models/generateCopa2026";
 import { partidasStore } from "../../stores/partidasStore";
 import { palpitesStore } from "../../stores/palpitesStore";
 import { criteriosPontuacaoStore } from "../../stores/criteriosPontuacaoStore";
 import { recordToArray, retornaUserId } from "../../utils/Utils";
-//import { calcularPontosPorJogo } from "../TabelaClassificacaoBolao/scorePorJogo";
 import { ORDEM_FASES } from "../../models/BolaoCopaDefault";
-//import { calcularPontosExtra1 } from "../TabelaClassificacaoBolao/scoreExtra1";
 import { calcularPontuacaoPorPartida } from "../TabelaClassificacaoBolao/scorePorPartida";
+import { EscolherJogadorModal } from "../EscolherJogadorModal";
+import { premiosIndividuaisStore } from "../../stores/premiosIndividuaisStore";
+import { GiGoalKeeper, GiPodiumSecond, GiPodiumThird, GiPodiumWinner, GiSoccerKick, GiTrophy } from "react-icons/gi";
+import { jogadoresStore } from "../../stores/jogadoresStore";
+import { selecoesStore } from "../../stores/selecoesStore";
+import { EscolherSelecaoModal } from "../EscolherSelecaoModal";
 
 interface TabelaPalpitesJogosCopa2026Props {
   bolaoId: string;
 }
 
-function TabelaPalpitesJogosCopa2026({ bolaoId }: TabelaPalpitesJogosCopa2026Props) {
+function TabelaPalpitesJogosCopa2026({
+  bolaoId
+}: TabelaPalpitesJogosCopa2026Props) {
   const { partidas, carregarPartidas } = partidasStore();
-  const { pontuacaoCriterios, carregarPontuacaoCriterios } = criteriosPontuacaoStore();
-  const { palpitesUsuario, salvarPalpites, carregarPalpitesPorUsuario } = palpitesStore();
+  const { pontuacaoCriterios, carregarPontuacaoCriterios } =
+    criteriosPontuacaoStore();
+  const { palpitesUsuario, salvarPalpites, carregarPalpitesPorUsuario } =
+    palpitesStore();
+  const { premiosIndividuaisPalpite, carregarPremiosIndividuaisPalpite, editarPremiosIndividuaisPalpite } = premiosIndividuaisStore();
+  const { jogadores, carregarJogadores } = jogadoresStore();
+  const { selecoes, carregarSelecoes } = selecoesStore();
 
   const [isReady, setIsReady] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [melhorJogadorInterno, setMelhorJogadorInterno] = useState<string>("");
+  const [melhorGoleiroInterno, setMelhorGoleiroInterno] = useState<string>("");
+  const [artilheiroInterno, setArtilheiroInterno] = useState<string>("");
+  const [modalAberto, setModalAberto] = useState<
+    "listaMelhorJogador" | "listaMelhorGoleiro" | "listaArtilheiro" | "campeao" | "viceCampeao" | "terceiroLugar" | "melhor1Fase" | null
+  >(null);
+  const [campeaoInterno, setCampeaoInterno] = useState<string>("");
+  const [viceCampeaoInterno, setViceCampeaoInterno] = useState<string>("");
+  const [terceiroLugarInterno, setTerceiroLugarInterno] = useState<string>("");
+  const [melhor1FaseInterno, setMelhor1FaseInterno] = useState<string>("");
+  const userIdLogado = retornaUserId();
 
   useEffect(() => {
-    const userIdLogado = retornaUserId();
     const loadAll = async () => {
       await Promise.all([
         carregarPartidas(1),
         carregarPontuacaoCriterios(bolaoId),
-        carregarPalpitesPorUsuario(bolaoId, userIdLogado)
+        carregarPalpitesPorUsuario(bolaoId, userIdLogado),
+        carregarPremiosIndividuaisPalpite(bolaoId, userIdLogado)
       ]);
       setIsReady(true);
     };
 
     loadAll();
-  }, [bolaoId, carregarPartidas, carregarPontuacaoCriterios, carregarPalpitesPorUsuario, salvarPalpites]);
+  }, [bolaoId, carregarPartidas, carregarPontuacaoCriterios, carregarPalpitesPorUsuario, salvarPalpites, carregarPremiosIndividuaisPalpite, userIdLogado]);
+
+  useEffect(() => {
+    if (premiosIndividuaisPalpite) {
+      setMelhorJogadorInterno(premiosIndividuaisPalpite.melhorJogador || "");
+      setMelhorGoleiroInterno(premiosIndividuaisPalpite.melhorGoleiro || "");
+      setArtilheiroInterno(premiosIndividuaisPalpite.artilheiro || "");
+      setCampeaoInterno(premiosIndividuaisPalpite.campeao || "");
+      setViceCampeaoInterno(premiosIndividuaisPalpite.viceCampeao || "");
+      setTerceiroLugarInterno(premiosIndividuaisPalpite.terceiroLugar || "");
+      setMelhor1FaseInterno(premiosIndividuaisPalpite.melhor1Fase || "");
+    } else {
+      setMelhorJogadorInterno("");
+      setMelhorGoleiroInterno("");
+      setArtilheiroInterno("");
+      setCampeaoInterno("");
+      setViceCampeaoInterno("");
+      setTerceiroLugarInterno("");
+      setMelhor1FaseInterno("");
+    }
+  }, [premiosIndividuaisPalpite]);
+
+  const abrirModalPremio = (
+    tipo: "listaMelhorJogador" | "listaMelhorGoleiro" | "listaArtilheiro" | "campeao" | "viceCampeao" | "terceiroLugar" | "melhor1Fase"
+  ) => {
+    setModalAberto(tipo);
+
+    if (!Object.keys(jogadores).length) carregarJogadores();
+    if (selecoes.length <= 0) carregarSelecoes();
+  };
 
   const pontuacoesPorJogo = useMemo(() => {
     if (!isReady || !palpitesUsuario) return {};
 
     return Object.fromEntries(
       Object.entries(partidas).map(([id, partida]) => {
-        const palpite = Object.values(palpitesUsuario).flat().find(
-          p => p.partidaId === id
-        );
+        const palpite = Object.values(palpitesUsuario)
+          .flat()
+          .find((p) => p.partidaId === id);
 
         if (!palpite) return [id, 0];
 
         const pontuacaoPorPartida = calcularPontuacaoPorPartida(
-          partida, 
+          partida,
           palpite,
           pontuacaoCriterios
         );
 
-        return [id, pontuacaoPorPartida.ptsTotalPartida]
-    //     const palpite = Object.values(palpitesUsuario).flat().find(
-    //       p => p.partidaId === id
-    //     );
-
-    //     if (!palpite) return [id, 0];
-
-    //     const pontosPorJogo = calcularPontosPorJogo(
-    //       partida, 
-    //       {
-    //         placarCasa: palpite.placarCasa,
-    //         placarFora: palpite.placarFora,
-    //       },
-    //       criteriosPorJogo
-    //     );
-
-    //     const pontosExtra1 = calcularPontosExtra1(
-    //       partida, 
-    //       {
-    //         placarPenaltisCasa: palpite.placarPenaltisCasa,
-    //         placarPenaltisFora: palpite.placarPenaltisFora,
-    //       },
-    //       criteriosExtra1
-    //     );
-
-    //     const pontosTotal = 
-    //       pontosPorJogo.ptsDiferencaGols + pontosPorJogo.ptsGols + pontosPorJogo.ptsPlacarCravado + pontosPorJogo.ptsResultado + 
-    //       pontosExtra1.ptsClassificacaoPenaltis + pontosExtra1.ptsPlacarCravadoPenaltis;
-
-    //     return [id, pontosTotal];
+        return [id, pontuacaoPorPartida.ptsTotalPartida];
       })
     );
   }, [isReady, palpitesUsuario, pontuacaoCriterios, partidas]);
@@ -111,9 +146,24 @@ function TabelaPalpitesJogosCopa2026({ bolaoId }: TabelaPalpitesJogosCopa2026Pro
     try {
       const okSalvarPalpites = await salvarPalpites(recordToArray(palpitesUsuario));
 
+      const premiosIndividuaisId = premiosIndividuaisPalpite ? premiosIndividuaisPalpite.id : "";
+
+      const okSalvarPremiosIndividuaisPalpite = await editarPremiosIndividuaisPalpite(premiosIndividuaisId, {
+        bolaoId: bolaoId,
+        userId: userIdLogado,
+        campeonatoId: 1,
+        melhorJogador: melhorJogadorInterno,
+        melhorGoleiro: melhorGoleiroInterno,
+        artilheiro: artilheiroInterno,
+        campeao: campeaoInterno,
+        viceCampeao: viceCampeaoInterno,
+        terceiroLugar: terceiroLugarInterno,
+        melhor1Fase: melhor1FaseInterno
+      });
+
       setIsSaving(false);
 
-      if (okSalvarPalpites) {
+      if (okSalvarPalpites && okSalvarPremiosIndividuaisPalpite) {
         setIsSaved(true);
         setTimeout(() => setIsSaved(false), 2000);
       }
@@ -124,18 +174,105 @@ function TabelaPalpitesJogosCopa2026({ bolaoId }: TabelaPalpitesJogosCopa2026Pro
   };
 
   if (!isReady) {
-    return (
-      <VStack spacing={6} py={20} align="center">
-        <Spinner size="xl" color="blue.500" />
-        <Text fontSize="lg" color="gray.600">
-          Carregando jogos da Copa 2026...
-        </Text>
-      </VStack>
-    );
+    return <Spinner size="xl" />;
   }
 
   return (
     <Box>
+      <Box p={3} borderWidth="1px" borderRadius="lg" bg="white" width={"50%"} justifySelf={"center"} mb={4}>
+        <Heading size="md" mb={4}>
+          Prêmios Individuais da Copa
+        </Heading>
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+          <Button
+            onClick={() => abrirModalPremio("listaMelhorJogador")}
+            colorScheme={melhorJogadorInterno ? "green" : "gray"}
+            height="60px"
+            leftIcon={<GiTrophy size={20} />}
+          >
+            <Box flexDirection={"column"}>
+              <Text fontWeight="semibold" mb={1}>Melhor Jogador</Text>
+              <Text fontSize="sm">{melhorJogadorInterno}</Text>
+            </Box>
+          </Button>
+
+          <Button
+            onClick={() => abrirModalPremio("listaMelhorGoleiro")}
+            colorScheme={melhorGoleiroInterno ? "green" : "gray"}
+            height="60px"
+            leftIcon={<GiGoalKeeper size={20} />}
+          >
+            <Box flexDirection={"column"}>
+              <Text fontWeight="semibold" mb={1}>Melhor Goleiro</Text>
+              <Text fontSize="sm">{melhorGoleiroInterno}</Text>
+            </Box>
+          </Button>
+
+          <Button
+            onClick={() => abrirModalPremio("listaArtilheiro")}
+            colorScheme={artilheiroInterno ? "green" : "gray"}
+            height="60px"
+            leftIcon={<GiSoccerKick size={20} />}
+          >
+            <Box flexDirection={"column"}>
+              <Text fontWeight="semibold" mb={1}>Artilheiro</Text>
+              <Text fontSize="sm">{artilheiroInterno}</Text>
+            </Box>
+          </Button>
+        </SimpleGrid>
+
+        <Heading size="md" mb={4} mt={4}>Pódio da Copa</Heading>
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={5}>
+          <Button
+            onClick={() => abrirModalPremio("campeao")}
+            bgColor={campeaoInterno ? "gold" : "gray.100"}
+            height="60px"
+            leftIcon={<GiPodiumWinner size={20} />}
+          >
+            <Box flexDirection={"column"}>
+              <Text fontWeight="semibold">Campeão</Text>
+              <Text fontSize="sm">{campeaoInterno}</Text>
+            </Box>
+          </Button>
+
+          <Button
+            onClick={() => abrirModalPremio("viceCampeao")}
+            bgColor={viceCampeaoInterno ? "silver" : "gray.100"}
+            height="60px"
+            leftIcon={<GiPodiumSecond size={20} />}
+          >
+            <Box flexDirection={"column"}>
+              <Text fontWeight="semibold">Vice-Campeão</Text>
+              <Text fontSize="sm">{viceCampeaoInterno}</Text>
+            </Box>
+          </Button>
+
+          <Button
+            onClick={() => abrirModalPremio("terceiroLugar")}
+            bgColor={terceiroLugarInterno ? "burlywood" : "gray.100"}
+            height="60px"
+            leftIcon={<GiPodiumThird size={20} />}
+          >
+            <Box flexDirection={"column"}>
+              <Text fontWeight="semibold">3º Lugar</Text>
+              <Text fontSize="sm">{terceiroLugarInterno}</Text>
+            </Box>
+          </Button>
+
+          <Button
+            onClick={() => abrirModalPremio("melhor1Fase")}
+            colorScheme="blue"
+            //bgColor={melhor1FaseInterno ? "burlywood" : "gray.100"}
+            height="60px"
+            leftIcon={<GiPodiumThird size={20} />}
+          >
+            <Box flexDirection={"column"}>
+              <Text fontWeight="semibold">Melhor da 1ª Fase</Text>
+              <Text fontSize="sm">{melhor1FaseInterno}</Text>
+            </Box>
+          </Button>
+        </SimpleGrid>
+      </Box>
       <Flex align="center" justify="space-between" mb={6}>
         <Heading>Fase de Grupos</Heading>
         <Button
@@ -157,7 +294,7 @@ function TabelaPalpitesJogosCopa2026({ bolaoId }: TabelaPalpitesJogosCopa2026Pro
         />
       ))}
 
-      <Flex align="center" justify="space-between" mb={6} mt={6} >
+      <Flex align="center" justify="space-between" mb={6} mt={6}>
         <Heading>Fase de Mata-Mata</Heading>
         <Button
           isLoading={isSaving}
@@ -174,7 +311,9 @@ function TabelaPalpitesJogosCopa2026({ bolaoId }: TabelaPalpitesJogosCopa2026Pro
 
         return (
           <Box key={fase} mb={10}>
-            <Heading size="md" mb={4}>{fase}</Heading>
+            <Heading size="md" mb={4}>
+              {fase}
+            </Heading>
             {jogosDaFase.map((jogo) => (
               <PartidaUnicaPalpites
                 key={jogo.id}
@@ -187,6 +326,36 @@ function TabelaPalpitesJogosCopa2026({ bolaoId }: TabelaPalpitesJogosCopa2026Pro
           </Box>
         );
       })}
+
+      <EscolherJogadorModal
+        isOpen={
+          modalAberto === "listaMelhorJogador" || 
+          modalAberto === "listaMelhorGoleiro" || 
+          modalAberto === "listaArtilheiro"
+        }
+        onClose={() => setModalAberto(null)}
+        tipo={modalAberto as any}
+        onSelecionar={(nome) => {
+          if (modalAberto === "listaMelhorJogador") setMelhorJogadorInterno(nome);
+          if (modalAberto === "listaMelhorGoleiro") setMelhorGoleiroInterno(nome);
+          if (modalAberto === "listaArtilheiro") setArtilheiroInterno(nome);
+        }}
+        jogadoresDisponiveis={jogadores}
+      />
+      
+      <EscolherSelecaoModal
+        isOpen={modalAberto === "campeao" || modalAberto === "viceCampeao" || modalAberto === "terceiroLugar" || modalAberto === "melhor1Fase"}
+        onClose={() => setModalAberto(null)}
+        tipo={modalAberto as "campeao" | "viceCampeao" | "terceiroLugar" | "melhor1Fase"}
+        onSelecionar={(nome) => {
+          if (modalAberto === "campeao") setCampeaoInterno(nome);
+          if (modalAberto === "viceCampeao") setViceCampeaoInterno(nome);
+          if (modalAberto === "terceiroLugar") setTerceiroLugarInterno(nome);
+          if (modalAberto === "melhor1Fase") setMelhor1FaseInterno(nome);
+        }}
+        selecoesDisponiveis={selecoes}
+        selecoesEscolhidas={modalAberto === "melhor1Fase" ? undefined : [campeaoInterno, viceCampeaoInterno, terceiroLugarInterno].filter(Boolean)}
+      />
     </Box>
   );
 }

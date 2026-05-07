@@ -27,6 +27,9 @@ import GerenciarUsuarios from './pages/GerenciarUsuarios'
 import { Registro } from './pages/Registro'
 import BolaoRateioPremiacoes from './pages/BolaoPage/BolaoRateioPremiacoes'
 import GerenciarBoloesAdmin from './pages/GerenciarBoloesAdmin'
+import GerenciarJogadores from './pages/GerenciarJogadores'
+import GerenciarSelecoes from './pages/GerenciarSelecoes'
+import GerenciarPremiosIndividuais from './pages/GerenciarPremiosIndividuais'
 
 const modoBolao = true;
 
@@ -50,6 +53,9 @@ export function Router() {
           <Route path="gerenciar-perfil" element={<GerenciarPerfil />} />
           <Route path="gerenciar-usuarios" element={<GerenciarUsuarios />} />
           <Route path="gerenciar-boloes" element={<GerenciarBoloesAdmin />} />
+          <Route path="gerenciar-jogadores" element={<GerenciarJogadores />} />
+          <Route path="gerenciar-selecoes" element={<GerenciarSelecoes />} />
+          <Route path="gerenciar-premios-individuais" element={<GerenciarPremiosIndividuais />} />
           <Route path="evento/:eventoId" element={<EventoPage />}>
             <Route path="inicio" element={<Inicio />} />
             <Route path="resumo" element={<Resumo />} />
