@@ -5,10 +5,10 @@ import {
   GridItem,
   Heading,
   Image,
-  Link,
   VStack,
   Text,
-  Icon
+  Icon,
+  Button,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -59,26 +59,27 @@ export function Home() {
 								</Heading>
 
 								<VStack spacing={6} mt={6} justifySelf={"start"}>
-									<Link
-										color="white"
+									<Button
+                    width={"100%"}
+										colorScheme="green"
 										onClick={() => navigate("/boloes")}
 									>
                     <Icon color='white' as={FaFileCirclePlus} mr={2}/>
 										Criar Bolão
-									</Link>
+									</Button>
 
-									<Link
-										color="white"
+									<Button
+                    colorScheme="green"
 										onClick={() => navigate("/boloes")}
 									>
                     <Icon color='white' as={FaFolder} mr={2}/>
 										Meus Bolões
-									</Link>
+									</Button>
 
-									<Link color="white"> 
-                    <Icon color='white' as={FaBell} mr={2}/>
+									<Button colorScheme="green" disabled={true}> 
+                    <Icon color='white' as={FaBell} mr={2} />
 										Notificações
-									</Link>
+									</Button>
 								</VStack>
               </Box>
 

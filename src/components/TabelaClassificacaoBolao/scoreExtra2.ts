@@ -1,5 +1,6 @@
 import { PontuacaoCriterio } from "../../stores/criteriosPontuacaoStore";
 import { PremiosIndividuais } from "../../stores/premiosIndividuaisStore";
+import { PremiosIndividuaisPalpiteEscolhas } from "./scoreParticipantes";
 
 export interface PontuacaoParticipanteExtra2 {
   ptsMelhorJogador: number;
@@ -12,9 +13,9 @@ export interface PontuacaoParticipanteExtra2 {
 }
 
 export function calcularPontosExtra2(
-  premiosIndividuaisPalpite: PremiosIndividuais,
+  premiosIndividuaisPalpite: PremiosIndividuaisPalpiteEscolhas,
   premiosIndividuaisOriginal: PremiosIndividuais,
-  criteriosExtra2: PontuacaoCriterio[],
+  criteriosExtra2: PontuacaoCriterio[]
 ): PontuacaoParticipanteExtra2 {
 
   const pontos: PontuacaoParticipanteExtra2 = {
@@ -24,17 +25,22 @@ export function calcularPontosExtra2(
     ptsCampeao: 0,
     ptsViceCampeao: 0,
     ptsTerceiroLugar: 0,
-    ptsMelhor1Fase: 0
+    ptsMelhor1Fase: 0,
   };
 
-  const acertou = (palpite?: string, original?: string) =>
-    palpite && original && palpite === original;
+  const acertou = (palpite?: string | null, original?: string | null): boolean =>
+    !!(palpite && original && palpite === original);
 
   criteriosExtra2.forEach((criterio) => {
     const valor = criterio.pontos ?? 0;
-    if (!valor) return;
+    if (valor === 0) return;
 
     switch (criterio.situacao) {
+      case "Melhor Jogador":
+        if (acertou(premiosIndividuaisPalpite.melhorJogador, premiosIndividuaisOriginal.melhorJogador)) {
+          pontos.ptsMelhorJogador += valor;
+        }
+        break;
 
       case "Melhor Goleiro":
         if (acertou(premiosIndividuaisPalpite.melhorGoleiro, premiosIndividuaisOriginal.melhorGoleiro)) {
@@ -45,12 +51,6 @@ export function calcularPontosExtra2(
       case "Artilheiro":
         if (acertou(premiosIndividuaisPalpite.artilheiro, premiosIndividuaisOriginal.artilheiro)) {
           pontos.ptsArtilheiro += valor;
-        }
-        break;
-
-      case "Melhor Jogador":
-        if (acertou(premiosIndividuaisPalpite.melhorJogador, premiosIndividuaisOriginal.melhorJogador)) {
-          pontos.ptsMelhorJogador += valor;
         }
         break;
 

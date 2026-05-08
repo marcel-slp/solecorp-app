@@ -7,6 +7,7 @@ import {
   Spinner,
   Text,
   SimpleGrid,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { PartidaUnicaPalpites } from "../PartidaUnicaPalpites";
 import { useEffect, useMemo, useState } from "react";
@@ -27,6 +28,8 @@ import { GiGoalKeeper, GiPodiumSecond, GiPodiumThird, GiPodiumWinner, GiSoccerKi
 import { jogadoresStore } from "../../stores/jogadoresStore";
 import { selecoesStore } from "../../stores/selecoesStore";
 import { EscolherSelecaoModal } from "../EscolherSelecaoModal";
+import { bolaoStore } from "../../stores/bolaoStore";
+import { PalpitesPremiosIndividuaisModal } from "../PalpitesPremiosIndividuaisModal";
 
 interface TabelaPalpitesJogosCopa2026Props {
   bolaoId: string;
@@ -43,6 +46,7 @@ function TabelaPalpitesJogosCopa2026({
   const { premiosIndividuaisPalpite, carregarPremiosIndividuaisPalpite, editarPremiosIndividuaisPalpite } = premiosIndividuaisStore();
   const { jogadores, carregarJogadores } = jogadoresStore();
   const { selecoes, carregarSelecoes } = selecoesStore();
+  const { participantesBolao, carregarParticipantesBolao } = bolaoStore();
 
   const [isReady, setIsReady] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -58,6 +62,7 @@ function TabelaPalpitesJogosCopa2026({
   const [terceiroLugarInterno, setTerceiroLugarInterno] = useState<string>("");
   const [melhor1FaseInterno, setMelhor1FaseInterno] = useState<string>("");
   const userIdLogado = retornaUserId();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     const loadAll = async () => {
@@ -137,6 +142,24 @@ function TabelaPalpitesJogosCopa2026({
     return generateScoresFromDB(palpitesUsuario);
   }, [isReady, palpitesUsuario, bolaoId]);
 
+  const primeiroJogoJaComecou = useMemo(() => {
+    if (jogosFaseGrupos.length === 0) return false;
+
+    const primeiro = jogosFaseGrupos[0];
+
+    if (!primeiro?.dataJogo || !primeiro?.horaJogo) return false;
+
+    try {
+      const dataHoraJogo = new Date(`${primeiro.dataJogo}T${primeiro.horaJogo}:00`);
+      const agora = new Date();
+      const umaHoraAntes = new Date(dataHoraJogo.getTime() - 3600000); // 60 minutos
+
+      return agora >= umaHoraAntes;
+    } catch {
+      return false;
+    }
+  }, [jogosFaseGrupos]);
+
   const salvarPalpitesHandle = async () => {
     if(!bolaoId) return alert("Algo deu errado. Palpite não associado a nenhum bolão");
 
@@ -177,6 +200,13 @@ function TabelaPalpitesJogosCopa2026({
     return <Spinner size="xl" />;
   }
 
+  const handleClickPalpitesPremiosIndividuais = async () => {
+    if(participantesBolao.length == 0) {
+      carregarParticipantesBolao(bolaoId, retornaUserId());
+    }
+    onOpen();
+  };
+
   return (
     <Box>
       <Box p={3} borderWidth="1px" borderRadius="lg" bg="white" width={"50%"} justifySelf={"center"} mb={4}>
@@ -189,6 +219,7 @@ function TabelaPalpitesJogosCopa2026({
             colorScheme={melhorJogadorInterno ? "green" : "gray"}
             height="60px"
             leftIcon={<GiTrophy size={20} />}
+            disabled={primeiroJogoJaComecou}
           >
             <Box flexDirection={"column"}>
               <Text fontWeight="semibold" mb={1}>Melhor Jogador</Text>
@@ -201,6 +232,7 @@ function TabelaPalpitesJogosCopa2026({
             colorScheme={melhorGoleiroInterno ? "green" : "gray"}
             height="60px"
             leftIcon={<GiGoalKeeper size={20} />}
+            disabled={primeiroJogoJaComecou}
           >
             <Box flexDirection={"column"}>
               <Text fontWeight="semibold" mb={1}>Melhor Goleiro</Text>
@@ -213,6 +245,7 @@ function TabelaPalpitesJogosCopa2026({
             colorScheme={artilheiroInterno ? "green" : "gray"}
             height="60px"
             leftIcon={<GiSoccerKick size={20} />}
+            disabled={primeiroJogoJaComecou}
           >
             <Box flexDirection={"column"}>
               <Text fontWeight="semibold" mb={1}>Artilheiro</Text>
@@ -228,6 +261,7 @@ function TabelaPalpitesJogosCopa2026({
             bgColor={campeaoInterno ? "gold" : "gray.100"}
             height="60px"
             leftIcon={<GiPodiumWinner size={20} />}
+            disabled={primeiroJogoJaComecou}
           >
             <Box flexDirection={"column"}>
               <Text fontWeight="semibold">Campeão</Text>
@@ -240,6 +274,7 @@ function TabelaPalpitesJogosCopa2026({
             bgColor={viceCampeaoInterno ? "silver" : "gray.100"}
             height="60px"
             leftIcon={<GiPodiumSecond size={20} />}
+            disabled={primeiroJogoJaComecou}
           >
             <Box flexDirection={"column"}>
               <Text fontWeight="semibold">Vice-Campeão</Text>
@@ -252,6 +287,7 @@ function TabelaPalpitesJogosCopa2026({
             bgColor={terceiroLugarInterno ? "burlywood" : "gray.100"}
             height="60px"
             leftIcon={<GiPodiumThird size={20} />}
+            disabled={primeiroJogoJaComecou}
           >
             <Box flexDirection={"column"}>
               <Text fontWeight="semibold">3º Lugar</Text>
@@ -262,14 +298,27 @@ function TabelaPalpitesJogosCopa2026({
           <Button
             onClick={() => abrirModalPremio("melhor1Fase")}
             colorScheme="blue"
-            //bgColor={melhor1FaseInterno ? "burlywood" : "gray.100"}
             height="60px"
             leftIcon={<GiPodiumThird size={20} />}
+            disabled={primeiroJogoJaComecou}
           >
             <Box flexDirection={"column"}>
               <Text fontWeight="semibold">Melhor da 1ª Fase</Text>
               <Text fontSize="sm">{melhor1FaseInterno}</Text>
             </Box>
+          </Button>
+
+          <div></div>
+          <Button
+            hidden={!primeiroJogoJaComecou}
+            size="sm"
+            width="fit-content"
+            alignSelf="anchor-center"
+            justifySelf="center"
+            colorScheme="teal"
+            onClick={() => handleClickPalpitesPremiosIndividuais()}
+          >
+            Ver Palpites
           </Button>
         </SimpleGrid>
       </Box>
@@ -355,6 +404,12 @@ function TabelaPalpitesJogosCopa2026({
         }}
         selecoesDisponiveis={selecoes}
         selecoesEscolhidas={modalAberto === "melhor1Fase" ? undefined : [campeaoInterno, viceCampeaoInterno, terceiroLugarInterno].filter(Boolean)}
+      />
+
+      <PalpitesPremiosIndividuaisModal 
+        isOpen={isOpen}
+        onClose={onClose} 
+        participantesBolao={participantesBolao}
       />
     </Box>
   );

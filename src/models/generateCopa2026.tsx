@@ -57,34 +57,36 @@ function sortByDataHoraJogo(
   return timeA - timeB;
 }
 
-export function generateGroupGamesFromDB(partidas: Record<number, Partida> | Record<number, Palpite>) {
-    return Object.values(partidas)
-      .reduce<Partida[]>((acc, p) => {
-        if (p.grupo) {
-          acc.push({
-            id: p.id,
-            campeonatoId: 1, // ID do evento Copa do Mundo 2026
-            numeroPartida: p.numeroPartida,
-            placarCasa: p.placarCasa,
-            placarFora: p.placarFora,
-            timeCasa: p.timeCasa,
-            timeFora: p.timeFora,
-            simboloCasa: getImagemSelecoesURL(p.simboloCasa) || defaultParticipante,
-            simboloFora: getImagemSelecoesURL(p.simboloFora) || defaultParticipante,
-            dataJogo: p.dataJogo ?? undefined,
-            horaJogo: p.horaJogo ?? undefined,
-            localJogo: p.localJogo ?? undefined,
-            fase: p.fase ?? undefined
-          });
-        }
-        return acc;
-      }, [])
-      .sort(sortByDataHoraJogo)
-  };
-
-export function generateNextRoundFromDB(
-  partidas: Record<number, Partida>
+export function generateGroupGamesFromDB(
+  partidas: Record<number, Partida> | Record<number, Palpite>
 ) {
+  return Object.values(partidas)
+    .reduce<Partida[]>((acc, p) => {
+      if (p.grupo) {
+        acc.push({
+          id: p.id,
+          campeonatoId: 1, // ID do evento Copa do Mundo 2026
+          numeroPartida: p.numeroPartida,
+          placarCasa: p.placarCasa,
+          placarFora: p.placarFora,
+          timeCasa: p.timeCasa,
+          timeFora: p.timeFora,
+          simboloCasa:
+            getImagemSelecoesURL(p.simboloCasa) || defaultParticipante,
+          simboloFora:
+            getImagemSelecoesURL(p.simboloFora) || defaultParticipante,
+          dataJogo: p.dataJogo ?? undefined,
+          horaJogo: p.horaJogo ?? undefined,
+          localJogo: p.localJogo ?? undefined,
+          fase: p.fase ?? undefined
+        });
+      }
+      return acc;
+    }, [])
+    .sort(sortByDataHoraJogo);
+}
+
+export function generateNextRoundFromDB(partidas: Record<number, Partida>) {
   const fases: Record<string, Partida[]> = {};
 
   Object.values(partidas).forEach((p) => {
@@ -122,7 +124,7 @@ export function generateNextRoundFromDB(
 }
 
 function normalize(p: Partida | Palpite): FontePlacar {
-  if ('partidaId' in p) {
+  if ("partidaId" in p) {
     return {
       partidaKey: p.partidaId,
       placarCasa: p.placarCasa ?? undefined,
@@ -136,17 +138,16 @@ function normalize(p: Partida | Palpite): FontePlacar {
   return {
     partidaKey: p.id,
     placarCasa: p.placarCasa,
-    placarFora: p.placarFora,
+    placarFora: p.placarFora
   };
 }
 
 export function generateScoresFromDB(
   input: Record<number, Partida> | Record<number, Palpite>
 ): Record<string, Placar> {
-
   const placares: Record<string, Placar> = {};
 
-  Object.values(input).forEach(p => {
+  Object.values(input).forEach((p) => {
     const n = normalize(p);
     placares[n.partidaKey] = {
       placarCasa: n.placarCasa,

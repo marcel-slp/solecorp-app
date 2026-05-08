@@ -22,11 +22,18 @@ export type Convite = {
 export type ParticipanteBolao = {
   nome: string;
   email: string;
-  habilitarPalpite: boolean,
-  bolaoId: string,
-  userId: number,
-  roleBolao: string,
-  joinedAt: Date
+  habilitarPalpite: boolean;
+  melhorJogador?: string;
+  melhorGoleiro?: string;
+  artilheiro?: string;
+  campeao?: string;
+  viceCampeao?: string;
+  terceiroLugar?: string;
+  melhor1Fase?: string;
+  bolaoId: string;
+  userId: number;
+  roleBolao: string;
+  joinedAt: Date;
 }
 
 export type ParticipanteBolaoDTO = {

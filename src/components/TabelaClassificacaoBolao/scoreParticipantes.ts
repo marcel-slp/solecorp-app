@@ -4,91 +4,99 @@ import { ParticipanteBolao } from "../../stores/bolaoStore";
 import { PontuacaoCriterio } from "../../stores/criteriosPontuacaoStore";
 import { Palpite } from "../../stores/palpitesStore";
 import { Partida } from "../../stores/partidasStore";
-import { PremiosIndividuais, PremiosIndividuaisPalpite } from "../../stores/premiosIndividuaisStore";
+import { PremiosIndividuais } from "../../stores/premiosIndividuaisStore";
 import { calcularPontosExtra2 } from "./scoreExtra2";
 import { calcularPontuacaoPorPartida } from "./scorePorPartida";
 
-export interface PlacarPalpitePontuacao {
-  placarCasa: number | null;
-  placarFora: number | null;
-}
-
-export type PontuacaoParticipantePorJogo = {
-  ptsPlacarCravado: number;
-  ptsResultado: number;
-  ptsDiferencaGols: number;
-  ptsGols: number;
+export interface PremiosIndividuaisPalpiteEscolhas {
+  melhorJogador?: string | null;
+  melhorGoleiro?: string | null;
+  artilheiro?: string | null;
+  campeao?: string | null;
+  viceCampeao?: string | null;
+  terceiroLugar?: string | null;
+  melhor1Fase?: string | null;
 }
 
 export function calcularPontuacoesParticipantes(
   participantes: ParticipanteBolao | ParticipanteBolao[],
   palpitesBolao: Record<number, Palpite[]>,
   partidas: Record<string, Partida>,
-  premiosIndividuaisPalpite: PremiosIndividuaisPalpite,
   premiosIndividuaisOriginal: PremiosIndividuais,
   pontuacaoCriterios: PontuacaoCriterio[]
 ): PontuacaoParticipante | PontuacaoParticipante[] {
 
-  const calcularUm = (participante: ParticipanteBolao) => {
+  const calcularUm = (participante: ParticipanteBolao): PontuacaoParticipante => {
     const palpitesDoUsuario = palpitesBolao[participante.userId] || [];
 
-    let ptsPlacarCravado = 0;
-    let ptsResultado = 0;
-    let ptsGols = 0;
-    let ptsDiferencaGols = 0;
-    let ptsClassificacaoPenaltis = 0;
-    let ptsPlacarCravadoPenaltis = 0;
-    let ptsTotalExtra2 = 0;
-    let ptsTotalPartidas = 0;
-    let ptsTotalParticipante = 0;
-
-    palpitesDoUsuario.forEach((palpite) => {
+    const pontosDasPartidas = palpitesDoUsuario.reduce((acc, palpite) => {
       const partida = partidas[palpite.partidaId];
-      if (!partida) return;
+      if (!partida) return acc;
 
-      const pontosDaPartida = calcularPontuacaoPorPartida(
-        partida,
-        palpite,
-        pontuacaoCriterios
-      );
+      const pts = calcularPontuacaoPorPartida(partida, palpite, pontuacaoCriterios);
 
-      ptsPlacarCravado += pontosDaPartida.ptsPlacarCravado;
-      ptsResultado += pontosDaPartida.ptsResultado;
-      ptsGols += pontosDaPartida.ptsGols;
-      ptsDiferencaGols += pontosDaPartida.ptsDiferencaGols;
-      ptsClassificacaoPenaltis += pontosDaPartida.ptsClassificacaoPenaltis;
-      ptsPlacarCravadoPenaltis += pontosDaPartida.ptsPlacarCravadoPenaltis;
+      const isGrupo = partida.grupo !== null;
 
-      ptsTotalPartidas += pontosDaPartida.ptsTotalPartida;
+      return {
+        ptsPlacarCravado: acc.ptsPlacarCravado + pts.ptsPlacarCravado,
+        ptsResultado: acc.ptsResultado + pts.ptsResultado,
+        ptsGols: acc.ptsGols + pts.ptsGols,
+        ptsDiferencaGols: acc.ptsDiferencaGols + pts.ptsDiferencaGols,
+        ptsClassificacaoPenaltis: acc.ptsClassificacaoPenaltis + pts.ptsClassificacaoPenaltis,
+        ptsPlacarCravadoPenaltis: acc.ptsPlacarCravadoPenaltis + pts.ptsPlacarCravadoPenaltis,
+        ptsClassificacaoFaseGrupos: acc.ptsClassificacaoFaseGrupos + (isGrupo ? pts.ptsTotalPartida : 0),
+        ptsClassificacaoPlayoff: acc.ptsClassificacaoPlayoff + (!isGrupo ? pts.ptsTotalPartida : 0),
+        ptsTotalPartidas: acc.ptsTotalPartidas + pts.ptsTotalPartida,
+      };
+    }, {
+      ptsPlacarCravado: 0,
+      ptsResultado: 0,
+      ptsGols: 0,
+      ptsDiferencaGols: 0,
+      ptsClassificacaoPenaltis: 0,
+      ptsPlacarCravadoPenaltis: 0,
+      ptsClassificacaoFaseGrupos: 0,
+      ptsClassificacaoPlayoff: 0,
+      ptsTotalPartidas: 0,
     });
 
-    const pontosExtra2 = calcularPontosExtra2(premiosIndividuaisPalpite,
-      premiosIndividuaisOriginal,     
+    const palpiteUsuarioPremiosIndividuais: PremiosIndividuaisPalpiteEscolhas = {
+      melhorJogador: participante.melhorJogador,
+      melhorGoleiro: participante.melhorGoleiro,
+      artilheiro: participante.artilheiro,
+      campeao: participante.campeao,
+      viceCampeao: participante.viceCampeao,
+      terceiroLugar: participante.terceiroLugar,
+      melhor1Fase: participante.melhor1Fase,
+    }
+
+    const pontosExtra2 = calcularPontosExtra2(
+      palpiteUsuarioPremiosIndividuais, 
+      premiosIndividuaisOriginal, 
       pontuacaoCriterios.filter(pc => pc.tipo === TipoCriterioPontuacaoBolao.EXTRA_2)
     );
 
-    ptsTotalExtra2 = pontosExtra2.ptsMelhorJogador + pontosExtra2.ptsMelhorGoleiro + pontosExtra2.ptsArtilheiro +
-                       pontosExtra2.ptsCampeao + pontosExtra2.ptsViceCampeao + pontosExtra2.ptsTerceiroLugar + pontosExtra2.ptsMelhor1Fase
+    const ptsTotalExtra2 = 
+      pontosExtra2.ptsMelhorJogador +
+      pontosExtra2.ptsMelhorGoleiro +
+      pontosExtra2.ptsArtilheiro +
+      pontosExtra2.ptsCampeao +
+      pontosExtra2.ptsViceCampeao +
+      pontosExtra2.ptsTerceiroLugar +
+      pontosExtra2.ptsMelhor1Fase;
 
-    ptsTotalParticipante = ptsTotalPartidas + ptsTotalExtra2;
+    const ptsTotalParticipante = pontosDasPartidas.ptsTotalPartidas + ptsTotalExtra2;
 
     return {
       userId: participante.userId,
       nome: participante.nome,
-      ptsPlacarCravado,
-      ptsResultado,
-      ptsGols,
-      ptsDiferencaGols,
-      ptsClassificacaoPenaltis,
-      ptsPlacarCravadoPenaltis,
+      ...pontosDasPartidas,
       ptsTotalExtra2,
-      ptsTotalParticipante
+      ptsTotalParticipante,
     };
   };
 
-  if (!Array.isArray(participantes)) {
-    return calcularUm(participantes);
-  }
-
-  return participantes.map(calcularUm);
+  return Array.isArray(participantes) 
+    ? participantes.map(calcularUm) 
+    : calcularUm(participantes);
 }

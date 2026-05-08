@@ -64,15 +64,14 @@ export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
       const { carregarPalpitesPorBolao } = palpitesStore.getState();
       const { carregarPartidas } = partidasStore.getState();
       const { carregarPontuacaoCriterios } = criteriosPontuacaoStore.getState();
-      const { carregarPremiosIndividuaisOriginal, carregarPremiosIndividuaisPalpite } = premiosIndividuaisStore.getState();
+      const { carregarPremiosIndividuaisOriginal } = premiosIndividuaisStore.getState();
 
       await Promise.all([
         carregarParticipantesBolao(bolaoId, retornaUserId()),
         carregarPalpitesPorBolao(bolaoId),
         carregarPartidas(1),
         carregarPontuacaoCriterios(bolaoId),
-        carregarPremiosIndividuaisOriginal(1),
-        carregarPremiosIndividuaisPalpite(bolaoId, retornaUserId())
+        carregarPremiosIndividuaisOriginal(1)
       ]);
 
       const { participantesBolao } = bolaoStore.getState();
@@ -80,14 +79,13 @@ export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
       const { partidas } = partidasStore.getState();
       const { pontuacaoCriterios } = criteriosPontuacaoStore.getState();
       const { premiosIndividuaisOriginal } = premiosIndividuaisStore.getState();
-      const { premiosIndividuaisPalpite } = premiosIndividuaisStore.getState();
 
       if (participantesBolao.length === 0) {
         set({ pontuacoes: [], rankingGeral: [], loading: false });
         return;
       }
 
-      if(premiosIndividuaisPalpite === null || premiosIndividuaisOriginal === null) {
+      if(premiosIndividuaisOriginal === null) {
         return;
       } 
 
@@ -95,7 +93,6 @@ export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
         participantesBolao,
         palpitesBolao,
         partidas,
-        premiosIndividuaisPalpite,
         premiosIndividuaisOriginal,
         pontuacaoCriterios
       ) as PontuacaoParticipante[];
@@ -153,6 +150,12 @@ export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
             break;
           case "Extra":
             pts = p.ptsTotalExtra2;
+            break;
+          case "Classificação Fase Grupos":
+            pts = p.ptsClassificacaoFaseGrupos;
+            break;
+          case "Classificação Playoff":
+            pts = p.ptsClassificacaoPlayoff;
             break;
           default:
             pts = 0;

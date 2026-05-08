@@ -16,7 +16,7 @@ export const tituloImagem = style({
 });
 
 export const folha = style({
-  width: '90%',
+  width: '100%',
   backgroundColor: 'rgba(226, 226, 226, 0.336)',
   borderRadius: '10px',
   padding: '20px',

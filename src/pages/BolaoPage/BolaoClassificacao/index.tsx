@@ -21,6 +21,8 @@ const CRITERIOS_ABAS = [
   { key: "Placar Cravado Pênaltis", label: "Placar Cravado Pênaltis" },
   { key: "Classificação Pênaltis", label: "Classificação Pênaltis" },
   { key: "Extra", label: "Extra" },
+  { key: "Classificação Fase Grupos", label: "Classificação Fase Grupos" },
+  { key: "Classificação Playoff", label: "Classificação Playoff" },
   // { key: "Bônus 1", label: "Líder" },
   // { key: "Bônus 2", label: "Último isolado" },
   // { key: "Bônus 3", label: "Sem pontos no dia" },
@@ -36,8 +38,8 @@ export interface PontuacaoParticipante {
   ptsClassificacaoPenaltis: number;
   ptsPlacarCravadoPenaltis: number;
   ptsTotalExtra2: number;
-  // //ptsClassificacaoGrupos: number;
-  // //ptsClassificacao2Fase: number;
+  ptsClassificacaoFaseGrupos: number;
+  ptsClassificacaoPlayoff: number;
   // //ptsMelhorTime1fase: number;
   // ptsMelhorJogador: number;
   // ptsMelhorGoleiro: number;
@@ -110,7 +112,6 @@ function BolaoClassificacao() {
                   bolao={bolao}
                   loggedUserId={loggedUserId}
                   criterioFiltro={aba.key}
-                  
                 />
               </TabPanel>
             ))}

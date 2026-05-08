@@ -37,12 +37,14 @@ export default function NewsFeed() {
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const normalizedNews = (data.articles || data).map((item: any) => ({
-          id: item.id,
+          id: item.id || item.url || Math.random().toString(36),
           title: item.title,
-          description: item.description || item.summary || '',
-          url: item.url,
-          publishedAt: item.publishedAt || item.pubDate,
-          source: typeof item.source === 'object' ? item.source.name : item.source || 'Desconhecido',
+          description: item.description || item.summary || item.content || '',
+          url: item.url || item.link,
+          publishedAt: item.publishedAt || item.pubDate || item.date,
+          source: typeof item.source === 'object' 
+            ? item.source.name 
+            : item.source || 'Desconhecido',
         }));
 
         setNews(normalizedNews);
@@ -86,32 +88,29 @@ export default function NewsFeed() {
               p={5}
               borderWidth="1px"
               borderRadius="lg"
-              //bg="white"
               _hover={{ shadow: 'md', borderColor: 'blue.300' }}
-              //transition="all 0.2s"
             >
-              <HStack justify="space-between" mb={3} key={item.id}>
-                <Badge colorScheme="blue" fontSize="xs" px={3} py={1} key={item.id}>
+              <HStack justify="space-between" mb={3}>
+                <Badge colorScheme="blue" fontSize="xs" px={3} py={1}>
                   {item.source}
                 </Badge>
-                <Text fontSize="sm" color="gray.500" key={item.id}>
+                <Text fontSize="sm" color="gray.500" >
                   {new Date(item.publishedAt).toLocaleDateString('pt-BR')}
                 </Text>
               </HStack>
 
-              <Heading size="md" mb={2} lineHeight="1.4" key={item.id}>
-                <Link href={item.url} isExternal color="blue.700" _hover={{ color: 'blue.500' }} key={item.id}>
+              <Heading size="md" mb={2} lineHeight="1.4">
+                <Link href={item.url} isExternal color="blue.700" _hover={{ color: 'blue.500' }}>
                   {item.title}
                 </Link>
               </Heading>
 
-              <Text color="gray.600" noOfLines={3} key={item.id}>
+              <Text color="gray.600" noOfLines={3}>
                 {item.description}
               </Text>
 
               <Link
                 href={item.url}
-                key={item.id}
                 isExternal
                 color="blue.500"
                 fontSize="sm"

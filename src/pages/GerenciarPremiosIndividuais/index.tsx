@@ -39,7 +39,7 @@ export default function GerenciarPremiosIndividuais() {
     if (!premiosIndividuaisOriginal) {
       carregarPremiosIndividuaisOriginal(1);
     } else {
-      setMelhorJogadorInterno(premiosIndividuaisOriginal.melhorJogador);
+      setMelhorJogadorInterno(premiosIndividuaisOriginal.melhorJogador ?? "");
       setMelhorGoleiroInterno(premiosIndividuaisOriginal.melhorGoleiro ?? "");
       setArtilheiroInterno(premiosIndividuaisOriginal.artilheiro ?? "");
       setCampeaoInterno(premiosIndividuaisOriginal.campeao ?? "");

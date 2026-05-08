@@ -47,7 +47,6 @@ export function PartidaUnicaPalpites({
   const { palpitesBolao, carregarPalpitesPorBolao } = palpitesStore();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const loggedUserId = retornaUserId();
 
   const [numeroPartidaInterno, setNumeroPartidaInterno] = useState("");
@@ -146,7 +145,7 @@ export function PartidaUnicaPalpites({
       await carregarPalpitesPorBolao(bolaoId);
     }
     onOpen();
-  }
+  };
 
   return (
     <div className={styles.linhaTabelaJogos}>
@@ -362,42 +361,6 @@ export function PartidaUnicaPalpites({
               </Table>
             </TableContainer>
           </ModalBody>
-          {/* <ModalBody>
-            <TableContainer>
-              <Table variant="simple" size="sm">
-                <Thead>
-                  <Tr>
-                    <Th textAlign={"center"}>Participante</Th>
-                    <Th textAlign={"center"}>Palpite</Th>
-                    <Th textAlign={"center"}>Pênaltis</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {participantesBolao.map((p) => {
-                    const palpite = palpitesBolao[p.userId]?.find(
-                      (pal) => pal.partidaId === partida.id
-                    );
-
-                    return (
-                      <Tr key={p.userId}>
-                        <Td>{p.nome}</Td>
-                        <Td display="flex" alignItems="center">
-                          <Image mr="2" src={partida.simboloCasa} className={styles.simb} fallbackSrc="/images/default_participante.jpeg" />
-                          {palpite?.placarCasa ?? "-"} × {palpite?.placarFora ?? "-"}
-                          <Image ml="2" src={partida.simboloFora} className={styles.simb} fallbackSrc="/images/default_participante.jpeg" />
-                        </Td>
-                        <Td display="flex" alignItems="center">
-                          <Image mr="2" src={partida.simboloCasa} className={styles.simb} fallbackSrc="/images/default_participante.jpeg" />
-                          {palpite?.placarPenaltisCasa ?? "-"} × {palpite?.placarPenaltisFora ?? "-"}
-                          <Image ml="2" src={partida.simboloFora} className={styles.simb} fallbackSrc="/images/default_participante.jpeg" />
-                        </Td>
-                      </Tr>
-                    );
-                  })}
-                </Tbody>
-              </Table>
-            </TableContainer>
-          </ModalBody> */}
         </ModalContent>
       </Modal>
       </div>

@@ -38,7 +38,7 @@ function TabelaClassificacaoBolao({criterioFiltro}: TabelaClassificacaoBolaoProp
 
           <Tbody>
             {classificacao.map((item) => (
-              <Tr key={item.participante} className={styles.trBodyContainer}>
+              <Tr key={item.userId} className={styles.trBodyContainer}>
                 <Td fontWeight="bold" color="navy">
                   {item.posicao}
                 </Td>

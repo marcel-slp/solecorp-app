@@ -131,6 +131,8 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
         [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_RESULTADO]: "Resultado",
         [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_PLACAR]: "Placar Cravado",
         [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_DIFERENCA_GOLS]: "Diferença",
+        [TipoCriterioPremiacaoBolao.VENCEDOR_1_FASE]: "Classificação Fase Grupos",
+        [TipoCriterioPremiacaoBolao.VENCEDOR_2_FASE]: "Classificação Playoff",
       };
 
       const ranking = getClassificacaoPorCriterio(mapa[criterioPremiacao.key] || "");
