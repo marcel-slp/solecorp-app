@@ -133,7 +133,7 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
                 )}
               </MenuButton>
 
-              <MenuList bg={'whiteAlpha'}>
+              <MenuList bg={'whiteAlpha'} zIndex={2000}>
                 {paginasGerenciamento.map((pagina) => (
                   <MenuItem
                     key={pagina.path}

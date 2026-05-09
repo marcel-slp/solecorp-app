@@ -69,9 +69,9 @@ export const rateiosStore = create<RateiosStore>((set) => ({
   salvarRateio: async (dadosNovoRateio: NovoRateio) => {
     try {
       const novoRateio: Rateio = {
-        id: crypto.randomUUID().slice(0,5),
         ...dadosNovoRateio,
-      }
+        id: crypto.randomUUID().slice(0,5),
+      };
     
       const res = await salvarRateio(novoRateio);
 

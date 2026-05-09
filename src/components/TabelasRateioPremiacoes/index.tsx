@@ -341,7 +341,7 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
                           title={atingiuLimite && campoVazio ? "Percentual máximo atingido" : ""}
                           borderColor={totalPercentualDistribuido > 100 ? "red.500" : "gray.400"}
                           borderRadius="md"
-                          max={maxPermitido}
+                          max={String(maxPermitido)}
                           width="70px"
                           size="sm"
                           textAlign="center"
