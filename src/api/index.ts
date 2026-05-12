@@ -562,7 +562,7 @@ export const buscarCriterios = async (): Promise<{
   error: string | null;
 }> => {
   try {
-    const res = await axios.get<Criterio[]>(`${API_URL}/buscar_criterios.php`);
+    const res = await axios.get<Criterio[]>(`${API_URL}/buscar_criterios_pontuacao.php`);
 
     return { data: res.data, error: null };
   } catch (err: unknown) {

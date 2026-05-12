@@ -65,9 +65,9 @@ export default function TabelasCriteriosPontuacao({ pontosEditaveis = true }: Ta
   }, [pontuacaoCriterios]);
 
   const criteriosPorJogo = criterios.filter(c => c.tipo === TipoCriterioPontuacaoBolao.POR_JOGO);
-  const criteriosExtra1 = criterios.filter(c => c.tipo === TipoCriterioPontuacaoBolao.EXTRA_1);
+  //const criteriosExtra1 = criterios.filter(c => c.tipo === TipoCriterioPontuacaoBolao.EXTRA_1);
   const criteriosExtra2 = criterios.filter(c => c.tipo === TipoCriterioPontuacaoBolao.EXTRA_2);
-  const criteriosConvocacaoBonus = criterios.filter(c => c.tipo === TipoCriterioPontuacaoBolao.CONVOCACAO_BONUS);
+  //const criteriosConvocacaoBonus = criterios.filter(c => c.tipo === TipoCriterioPontuacaoBolao.CONVOCACAO_BONUS);
 
   const salvarLinha = async (criterio: Criterio, pontuacaoId: string) => {
     const pontuacoesInternoDoCriterio = pontuacoesInterno[criterio.id] || {};
@@ -131,7 +131,11 @@ export default function TabelasCriteriosPontuacao({ pontosEditaveis = true }: Ta
                   <Td textAlign={"center"}>{criterio.descricao}</Td>
                   <Td textAlign={"center"}>
                     <Input
-                      disabled={!pontosEditaveis}
+                      disabled={
+                        !pontosEditaveis || 
+                        criterio.situacao === "Classificação Pênaltis" || 
+                        criterio.situacao === "Placar Cravado Pênaltis"
+                      }
                       bg={"white"}
                       width={"60%"}
                       textAlign={"center"}
@@ -181,7 +185,7 @@ export default function TabelasCriteriosPontuacao({ pontosEditaveis = true }: Ta
               <Th textAlign={"center"}>Situação</Th>
               <Th textAlign={"center"}>Descrição</Th>
               <Th textAlign={"center"}>Pontos</Th>
-              <Th textAlign={"center"}>Condição</Th>
+              {/* <Th textAlign={"center"}>Condição</Th> */}
               <Th></Th>
             </Tr>
           </Thead>
@@ -211,11 +215,11 @@ export default function TabelasCriteriosPontuacao({ pontosEditaveis = true }: Ta
                       onChange={(e) => handleLocalChange(criterio.id, 'pontos', Number(e.target.value))}
                     />
                   </Td>
-                  <Td textAlign={"center"}>
+                  {/* <Td textAlign={"center"}>
                     <Text color={!criterioNaoImplementados(criterio.situacao) ? 'black' : 'grey'}>
                       {criterio.condicao}
                     </Text>
-                  </Td>
+                  </Td> */}
                   <Td textAlign={"center"}>
                     <IconButton
                       aria-label="Salvar critério"
@@ -239,7 +243,7 @@ export default function TabelasCriteriosPontuacao({ pontosEditaveis = true }: Ta
     <>
       <Heading mt={4}>Critérios de Pontuação - {bolao.nome}</Heading>
 
-      <Flex direction="row" gap={8} wrap="nowrap">
+      <Flex direction="row" gap={3} wrap="nowrap">
         <Box flex="1">
           {renderTabelaPorJogo("Pontuação Por Jogo")}
         </Box>
@@ -247,11 +251,15 @@ export default function TabelasCriteriosPontuacao({ pontosEditaveis = true }: Ta
         <Divider orientation= "vertical" className={styles.divider} />
 
         <Box flex="1">
-          {renderTabelaExtra(criteriosExtra1, "Pontuação Extra 1")}
+          {renderTabelaExtra(criteriosExtra2, "Pontuação Extra 2")}
         </Box>
+
+        {/* <Box flex="1">
+          {renderTabelaExtra(criteriosExtra1, "Pontuação Extra 1")}
+        </Box> */}
       </Flex>
 
-      <Flex direction="row" gap={8} wrap="nowrap" mt={8}>
+      {/* <Flex direction="row" gap={8} wrap="nowrap" mt={8}>
         <Box flex="1">
           {renderTabelaExtra(criteriosExtra2, "Pontuação Extra 2")}
         </Box>
@@ -261,7 +269,7 @@ export default function TabelasCriteriosPontuacao({ pontosEditaveis = true }: Ta
         <Box flex="1">
           {renderTabelaExtra(criteriosConvocacaoBonus, "Pontuação Convocação e Bônus")}
         </Box>
-      </Flex>
+      </Flex> */}
     </>
   );
 }

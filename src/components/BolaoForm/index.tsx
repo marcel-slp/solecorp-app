@@ -129,6 +129,7 @@ export default function BolaoForm({ bolao, onSalvar, onCancelar }: BolaoFormProp
             value={compartilhamentoBolaoInterno} 
             onChange={(e) => setCompartilhamentoBolaoInterno(e.target.value)}
             className={styles.bolaoInputs}
+            disabled={true}
           >
             <option value="publico">Público</option>
             <option value="privado">Privado</option>
@@ -142,6 +143,7 @@ export default function BolaoForm({ bolao, onSalvar, onCancelar }: BolaoFormProp
             value={tipoConviteBolaoInterno} 
             onChange={(e) => setTipoConviteBolaoInterno(e.target.value)}
             className={styles.bolaoInputs}
+            disabled={true}
           >
             <option value="aberto">Aberto</option>
             <option value="fechado">Fechado</option>

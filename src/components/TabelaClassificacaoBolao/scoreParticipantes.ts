@@ -42,10 +42,9 @@ export function calcularPontuacoesParticipantes(
         ptsResultado: acc.ptsResultado + pts.ptsResultado,
         ptsGols: acc.ptsGols + pts.ptsGols,
         ptsDiferencaGols: acc.ptsDiferencaGols + pts.ptsDiferencaGols,
-        ptsClassificacaoPenaltis: acc.ptsClassificacaoPenaltis + pts.ptsClassificacaoPenaltis,
-        ptsPlacarCravadoPenaltis: acc.ptsPlacarCravadoPenaltis + pts.ptsPlacarCravadoPenaltis,
         ptsClassificacaoFaseGrupos: acc.ptsClassificacaoFaseGrupos + (isGrupo ? pts.ptsTotalPartida : 0),
         ptsClassificacaoPlayoff: acc.ptsClassificacaoPlayoff + (!isGrupo ? pts.ptsTotalPartida : 0),
+        ptsPenaltis: acc.ptsPenaltis + pts.ptsPenaltis,
         ptsTotalPartidas: acc.ptsTotalPartidas + pts.ptsTotalPartida,
       };
     }, {
@@ -53,10 +52,9 @@ export function calcularPontuacoesParticipantes(
       ptsResultado: 0,
       ptsGols: 0,
       ptsDiferencaGols: 0,
-      ptsClassificacaoPenaltis: 0,
-      ptsPlacarCravadoPenaltis: 0,
       ptsClassificacaoFaseGrupos: 0,
       ptsClassificacaoPlayoff: 0,
+      ptsPenaltis: 0,
       ptsTotalPartidas: 0,
     });
 

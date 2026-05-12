@@ -18,8 +18,7 @@ const CRITERIOS_ABAS = [
   { key: "Diferença", label: "Diferença" },
   { key: "Gols", label: "Gols" },
   { key: "Resultado", label: "Resultado" },
-  { key: "Placar Cravado Pênaltis", label: "Placar Cravado Pênaltis" },
-  { key: "Classificação Pênaltis", label: "Classificação Pênaltis" },
+  { key: "Classificação Pênaltis", label: "Pênaltis" },
   { key: "Extra", label: "Extra" },
   { key: "Classificação Fase Grupos", label: "Classificação Fase Grupos" },
   { key: "Classificação Playoff", label: "Classificação Playoff" },
@@ -35,8 +34,7 @@ export interface PontuacaoParticipante {
   ptsResultado: number;
   ptsGols: number;
   ptsDiferencaGols: number;
-  ptsClassificacaoPenaltis: number;
-  ptsPlacarCravadoPenaltis: number;
+  ptsPenaltis: number;
   ptsTotalExtra2: number;
   ptsClassificacaoFaseGrupos: number;
   ptsClassificacaoPlayoff: number;

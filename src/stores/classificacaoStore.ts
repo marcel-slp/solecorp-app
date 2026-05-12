@@ -142,11 +142,8 @@ export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
           case "Gols":
             pts = p.ptsGols;
             break;
-          case "Placar Cravado Pênaltis":
-            pts = p.ptsPlacarCravadoPenaltis;
-            break;
           case "Classificação Pênaltis":
-            pts = p.ptsClassificacaoPenaltis;
+            pts = p.ptsPenaltis;
             break;
           case "Extra":
             pts = p.ptsTotalExtra2;
