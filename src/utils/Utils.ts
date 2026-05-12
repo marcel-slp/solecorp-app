@@ -64,3 +64,18 @@ export function getDataHoraPartida(dataJogo: string, horaJogo?: string) {
 
   return new Date(ano, mes - 1, dia, hora, minuto);
 }
+
+export const CRITERIOS_ABAS = [
+  { key: "Geral", label: "Classificação Geral" },
+  { key: "Placar Cravado", label: "Placar Cravado" },
+  { key: "Diferença", label: "Diferença" },
+  { key: "Gols", label: "Gols" },
+  { key: "Resultado", label: "Resultado" },
+  { key: "Classificação Pênaltis", label: "Pênaltis" },
+  { key: "Extra", label: "Extra" },
+  { key: "Classificação Fase Grupos", label: "1ª Fase" },
+  { key: "Classificação Playoff", label: "2ª Fase" },
+  // { key: "Bônus 1", label: "Líder" },
+  // { key: "Bônus 2", label: "Último isolado" },
+  // { key: "Bônus 3", label: "Sem pontos no dia" },
+];

@@ -19,7 +19,7 @@ function TabelaClassificacaoBolao({criterioFiltro}: TabelaClassificacaoBolaoProp
   }, [criterioFiltro, getClassificacaoPorCriterio]);
 
   return (
-    <Box width="50%" overflowX="auto">
+    <Box overflowX="auto">
       <TableContainer>
         <Table variant="unstyled" size="sm">
           <Thead>

@@ -4,19 +4,20 @@ export const classificacaoContainer = style({
   width: '100%',
   minHeight: '800px',
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
 });
 
 export const tituloImagem = style({
-  width: '90%',
-  maxWidth: '527px',
-  margin: '10px 0',
-  display: 'flex',
-  justifyContent: 'flex-start',
+  display: "flex", 
+  alignItems: "center", 
+  justifyContent: "space-between", 
+  marginBottom: "20px",
+  flexWrap: "wrap",
+  gap: "15px"
 });
 
 export const folha = style({
-  width: '100%',
+  width: 'fit-content',
   backgroundColor: 'rgba(226, 226, 226, 0.336)',
   borderRadius: '10px',
   padding: '20px',
@@ -53,4 +54,37 @@ export const formParticipantesContainer = style({
 
 export const tableParticipantesContainer = style({
   width: '100%'
+});
+
+export const pdfLink = style({
+  textDecoration: "none", 
+  alignSelf: "end"
+});
+
+export const imageExportTitulo = style({
+  textAlign: "center",
+  fontSize: "32px",
+  marginBottom: "40px",
+  fontWeight: "bold"
+});
+
+export const imageExportAbas = style({
+  display: "flex",
+  flexWrap: "nowrap",
+  gap: "14px",
+  justifyContent: "flex-start"
+});
+
+export const imageExportAbaUnica = style({
+  width: "fit-content",
+  flexShrink: 0,
+  border: "1px solid #ddd",
+  borderRadius: "6px"
+});
+
+export const imageExportAbaLabel = style({
+  textAlign: "center",
+  marginBottom: "12px",
+  fontSize: "16px",
+  fontWeight: "bold"
 });

@@ -27,6 +27,7 @@ import { FaArrowTrendUp } from "react-icons/fa6";
 import { classificacaoStore } from "../../../stores/classificacaoStore.ts";
 import { palpitesStore } from "../../../stores/palpitesStore.ts";
 import ListaJogosDia from "../../../components/ListaJogosDoDia/index.tsx";
+import { FcInvite } from "react-icons/fc";
 
 export function InicioBolao() {
   const { bolao } = useOutletContext<{ bolao: Bolao }>();
@@ -186,6 +187,7 @@ export function InicioBolao() {
                     onClick={handleCriarConviteLink}
                     colorScheme={isSaved ? "green" : "blue"}
                     height={'50%'}
+                    leftIcon={<FcInvite />}
                   >
                     {isSaved
                       ? "Link copiado"

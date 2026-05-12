@@ -8,7 +8,7 @@ import { criteriosPontuacaoStore } from './criteriosPontuacaoStore';
 import { retornaUserId } from '../utils/Utils';
 import { premiosIndividuaisStore } from './premiosIndividuaisStore';
 
-type PontuacaoParticipanteComPosicao = {
+export type PontuacaoParticipanteComPosicao = {
   posicao: number,
   participante: string,
   pts: number,
