@@ -1,16 +1,14 @@
 import { useMemo } from "react";
 import * as styles from "./styles.css.ts";
 import { Box, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text } from "@chakra-ui/react";
-import { Bolao } from "../../stores/bolaoStore.ts";
 import { classificacaoStore } from "../../stores/classificacaoStore.ts";
 
 interface TabelaClassificacaoBolaoProps {
-  bolao: Bolao;
-  loggedUserId: number;
   criterioFiltro: string;
+  isGeral?: boolean;
 }
 
-function TabelaClassificacaoBolao({criterioFiltro}: TabelaClassificacaoBolaoProps) {
+function TabelaClassificacaoBolao({criterioFiltro, isGeral}: TabelaClassificacaoBolaoProps) {
 
   const { getClassificacaoPorCriterio } = classificacaoStore();
 
@@ -23,19 +21,21 @@ function TabelaClassificacaoBolao({criterioFiltro}: TabelaClassificacaoBolaoProp
       <TableContainer>
         <Table variant="unstyled" size="sm">
           <Thead>
-            <Tr className={styles.trHeadContainer}>
-              <Th w="40px" className={styles.thItem} color="black">
+            <Tr 
+              className={styles.trHeadContainer}
+              style={isGeral ? { backgroundColor: "#2C3E50", color: "white" } : {}}
+            >
+              <Th w="40px" className={styles.thItem} color={isGeral ? "white" : "black"}>
                 POS
               </Th>
-              <Th className={styles.thItem} pl={2}>
+              <Th className={styles.thItem} pl={2} color={isGeral ? "white" : "black"}>
                 PARTICIPANTE
               </Th>
-              <Th w="60px" className={styles.thItem} color="navy">
+              <Th w="60px" className={styles.thItem} color={isGeral ? "white" : "navy"}>
                 PTS
               </Th>
             </Tr>
           </Thead>
-
           <Tbody>
             {classificacao.map((item) => (
               <Tr key={item.userId} className={styles.trBodyContainer}>

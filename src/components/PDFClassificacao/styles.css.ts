@@ -19,8 +19,11 @@ export default StyleSheet.create({
     justifyContent: 'space-between'
   },
   tableContainer: {
-    width: '10.8%',
+    width: '20%',
     paddingRight: 4
+  },
+  tableContainerGeral: {
+    width: '30%'
   },
   tableTitle: {
     fontSize: 8,
@@ -41,6 +44,14 @@ export default StyleSheet.create({
   tableHeader: {
     backgroundColor: '#f0f0f0',
     fontWeight: 'bold',
+  },
+  tableHeaderDark: {
+    backgroundColor: '#2C3E50',
+    color: '#FFFFFF',
+  },
+  tableTitleDark: {
+    color: '#2C3E50',
+    fontWeight: 'bold'
   },
   cellPos: { width: '11%', textAlign: 'center', padding: 2 },
   cellNome: { width: '55%', paddingLeft: 4, paddingVertical: 2 },

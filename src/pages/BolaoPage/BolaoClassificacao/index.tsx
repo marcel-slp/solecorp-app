@@ -18,7 +18,7 @@ import tituloClassificacao from "@/assets/images/tituloClassificacao.jpg";
 import TabelaClassificacaoBolao from "../../../components/TabelaClassificacaoBolao/index.tsx";
 import { useOutletContext } from "react-router-dom";
 import { Bolao } from "../../../stores/bolaoStore.ts";
-import { CRITERIOS_ABAS, retornaUserId } from "../../../utils/Utils.ts";
+import { CRITERIOS_ABAS } from "../../../utils/Utils.ts";
 import { useEffect, useRef, useState } from "react";
 import { classificacaoStore } from "../../../stores/classificacaoStore.ts";
 import { BsFillPrinterFill, BsImage } from "react-icons/bs";
@@ -54,7 +54,6 @@ export interface PontuacaoParticipante {
 
 function BolaoClassificacao() {
   const { bolao } = useOutletContext<{ bolao: Bolao }>();
-  const loggedUserId = retornaUserId();
   const imageRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showForCapture, setShowForCapture] = useState(false);
@@ -162,17 +161,14 @@ function BolaoClassificacao() {
             <TabPanels>
               {CRITERIOS_ABAS.map((aba) => (
                 <TabPanel key={aba.key} width="50%">
-                  <TabelaClassificacaoBolao
-                    bolao={bolao}
-                    loggedUserId={loggedUserId}
-                    criterioFiltro={aba.key}
-                  />
+                  <TabelaClassificacaoBolao criterioFiltro={aba.key} />
                 </TabPanel>
               ))}
             </TabPanels>
           </Tabs>
         </div>
       </div>
+
       <div
         ref={imageRef}
         style={{
@@ -188,17 +184,41 @@ function BolaoClassificacao() {
         <Heading className={styles.imageExportTitulo}>
           {bolao.nome} - Classificação Completa
         </Heading>
+
         <div className={styles.imageExportAbas}>
-          {CRITERIOS_ABAS.map((aba) => (
-            <div key={aba.key} className={styles.imageExportAbaUnica}>
-              <Text className={styles.imageExportAbaLabel}>{aba.label}</Text>
-              <TabelaClassificacaoBolao
-                bolao={bolao}
-                loggedUserId={loggedUserId}
-                criterioFiltro={aba.key}
-              />
-            </div>
-          ))}
+          {CRITERIOS_ABAS.map((aba) => {
+            const isGeral = aba.key === "Geral";
+
+            return (
+              <div
+                key={aba.key}
+                style={{
+                  width: "fit-content",
+                  flexShrink: 0,
+                  border: isGeral ? "1px solid #2C3E50" : "1px solid #ddd",
+                  borderRadius: "6px",
+                  overflow: "hidden"
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    backgroundColor: isGeral ? "#2C3E50" : "transparent",
+                    color: isGeral ? "white" : "black"
+                  }}
+                >
+                  {aba.label}
+                </Text>
+
+                <TabelaClassificacaoBolao
+                  criterioFiltro={aba.key}
+                  isGeral={isGeral}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </>
