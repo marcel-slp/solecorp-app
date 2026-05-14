@@ -21,7 +21,7 @@ import { Bolao } from "../../../stores/bolaoStore.ts";
 import { CRITERIOS_ABAS } from "../../../utils/Utils.ts";
 import { useEffect, useRef, useState } from "react";
 import { classificacaoStore } from "../../../stores/classificacaoStore.ts";
-import { BsFillPrinterFill, BsImage } from "react-icons/bs";
+import { BsFileExcel, BsFillPrinterFill, BsImage } from "react-icons/bs";
 import { PDFClassificacao } from "../../../components/PDFClassificacao/index.tsx";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import * as htmlToImage from "html-to-image";
@@ -94,6 +94,36 @@ function BolaoClassificacao() {
     }, 800);
   };
 
+  const handleExportCSV = () => {
+    const { getClassificacaoPorCriterio } = classificacaoStore.getState();
+    
+    let csvContent = "Rankings - " + bolao.nome + "\n\n";
+
+    CRITERIOS_ABAS.forEach((aba) => {
+      const dados = getClassificacaoPorCriterio(aba.key);
+      
+      csvContent += `${aba.label}\n`;
+      csvContent += "POS;PARTICIPANTE;PTS\n";
+
+      dados.forEach((item) => {
+        csvContent += `${item.posicao};${item.participante};${item.pts}\n`;
+      });
+
+      csvContent += "\n";
+    });
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    
+    link.href = url;
+    link.download = `Classificacao_${bolao.nome}.csv`;
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) {
     return (
       <Box textAlign="center" py={20}>
@@ -138,13 +168,21 @@ function BolaoClassificacao() {
               {({ loading }) => (
                 <Button
                   leftIcon={<Icon as={BsFillPrinterFill} />}
-                  colorScheme="blue"
+                  colorScheme="red"
                   isLoading={loading}
                 >
                   Baixar PDF
                 </Button>
               )}
             </PDFDownloadLink>
+
+            <Button 
+              leftIcon={<BsFileExcel />} 
+              colorScheme="green" 
+              onClick={handleExportCSV}
+            >
+              Exportar CSV
+            </Button>
           </HStack>
         </div>
 
