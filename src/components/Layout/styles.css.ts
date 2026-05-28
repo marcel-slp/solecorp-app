@@ -10,5 +10,12 @@ export const main = style({
   flex: 1,
   overflow: 'auto',
   width: '100vw',
-  paddingTop: '85px'
+  paddingTop: '55px',
+
+  '@media': {
+    'screen and (max-width: 768px)': {
+      paddingTop: '85px'
+    }
+  }
+  
 })
