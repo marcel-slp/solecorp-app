@@ -243,17 +243,45 @@ export function PartidaUnicaPalpitesMobile({
               fallbackSrc={defaultParticipante}
             />
             <div className={styles.nome}>{timeCasaInterno}</div>
-            <Input
-              isDisabled={jogoJaComecou}
-              w={"20%"}
-              backgroundColor="white"
-              textAlign="center"
-              type="number"
-              value={placarCasaInterno}
-              onChange={(e) =>
-                atualizarPlacarPalpite(e.target.value, placarForaInterno)
-              }
-            />
+            <div className={styles.placarContainer}>
+              <Input
+                isDisabled={jogoJaComecou}
+                w={"53%"}
+                backgroundColor="white"
+                textAlign="center"
+                type="number"
+                value={placarCasaInterno}
+                onChange={(e) =>
+                  atualizarPlacarPalpite(e.target.value, placarForaInterno)
+                }
+              />
+
+              {abrirPenaltis && (
+                <>
+                  <Text fontSize="xs" color="gray.500" mr={1} ml={1}>
+                    P
+                  </Text>
+                  <Input
+                    isDisabled={jogoJaComecou}
+                    width="48px"
+                    height="32px"
+                    fontSize="sm"
+                    textAlign="center"
+                    border="1px solid #4a90e2"
+                    type="number"
+                    value={placarPenaltisCasaInterno}
+                    onChange={(e) =>
+                      atualizarPlacarPalpite(
+                        placarCasaInterno,
+                        placarForaInterno,
+                        e.target.value,
+                        placarPenaltisForaInterno
+                      )
+                    }
+                  />
+                </>
+              )}
+            </div>
           </div>
 
           <div className={styles.timeForaLinha}>
@@ -263,18 +291,46 @@ export function PartidaUnicaPalpitesMobile({
               fallbackSrc={defaultParticipante}
             />
             <div className={styles.nome}>{timeForaInterno}</div>
-            <Input
-              isDisabled={jogoJaComecou}
-              //className={styles.placar}
-              w={"20%"}
-              backgroundColor="white"
-              textAlign="center"
-              type="number"
-              value={placarForaInterno}
-              onChange={(e) =>
-                atualizarPlacarPalpite(placarCasaInterno, e.target.value)
-              }
-            />
+            <div className={styles.placarContainer}>
+              <Input
+                isDisabled={jogoJaComecou}
+                w={"53%"}
+                backgroundColor="white"
+                textAlign="center"
+                type="number"
+                value={placarForaInterno}
+                onChange={(e) =>
+                  atualizarPlacarPalpite(placarCasaInterno, e.target.value)
+                }
+              />
+
+              {abrirPenaltis && (
+                <>
+                  <Text fontSize="xs" color="gray.500" mr={1} ml={1}>
+                    P
+                  </Text>
+                  <Input
+                    isDisabled={jogoJaComecou}
+                    width="48px"
+                    height="32px"
+                    fontSize="sm"
+                    border="1px solid #4a90e2"
+                    backgroundColor="white"
+                    textAlign="center"
+                    type="number"
+                    value={placarPenaltisForaInterno}
+                    onChange={(e) =>
+                      atualizarPlacarPalpite(
+                        placarCasaInterno,
+                        placarForaInterno,
+                        placarPenaltisCasaInterno,
+                        e.target.value
+                      )
+                    }
+                  />
+                </>
+              )}
+            </div>
           </div>
 
           <div className={styles.resultadoLinha}>
@@ -314,51 +370,6 @@ export function PartidaUnicaPalpitesMobile({
               </Badge>
             </Flex>
           </div>
-
-          {abrirPenaltis && (
-            <Flex align="center" gap={3} style={{ gridColumn: "1 / -1" }}>
-              <Text fontWeight="bold" color="gray.600">
-                Pênaltis:
-              </Text>
-              <Input
-                isDisabled={jogoJaComecou}
-                backgroundColor="white"
-                textAlign="center"
-                type="number"
-                value={placarPenaltisCasaInterno}
-                width={"52px"}
-                height={"30px"}
-                onChange={(e) =>
-                  atualizarPlacarPalpite(
-                    placarCasaInterno,
-                    placarForaInterno,
-                    e.target.value,
-                    placarPenaltisForaInterno
-                  )
-                }
-                onBlur={() => validarPenaltis()}
-              />
-              <div className={styles.xLinhaPenaltis}>x</div>
-              <Input
-                isDisabled={jogoJaComecou}
-                backgroundColor="white"
-                textAlign="center"
-                type="number"
-                width={"52px"}
-                height={"30px"}
-                value={placarPenaltisForaInterno}
-                onChange={(e) =>
-                  atualizarPlacarPalpite(
-                    placarCasaInterno,
-                    placarForaInterno,
-                    placarPenaltisCasaInterno,
-                    e.target.value
-                  )
-                }
-                onBlur={() => validarPenaltis()}
-              />
-            </Flex>
-          )}
 
           <Button
             hidden={!jogoJaComecou}

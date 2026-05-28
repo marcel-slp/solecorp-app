@@ -146,7 +146,7 @@ function BolaoClassificacaoMobile() {
             value={criterioSelecionado}
             onChange={(e) => setCriterioSelecionado(e.target.value)}
             size="lg"
-            bg="white"
+            bg="gray.100"
             borderRadius="md"
             fontWeight="medium"
           >

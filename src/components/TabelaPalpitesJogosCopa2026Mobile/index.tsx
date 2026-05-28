@@ -415,6 +415,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
         <Button
           isLoading={isSaving}
           colorScheme={isSaved ? "green" : "blue"}
+          w={"55%"}
           onClick={() => salvarPalpitesHandle()}
         >
           {isSaved ? "Salvo!" : "Salvar Palpites"}
