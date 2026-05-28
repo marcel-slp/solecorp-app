@@ -367,6 +367,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
               alignSelf="anchor-center"
               justifySelf="center"
               colorScheme="teal"
+              mt={6}
               onClick={() => handleClickPalpitesPremiosIndividuais()}
             >
               Ver Palpites

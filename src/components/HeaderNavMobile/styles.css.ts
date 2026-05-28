@@ -2,12 +2,13 @@ import { style } from '@vanilla-extract/css';
 
 export const navigationContainer = style({
   backgroundColor: 'rgb(19, 150, 67)',
+  width: '100%',
   padding: '5px 12px 5px',
   flexDirection: 'column',
   gap: '10px',
-  position: 'sticky',
-  top: 0,
-  zIndex: 100,
+  position: 'fixed',
+  top: '55px',
+  zIndex: 999,
   boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
 });
 

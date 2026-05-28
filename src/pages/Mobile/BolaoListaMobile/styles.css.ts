@@ -15,8 +15,7 @@ export const bolaoCard = style({
 });
 
 export const tableBolaoContainer = style({
-  margin: '10px',
-  height: '100%',
+  margin: '0 10px',
   color: 'black',
   justifyContent: 'start'
 });

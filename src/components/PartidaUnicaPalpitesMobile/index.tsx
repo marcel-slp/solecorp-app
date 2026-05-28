@@ -246,8 +246,9 @@ export function PartidaUnicaPalpitesMobile({
             <div className={styles.placarContainer}>
               <Input
                 isDisabled={jogoJaComecou}
-                w={"53%"}
+                w={"52px"}
                 backgroundColor="white"
+                border="1px solid gray"
                 textAlign="center"
                 type="number"
                 value={placarCasaInterno}
@@ -294,8 +295,9 @@ export function PartidaUnicaPalpitesMobile({
             <div className={styles.placarContainer}>
               <Input
                 isDisabled={jogoJaComecou}
-                w={"53%"}
+                w={"52px"}
                 backgroundColor="white"
+                border="1px solid gray"
                 textAlign="center"
                 type="number"
                 value={placarForaInterno}

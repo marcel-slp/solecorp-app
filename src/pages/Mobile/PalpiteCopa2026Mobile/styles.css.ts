@@ -9,7 +9,7 @@ export const folhaContainer = style({
 
 export const tituloImagem = style({
   width: '100%',
-  margin: '10px 0 20px 0',
+  margin: '0 0 20px 0',
   display: 'flex',
 
   '@media': {

@@ -4,11 +4,14 @@ import * as styles from './styles.css';
 
 export type FooterProps = {
     modoBolao?: boolean;
+    mobile?: boolean;
 };
 
-function Footer ({modoBolao}: FooterProps) {
+function Footer ({ modoBolao, mobile=false }: FooterProps) {
   return (
-    <div className={styles.footer}>
+    <>
+    {!mobile && (
+      <div className={styles.footer}>
       <Image src={logoSolecorp} boxSize='30' alt="Logo" />
 
       <div className={styles.footerText}
@@ -24,6 +27,8 @@ function Footer ({modoBolao}: FooterProps) {
         </div>
       </div>
     </div>
+    )}
+    </>
   );
 };
 

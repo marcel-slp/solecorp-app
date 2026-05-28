@@ -53,6 +53,7 @@ export const timeForaLinha = style({
 
 export const resultadoLinha = style({
   gridColumn: "1 / -1",
+  marginBottom: '10px',
   display: "flex",
   alignItems: "center",
   gap: "16px",

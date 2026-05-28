@@ -9,17 +9,10 @@ export const headerTop = style({
   justifyContent: 'space-between',
   padding: '0 12px',
   boxSizing: 'border-box',
-  position: 'sticky',
+  position: 'fixed',
   top: 0,
   zIndex: 1000,
   borderBottom: '1px solid #333',
-
-  '@media': {
-    '(max-width: 768px)': {
-      height: '52px',
-      padding: '0 10px',
-    }
-  }
 });
 
 export const leftSection = style({

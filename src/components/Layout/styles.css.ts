@@ -9,5 +9,6 @@ export const container = style({
 export const main = style({
   flex: 1,
   overflow: 'auto',
-  width: '100vw'
+  width: '100vw',
+  paddingTop: '85px'
 })

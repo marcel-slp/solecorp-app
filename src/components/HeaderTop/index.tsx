@@ -228,7 +228,6 @@ export function HeaderTop({ modoBolao, publicHeader=false, mobile }: Props) {
               <ModalBody>
                 Deseja realmente sair?
               </ModalBody>
-
               <ModalFooter>
                 <Button colorScheme='blue' mr={3} onClick={handleLogout}>
                   Sim

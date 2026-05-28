@@ -1,8 +1,9 @@
-import { Box } from "@chakra-ui/react";
+//import { Box } from "@chakra-ui/react";
 import { useEffect } from "react";
 import HeaderNavMobile from "../../../components/HeaderNavMobile";
 import { Bolao, bolaoStore } from "../../../stores/bolaoStore";
 import { retornaUserId } from "../../../utils/Utils";
+import * as styles from "./styles.css";
 
 interface BolaoLayoutProps {
   bolao: Bolao;
@@ -21,9 +22,9 @@ export function BolaoLayoutMobile({ bolao, children }: BolaoLayoutProps) {
   return (
     <>
       <HeaderNavMobile />
-      <Box as="main" flex="1" p={2} bg="white" minH="calc(100vh - 140px)">
+      <div className={styles.content}>
         {children}
-      </Box>
+      </div>
     </>
   );
 }
