@@ -30,6 +30,12 @@ import GerenciarBoloesAdmin from './pages/GerenciarBoloesAdmin'
 import GerenciarJogadores from './pages/GerenciarJogadores'
 import GerenciarSelecoes from './pages/GerenciarSelecoes'
 import GerenciarPremiosIndividuais from './pages/GerenciarPremiosIndividuais'
+import NaoEncontradoPage from './pages/Erros/NaoEncontradoPage'
+import EscolherDispositivo from './pages/Mobile/EscolherDispositivo'
+import BolaoListaMobile from './pages/Mobile/BolaoListaMobile'
+import PalpiteCopa2026Mobile from './pages/Mobile/PalpiteCopa2026Mobile'
+import { BolaoPageMobile } from './pages/Mobile/BolaoPageMobile'
+import BolaoClassificacaoMobile from './pages/Mobile/BolaoClassificacaoMobile'
 
 const modoBolao = true;
 
@@ -41,6 +47,8 @@ export function Router() {
         <Route path="registro" element={<Registro />} />
         <Route path="alterar-senha" element={<AlterarSenha />} />
         <Route path="convite/bolao/:bolaoId" element={<BolaoConvite />} />
+        <Route path="not-found" element={<NaoEncontradoPage />} />
+        <Route path="escolher-dispositivo" element={<EscolherDispositivo />} />
       </Route>
 
       <Route element={<ProtectedRoute />}>
@@ -64,13 +72,26 @@ export function Router() {
             <Route path="estatistica" element={<Estatistica />} />
             <Route path="grafico" element={<Grafico />} />
           </Route>
-          <Route path="boloes" element={<BolaoLista />} />       
+          <Route path="boloes" element={<BolaoLista />} />
+          {/* <Route path="boloes-mobile" element={<BolaoListaMobile />} />  
+          <Route path="bolao-mobile/:bolaoId" element={<BolaoPageMobile />}>
+            <Route path="palpite-mobile" element={<PalpiteCopa2026Mobile />} />
+            <Route path="classificacao-mobile" element={<BolaoClassificacaoMobile />} />
+          </Route> */}
           <Route path="bolao/:bolaoId" element={<BolaoPage />}>
             <Route path="inicio" element={<InicioBolao />} />
-            <Route path="palpite" element={<PalpiteCopa2026 />} />
+            <Route path="palpite" element={<PalpiteCopa2026 />} />  
             <Route path="classificacao" element={<BolaoClassificacao />} />
             <Route path="rateio" element={<BolaoRateioPremiacoes />} />
             <Route path="criterios-pontuacao-copa-2026" element={<BolaoCriteriosPontuacao />} />
+          </Route>
+        </Route>
+        <Route path="/mobile" element={<Layout modoBolao={modoBolao} mobile/>}>
+          <Route path="not-found-mobile" element={<NaoEncontradoPage mobile />} />
+          <Route path="boloes-mobile" element={<BolaoListaMobile />} />  
+          <Route path="bolao-mobile/:bolaoId" element={<BolaoPageMobile />}>
+            <Route path="palpite-mobile" element={<PalpiteCopa2026Mobile />} />
+            <Route path="classificacao-mobile" element={<BolaoClassificacaoMobile />} />
           </Route>
         </Route>
       </Route>

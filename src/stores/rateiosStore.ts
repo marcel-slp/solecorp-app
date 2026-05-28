@@ -17,6 +17,8 @@ export type Rateio = {
   pctVencedorRankGols?: number;
   pctVencedorRankResultado?: number;
   pctVencedorRankPlacar?: number;
+  pctVencedorRankPenaltis?: number;
+  pctVencedorRankExtra?: number;
   pctVencedor1Fase?: number;
   pctVencedor2Fase?: number;
   pct1LugarPlayoff?: number;

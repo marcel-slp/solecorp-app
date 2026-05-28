@@ -3,6 +3,7 @@ import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Modal
   Button 
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
+import * as styles from "./styles.css";
 
 interface ModalGenericoProps {
   isOpen: boolean;
@@ -18,7 +19,7 @@ export function ModalGenerico({ isOpen, onClose, titulo, conteudo, tamanho = 'xl
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={tamanho}>
       <ModalOverlay />
-      <ModalContent maxWidth="90%" height="50%" overflow="auto">
+      <ModalContent className={styles.modalContainer}>
         <ModalHeader>{titulo}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>

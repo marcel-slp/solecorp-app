@@ -1,17 +1,48 @@
-import { style } from '@vanilla-extract/css'
+import { style } from '@vanilla-extract/css';
 
 export const registroContainer = style({
-  padding: '1rem',
-  margin: '5rem 35rem 5rem 30rem',
-  borderWidth: '2px'
+  padding: '2rem 1.5rem',
+  maxWidth: '420px',
+  width: '100%',
+  margin: '4rem auto',
+  borderWidth: '2px',
+  borderStyle: 'solid',
+  borderColor: '#e2e8f0',
+  borderRadius: '12px',
+  backgroundColor: 'white',
+
+  '@media': {
+    '(max-width: 480px)': {
+      margin: '2rem 1rem',
+      padding: '1.8rem 1.2rem',
+      maxWidth: '100%',
+    },
+    '(max-width: 768px)': {
+      margin: '3rem auto',
+    }
+  }
 });
 
 export const tituloRegistro = style({
-  fontSize: 'large',
-  fontWeight: "bold",
-  marginBottom: "10px"
+  fontSize: '28px',
+  fontWeight: 'bold',
+  textAlign: 'center',
+  marginBottom: '24px',
+  color: '#1e40af',
+
+  '@media': {
+    '(max-width: 480px)': {
+      fontSize: '24px',
+    }
+  }
 });
 
 export const item = style({
-  margin: '1rem 1rem 1rem 0'
+  marginBottom: '1.4rem',
+
+  '@media': {
+    '(max-width: 480px)': {
+      marginBottom: '1.2rem',
+    }
+  }
 });

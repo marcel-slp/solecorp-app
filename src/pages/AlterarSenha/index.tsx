@@ -7,7 +7,7 @@ import {
   FormHelperText,
 	FormErrorMessage,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { alterarSenhaUsuario, verificarEmailUsuario } from "../../api";
 import * as styles from "./styles.css";
 import { Link } from "react-router-dom";
@@ -19,6 +19,13 @@ export function AlterarSenha() {
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [message, setMessage] = useState<string|null>(null);
 	const [errorMessage, setErrorMessage] = useState<string|null>(null);
+
+  useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}, []);
 
   const handleVerificarEmail = async () => {
     const res = await verificarEmailUsuario(email);

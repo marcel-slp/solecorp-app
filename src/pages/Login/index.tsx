@@ -37,7 +37,7 @@ export function Login() {
 				})
 			);
 			
-			navigate(location.state?.redirectTo ?? "/home");
+			navigate(location.state?.redirectTo ?? "/escolher-dispositivo");
 		} else {
 			console.error('Falha ao fazer login:', res.message);
 			setMessage(String(res.message));
@@ -50,8 +50,8 @@ export function Login() {
 				Login
 			</Text>
 			<form onSubmit={handleFormSubmit}>
-				<FormControl isRequired>
-					<FormLabel className={styles.item}>Email</FormLabel>
+				<FormControl isRequired className={styles.item}>
+					<FormLabel>Email</FormLabel>
 					<Input 
 							type="email"  
 							autoComplete="email" 
@@ -59,8 +59,8 @@ export function Login() {
 							onChange={(e) => setEmail(e.target.value)}
 					/>
 				</FormControl>
-				<FormControl isRequired>
-					<FormLabel className={styles.item}>Senha</FormLabel>
+				<FormControl isRequired className={styles.item}>
+					<FormLabel>Senha</FormLabel>
 					<Input 
 							type="password"  
 							autoComplete={"current-password"}
@@ -73,17 +73,22 @@ export function Login() {
 					className={styles.item}
 					colorScheme="blue" 
 					type="submit"
+					width="100%"
 				>
 					Entrar
 				</Button>
 				<Button 
 					className={styles.item} 
 					colorScheme="blue"
+					variant="outline"
+					width="100%"
 					onClick={() => navigate("/registro", {state: location.state})}
 				>
 					Registrar
 				</Button>
-				<Link style={{marginLeft: '8rem'}} to='/alterar-senha'>Alterar senha?</Link>
+				<Link className={styles.linkAlterarSenha} to='/alterar-senha'>
+					Alterar senha?
+				</Link>
 			</form>
 			<Text color={message.includes('sucesso') ? 'green' : 'red'}>{message}</Text>
 		</div>

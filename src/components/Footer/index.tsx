@@ -13,13 +13,13 @@ function Footer ({modoBolao}: FooterProps) {
 
       <div className={styles.footerText}
       >
-        <div style={{ fontSize: "14px", fontWeight: "bold" }}>
+        <div className={styles.footerTitle}>
           {modoBolao ? "Bolão Control" : "SoleCorp Sports Manager"}
         </div>
-        <div style={{ fontSize: "10px" }}>
+        <div className={styles.footerSubtitle}>
           Sistema Gerenciador de Competições Esportivas
         </div>
-        <div style={{ fontSize: "10px" }}>
+        <div className={styles.footerSubtitle}>
           Patente BR RS 10504-6 - Marca Registrada
         </div>
       </div>

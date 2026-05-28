@@ -2,7 +2,11 @@
 import ErrorPage from "../../../components/ErrorPage";
 import { LuSearchX } from "react-icons/lu";
 
-function NaoEncontradoPage() {
+export type NaoEncontradoPageProps = {
+    mobile?: boolean;
+};
+
+function NaoEncontradoPage({ mobile }: NaoEncontradoPageProps) {
   return (
     <ErrorPage
         titulo={'Página não Encontrada'}
@@ -10,7 +14,7 @@ function NaoEncontradoPage() {
         botoes={[
             {
                 label: 'Voltar a Home',
-                to: '/home',
+                to: mobile ? '/mobile/boloes-mobile' : '/home',
             }
         ]}
         icone={LuSearchX }

@@ -26,7 +26,7 @@ import {
   Text
 } from "@chakra-ui/react";
 import * as styles from "./styles.css";
-import {IoMdCart, IoMdLogOut} from 'react-icons/io';
+import { IoMdLogOut} from 'react-icons/io';
 import { BsPersonCircle } from "react-icons/bs";
 import { MdEmojiEvents } from "react-icons/md";
 import { FaFutbol, FaGear, FaHouse, FaPeopleGroup, FaRegCircleQuestion } from "react-icons/fa6";
@@ -38,6 +38,7 @@ import { PerfilSistema } from "../../models/PerfilSistema";
 export type Props = {
     modoBolao?: boolean;
     publicHeader?: boolean;
+    mobile?: boolean;
 };
 
 const paginasGerenciamento = [
@@ -71,7 +72,7 @@ const paginasGerenciamento = [
   }
 ];
 
-export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
+export function HeaderTop({ modoBolao, publicHeader=false, mobile }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const [nomeUsuario, setNomeUsuario] = useState<string | null>(null);
@@ -98,9 +99,9 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
     }
   }, []);
 
-  const esconderIconesBolaoAdmin = publicHeader || (modoBolao && perfilUsuario != PerfilSistema.ADMIN);
-  const esconderIconesBolaoUser = publicHeader || !modoBolao;
-  const esconderIconesManager = publicHeader || modoBolao;
+  const esconderIconesBolaoAdmin = publicHeader || mobile || (modoBolao && perfilUsuario != PerfilSistema.ADMIN);
+  const esconderIconesBolaoUser = publicHeader || !modoBolao || mobile;
+  const esconderIconesManager = publicHeader || modoBolao || mobile;
   
   return (
     <div className={styles.headerTop}>
@@ -115,7 +116,7 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
               {modoBolao ? "Bolão Control" : "SoleCorp Sports Manager"}
             </Text>
 
-            <Link to="/home" aria-label="Ir para home">
+            <Link to={mobile ? "/mobile/boloes-mobile" : "/home"} aria-label="Ir para home">
               <Icon as={FaHouse} className={styles.iconSmall} />
             </Link>
             <Link to="/boloes" aria-label="Ir para bolões" hidden={esconderIconesBolaoUser}>
@@ -138,7 +139,6 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
                   <MenuItem
                     key={pagina.path}
                     bg={'green.500'}
-                    //marginBottom={1}
                     onClick={() => navigate(pagina.path)}
                   >
                     {pagina.label}
@@ -180,10 +180,10 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
             <Link to="/novo-participante" aria-label="Ir para novo participante" hidden={esconderIconesManager}>
               <Icon as={AddIcon} className={styles.iconSmall} marginBottom="5px"/>
             </Link>
-            <Link to="/help" aria-label="Ir para ajuda">
+            <Link to={mobile ? "/mobile/not-found-mobile" : "/not-found"} aria-label="Ir para ajuda">
               <Icon as={FaRegCircleQuestion} className={styles.iconSmall} />
             </Link>
-            <Link to="/search" aria-label="Ir para pesquisa" hidden={publicHeader}>
+            <Link to={mobile ? "/mobile/not-found-mobile" : "/not-found"} aria-label="Ir para pesquisa" hidden={publicHeader}>
               <Icon as={SearchIcon} className={styles.iconSmall} marginBottom="5px"/>
             </Link>
           </div>
@@ -209,7 +209,6 @@ export function HeaderTop({ modoBolao, publicHeader=false }: Props) {
             </PopoverBody>
           </PopoverContent>
         </Popover>
-        <Icon as={IoMdCart} className={styles.iconSmall}/>
         <Icon 
           as={IoMdLogOut} 
           cursor='pointer' 

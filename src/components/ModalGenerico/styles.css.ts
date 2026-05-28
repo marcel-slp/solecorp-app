@@ -1,12 +1,15 @@
 import { style } from '@vanilla-extract/css'
 
-export const bolaoContainer = style({
-  width: '100%',
-  height: '100%',
-  display: 'flex',
-  color: 'black',
-  alignItems: 'center',
-  justifyContent: 'center',
+export const modalContainer = style({
+  maxWidth: "60%", 
+  height: "50%", 
+  overflow: "auto",
+
+  '@media': {
+    'screen and (max-width: 768px)': {
+       maxWidth: "90%", 
+    }
+  }
 });
 
 export const tableBolaoContainer = style({

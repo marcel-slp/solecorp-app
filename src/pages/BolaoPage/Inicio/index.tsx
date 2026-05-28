@@ -38,7 +38,8 @@ export function InicioBolao() {
   } = bolaoStore();
   const { partidas, carregarPartidas } = partidasStore();
   const { palpitesBolao, carregarPalpitesPorBolao } = palpitesStore();
-  const { carregarClassificacao, getRankingAoRedorUsuario, getTopN } = classificacaoStore();
+  const { carregarClassificacao, getRankingAoRedorUsuario, getTopN } =
+    classificacaoStore();
   const [isSaved, setIsSaved] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -49,7 +50,7 @@ export function InicioBolao() {
 
   const loggedUserId = retornaUserId();
 
-  const adminOuGerente =
+  const criadorOuGerente =
     participanteBolaoLogado?.roleBolao === BolaoRoles.CRIADOR ||
     participanteBolaoLogado?.roleBolao === BolaoRoles.GERENTE;
 
@@ -85,10 +86,19 @@ export function InicioBolao() {
     { label: "Pontuação", value: bolao.pontuacao },
     { label: "Evento Base", value: bolao.eventoBase },
     { label: "Convocação da Seleção", value: bolao.convocacao ? "Sim" : "Não" },
-    { label: "Prêmios Indivduais", value: bolao.premiosIndividuais ? "Sim" : "Não" },
-    { label: "Melhores Por Ranking", value: bolao.melhoresPorRanking ? "Sim" : "Não" },
+    {
+      label: "Prêmios Indivduais",
+      value: bolao.premiosIndividuais ? "Sim" : "Não"
+    },
+    {
+      label: "Melhores Por Ranking",
+      value: bolao.melhoresPorRanking ? "Sim" : "Não"
+    },
     { label: "Pontuação Bônus", value: bolao.pontuacaoBonus ? "Sim" : "Não" },
-    { label: "Fase Extra Playoff", value: bolao.faseExtraPlayoff ? "Sim" : "Não" }
+    {
+      label: "Fase Extra Playoff",
+      value: bolao.faseExtraPlayoff ? "Sim" : "Não"
+    }
   ];
 
   const handleCriarConviteLink = () => {
@@ -179,29 +189,28 @@ export function InicioBolao() {
                   Palpites
                 </Button>
               </Box>
-              {adminOuGerente && (
+              {criadorOuGerente && (
                 <div className={styles.botaoLinkConviteContainer}>
                   <Button
                     size={"lg"}
                     hidden={bolao.roleBolao === "jogador"}
                     onClick={handleCriarConviteLink}
                     colorScheme={isSaved ? "green" : "blue"}
-                    height={'50%'}
+                    height={"50%"}
                     leftIcon={<FcInvite />}
                   >
-                    {isSaved
-                      ? "Link copiado"
-                      : "Criar Convite-Link"}
+                    {isSaved ? "Link copiado" : "Criar Convite-Link"}
                   </Button>
                 </div>
-                )}
+              )}
             </Flex>
-            
+
             <Box mt={10}>
               <ListaJogosDia
                 partidas={partidas}
-                participantesQtd={participantesBolao.length}
                 palpites={palpitesBolao}
+                participantesBolao={participantesBolao}
+                criadorOuGerente={criadorOuGerente}
                 mostrarPalpites={true}
               />
             </Box>
@@ -279,7 +288,7 @@ export function InicioBolao() {
               </SimpleGrid>
             </Box>
 
-            {adminOuGerente && (
+            {criadorOuGerente && (
               <>
                 <TabelaGerenciarParticipantesBolao />
               </>

@@ -1,8 +1,17 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Checkbox, Heading, Link, Text, useDisclosure, VStack } from "@chakra-ui/react";
+import { 
+  Button, 
+  Checkbox, 
+  Heading, 
+  Link, 
+  Text, 
+  useDisclosure, 
+  VStack,
+  Box,
+  Center
+} from "@chakra-ui/react";
 import { bolaoStore } from "../../stores/bolaoStore";
 import { useState } from "react";
-//import * as styles from "./styles.css.ts";
 import BolaoRegulamento from "../../components/BolaoRegulamento/index.tsx";
 import { ModalGenerico } from "../../components/ModalGenerico/index.tsx";
 
@@ -15,20 +24,17 @@ export default function BolaoConvite() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const auth = JSON.parse(localStorage.getItem("auth") ?? "{}");
-  const isLoggedIn =
-    auth?.userId && auth?.expiresAt && Date.now() < auth.expiresAt;
+  const isLoggedIn = auth?.userId && auth?.expiresAt && Date.now() < auth.expiresAt;
 
   const handleAceitarConvite = async () => {
+    if (!bolaoId) return;
+    
     try {
-      if(bolaoId) {
-        const success = await aceitarConvite({bolaoId: bolaoId, userId: auth.userId});
-
-        if (!success) {
-          alert("Erro ao aceitar convite");
-          return;
-        }
-
-        navigate(`/bolao/${bolaoId}/palpite`);
+      const success = await aceitarConvite({ bolaoId, userId: auth.userId });
+      if (success) {
+        navigate(`/escolher-dispositivo`);
+      } else {
+        alert("Erro ao aceitar convite");
       }
     } catch (err) {
       alert("Falha ao aceitar convite");
@@ -72,36 +78,64 @@ export default function BolaoConvite() {
   }
 
   return (
-    <VStack mt={20} spacing={4}>
-      <Heading size="md">Convite para o bolão</Heading>
-      <Text>Você foi convidado para participar do bolão</Text>
+    <Box p={{ base: 6, md: 10 }} minH="100vh" bg="gray.50">
+      <Center>
+        <VStack 
+          spacing={{ base: 6, md: 8 }} 
+          align="center" 
+          maxW="500px" 
+          w="full"
+          textAlign="center"
+        >
+          <Heading size={{ base: "lg", md: "xl" }}>
+            Convite para o Bolão
+          </Heading>
 
-      <Link
-        onClick={() => onOpen()}
-        color={'blue'}
-      >
-        Ver Regulamento do Bolão
-      </Link>
+          <Text fontSize={{ base: "md", md: "lg" }} color="gray.600">
+            Você foi convidado para participar do bolão
+          </Text>
 
-      <Checkbox
-        style={{paddingRight: '20px'}}
-        isChecked={checkRegulamento}
-        backgroundColor={'white'}
-        onChange={(e) => setCheckRegulamento(e.target.checked)}
-      >
-        Aceita condições do regulamento?
-      </Checkbox>
+          <Link 
+            onClick={onOpen} 
+            color="blue.600" 
+            fontWeight="medium"
+            fontSize={{ base: "md", md: "lg" }}
+            _hover={{ textDecoration: "underline" }}
+          >
+            Ver Regulamento do Bolão
+          </Link>
 
-      <Button colorScheme="green" onClick={handleAceitarConvite} disabled={!checkRegulamento}>
-        Aceitar convite
-      </Button>
-      <ModalGenerico 
-        isOpen={isOpen} 
-        onClose={onClose} 
-        titulo={''} 
-        conteudo={<BolaoRegulamento />} 
-        tamanho="full"
-      />
-    </VStack>
+          <Checkbox
+            size={{ base: "lg", md: "lg" }}
+            isChecked={checkRegulamento}
+            onChange={(e) => setCheckRegulamento(e.target.checked)}
+            colorScheme="green"
+            fontSize={{ base: "md", md: "lg" }}
+          >
+            Aceito as condições do regulamento
+          </Checkbox>
+
+          <Button 
+            colorScheme="green" 
+            size={{ base: "lg", md: "xl" }}
+            width="full"
+            height={{ base: "52px", md: "56px" }}
+            fontSize={{ base: "lg", md: "xl" }}
+            onClick={handleAceitarConvite} 
+            isDisabled={!checkRegulamento}
+          >
+            Aceitar Convite
+          </Button>
+
+          <ModalGenerico 
+            isOpen={isOpen} 
+            onClose={onClose} 
+            titulo="Regulamento do Bolão" 
+            conteudo={<BolaoRegulamento />} 
+            tamanho="full"
+          />
+        </VStack>
+      </Center>
+    </Box>
   );
 }

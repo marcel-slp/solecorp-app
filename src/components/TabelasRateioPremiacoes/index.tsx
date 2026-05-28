@@ -1,4 +1,3 @@
-
 //import * as styles from "./styles.css";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -33,28 +32,124 @@ interface TabelasRateioPremiacoesProps {
 }
 
 const CRITERIOS_PREMIACAO = [
-  { key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_1, label: "1º Lugar Geral", condicao: "1º Lugar na Classificação Geral", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_2, label: "2º Lugar Geral", condicao: "2º Lugar na Classificação Geral", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_3, label: "3º Lugar Geral", condicao: "3º Lugar na Classificação Geral", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_4, label: "4º Lugar Geral", condicao: "4º Lugar na Classificação Geral", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_5, label: "5º Lugar Geral", condicao: "5º Lugar na Classificação Geral", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_6_10, label: "6º ao 10º Lugar Geral", condicao: "6º ao 10º Lugar na Classificação Geral", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.VENCEDOR_RANK_DIFERENCA_GOLS, label: "Vencedor Diferença de Gols", condicao: "Mais acertos de Diferença de Gols", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.VENCEDOR_RANK_GOLS, label: "Vencedor Gols", condicao: "Mais acertos de Gols", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.VENCEDOR_RANK_RESULTADO, label: "Vencedor Resultado", condicao: "Mais acertos de Resultado", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.VENCEDOR_RANK_PLACAR, label: "Vencedor Placar Cravado", condicao: "Mais acertos de Placar Cravado", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.VENCEDOR_1_FASE, label: "Vencedor 1ª Fase", condicao: "Melhor colocado na 1ª Fase", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.VENCEDOR_2_FASE, label: "Vencedor 2ª Fase", condicao: "Melhor colocado na 2ª Fase", habilitar: true },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_1, label: "Vencedor do PlayOff Principal", condicao: "1º Lugar no Playoff", habilitar: false },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_2, label: "Vencedor do PlayOff Secundário", condicao: "2º Lugar no Playoff", habilitar: false },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_3, label: "Vencedor do PlayOff Terciário", condicao: "3º Lugar no Playoff", habilitar: false },
-  { key: TipoCriterioPremiacaoBolao.LUGAR_GRUPOS_1, label: "Vencedor do módulo Grupos", condicao: "1º Lugar na Fase de Grupos", habilitar: false },
+  {
+    key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_1,
+    label: "1º Lugar Geral",
+    condicao: "1º Lugar na Classificação Geral",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_2,
+    label: "2º Lugar Geral",
+    condicao: "2º Lugar na Classificação Geral",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_3,
+    label: "3º Lugar Geral",
+    condicao: "3º Lugar na Classificação Geral",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_4,
+    label: "4º Lugar Geral",
+    condicao: "4º Lugar na Classificação Geral",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_5,
+    label: "5º Lugar Geral",
+    condicao: "5º Lugar na Classificação Geral",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.LUGAR_GERAL_6_10,
+    label: "6º ao 10º Lugar Geral",
+    condicao: "6º ao 10º Lugar na Classificação Geral",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.VENCEDOR_RANK_DIFERENCA_GOLS,
+    label: "1º do Ranking Diferença de Gols",
+    condicao: "Mais acertos de Diferença de Gols",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.VENCEDOR_RANK_GOLS,
+    label: "1º do Ranking Gols",
+    condicao: "Mais acertos de Gols",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.VENCEDOR_RANK_RESULTADO,
+    label: "1º do Ranking Resultado",
+    condicao: "Mais acertos de Resultado",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.VENCEDOR_RANK_PLACAR,
+    label: "1º do Ranking Placar Cravado",
+    condicao: "Mais acertos de Placar Cravado",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.VENCEDOR_RANK_PENALTIS,
+    label: "1º do Ranking Pênaltis",
+    condicao: "Mais acertos de Pênaltis",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.VENCEDOR_RANK_EXTRA,
+    label: "1º do Ranking Extra",
+    condicao: "Mais acertos de Extras",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.VENCEDOR_1_FASE,
+    label: "Vencedor 1ª Fase",
+    condicao: "Melhor colocado na 1ª Fase",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.VENCEDOR_2_FASE,
+    label: "Vencedor 2ª Fase",
+    condicao: "Melhor colocado na 2ª Fase",
+    habilitar: true
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_1,
+    label: "Vencedor do PlayOff Principal",
+    condicao: "1º Lugar no Playoff",
+    habilitar: false
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_2,
+    label: "Vencedor do PlayOff Secundário",
+    condicao: "2º Lugar no Playoff",
+    habilitar: false
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.LUGAR_PLAYOFF_3,
+    label: "Vencedor do PlayOff Terciário",
+    condicao: "3º Lugar no Playoff",
+    habilitar: false
+  },
+  {
+    key: TipoCriterioPremiacaoBolao.LUGAR_GRUPOS_1,
+    label: "Vencedor do módulo Grupos",
+    condicao: "1º Lugar na Fase de Grupos",
+    habilitar: false
+  }
 ];
 
-export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, rateio }: TabelasRateioPremiacoesProps) {
-  
+export default function TabelasRateioPremiacoes({
+  rateioEditavel,
+  bolaoId,
+  rateio
+}: TabelasRateioPremiacoesProps) {
   const { editarRateio, salvarRateio } = rateiosStore();
-  const { carregarClassificacao, getClassificacaoPorCriterio, getTopN } = classificacaoStore();
+  const { carregarClassificacao, getClassificacaoPorCriterio, getTopN } =
+    classificacaoStore();
 
   const [rateioInterno, setRateioInterno] = useState<Rateio>({
     id: "",
@@ -71,13 +166,15 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
 
     if (rateio) setRateioInterno(rateio);
   }, [bolaoId, rateio, carregarClassificacao]);
-  
+
   const valorTotalPremiacao = useMemo(() => {
     if (!rateioInterno) return 0;
 
-    return (rateioInterno.cota || 0) *
-          (rateioInterno.qtdParticipantes || 0) *
-          (1 - (rateioInterno.taxaAdm || 0) / 100);
+    return (
+      (rateioInterno.cota || 0) *
+      (rateioInterno.qtdParticipantes || 0) *
+      (1 - (rateioInterno.taxaAdm || 0) / 100)
+    );
   }, [rateioInterno]);
 
   const totalPercentualDistribuido = useMemo(() => {
@@ -92,38 +189,50 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
   const getParticipantesPorPosicao = (posicao: number) => {
     const lista = getTopN(posicao);
 
-    return lista
-      .filter(p => p.posicao === posicao)
-      .map(p => p.nome)
-      .join(", ") || "-";
+    return (
+      lista
+        .filter((p) => p.posicao === posicao)
+        .map((p) => p.nome)
+        .join(", ") || "-"
+    );
   };
 
   const premiacoes = useMemo(() => {
     const topGeral = getTopN(10);
 
     return CRITERIOS_PREMIACAO.flatMap((criterioPremiacao) => {
-
       const porcentagem = rateioInterno?.[criterioPremiacao.key];
       const valor = porcentagem ? (valorTotalPremiacao * porcentagem) / 100 : 0;
 
-      if (criterioPremiacao.key === TipoCriterioPremiacaoBolao.LUGAR_GERAL_6_10) {
-        return topGeral.slice(5, 10).map((p, i) => ({
-          criterio: `${i + 6}º Lugar`,
-          participante: p?.nome || "-",
-          valor,
-          habilitar: criterioPremiacao.habilitar
-        }));
+      if (
+        criterioPremiacao.key === TipoCriterioPremiacaoBolao.LUGAR_GERAL_6_10
+      ) {
+        const posicoes6a10 = [];
+
+        for (let i = 5; i < 10; i++) {
+          const participante = topGeral[i];
+          posicoes6a10.push({
+            criterio: `${i + 1}º Lugar Geral`,
+            participante: participante?.nome || "-",
+            valor,
+            habilitar: criterioPremiacao.habilitar
+          });
+        }
+
+        return posicoes6a10;
       }
 
       if (criterioPremiacao.label.toString().includes("Lugar Geral")) {
         const posicao = Number(criterioPremiacao.label.slice(0, 1));
 
-        return [{
-          criterio: criterioPremiacao.label,
-          participante: getParticipantesPorPosicao(posicao),
-          valor,
-          habilitar: criterioPremiacao.habilitar
-        }];
+        return [
+          {
+            criterio: criterioPremiacao.label,
+            participante: getParticipantesPorPosicao(posicao) || "-",
+            valor,
+            habilitar: criterioPremiacao.habilitar
+          }
+        ];
       }
 
       const mapa: Partial<Record<TipoCriterioPremiacaoBolao, string>> = {
@@ -131,23 +240,34 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
         [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_RESULTADO]: "Resultado",
         [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_PLACAR]: "Placar Cravado",
         [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_DIFERENCA_GOLS]: "Diferença",
-        [TipoCriterioPremiacaoBolao.VENCEDOR_1_FASE]: "Classificação Fase Grupos",
-        [TipoCriterioPremiacaoBolao.VENCEDOR_2_FASE]: "Classificação Playoff",
+        [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_PENALTIS]:
+          "Classificação Pênaltis",
+        [TipoCriterioPremiacaoBolao.VENCEDOR_RANK_EXTRA]: "Extra",
+        [TipoCriterioPremiacaoBolao.VENCEDOR_1_FASE]:
+          "Classificação Fase Grupos",
+        [TipoCriterioPremiacaoBolao.VENCEDOR_2_FASE]: "Classificação Playoff"
       };
 
-      const ranking = getClassificacaoPorCriterio(mapa[criterioPremiacao.key] || "");
+      const ranking = getClassificacaoPorCriterio(
+        mapa[criterioPremiacao.key] || ""
+      );
 
-      return [{
-        criterio: criterioPremiacao.label,
-        participante: ranking[0]?.participante || "—",
-        valor,
-        habilitar: criterioPremiacao.habilitar
-      }];
+      return [
+        {
+          criterio: criterioPremiacao.label,
+          participante: ranking[0]?.participante || "—",
+          valor,
+          habilitar: criterioPremiacao.habilitar
+        }
+      ];
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getClassificacaoPorCriterio, getTopN, rateioInterno, valorTotalPremiacao]);
-
-  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    getClassificacaoPorCriterio,
+    getTopN,
+    rateioInterno,
+    valorTotalPremiacao
+  ]);
 
   const handleChange = (key: keyof Rateio, novoValor?: number) => {
     setRateioInterno((prev) => {
@@ -155,7 +275,7 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
 
       const atualizado = {
         ...prev,
-        [key]: novoValor ?? undefined,
+        [key]: novoValor ?? undefined
       };
 
       return atualizado;
@@ -182,29 +302,33 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
       } else {
         sucesso = await salvarRateio(rateioInterno);
         setIsSaving(false);
-        
+
         if (sucesso) {
           setIsSaved(true);
           setTimeout(() => setIsSaved(false), 2000);
-        } else { 
+        } else {
           alert("Erro ao salvar rateio");
         }
       }
     } catch (err) {
       setIsSaving(false);
-      alert("Falha ao salvar/editar partida.");
+      alert("Falha ao salvar/editar rateio.");
       console.error(err);
     }
   };
-  
+
   return (
     <Box>
       <Flex gap={6} mb={8} wrap="wrap">
         <Box>
-           <Text fontWeight="bold" mb={1}>Valor da Cota (R$)</Text>
-           <InputGroup>
+          <Text fontWeight="bold" mb={1}>
+            Valor da Cota (R$)
+          </Text>
+          <InputGroup>
             <InputLeftElement pl={3}>
-              <Text fontWeight="bold" color="green.600">R$</Text>
+              <Text fontWeight="bold" color="green.600">
+                R$
+              </Text>
             </InputLeftElement>
             <Input
               width={"50%"}
@@ -212,25 +336,39 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
               disabled={!rateioEditavel}
               placeholder="0,00"
               value={rateioInterno?.cota || ""}
-              onChange={(e) => handleChange("cota", e.target.value ? Number(e.target.value) : undefined)}
+              onChange={(e) =>
+                handleChange(
+                  "cota",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
             />
           </InputGroup>
         </Box>
 
         <Box>
-          <Text fontWeight="bold" mb={1}>Quantidade Estimada de Participantes</Text>
+          <Text fontWeight="bold" mb={1}>
+            Quantidade Estimada de Participantes
+          </Text>
           <Input
             width={"30%"}
             textAlign={"center"}
             disabled={!rateioEditavel}
             placeholder="0"
             value={rateioInterno?.qtdParticipantes || ""}
-            onChange={(e) => handleChange("qtdParticipantes", e.target.value ? Number(e.target.value) : undefined)}
+            onChange={(e) =>
+              handleChange(
+                "qtdParticipantes",
+                e.target.value ? Number(e.target.value) : undefined
+              )
+            }
           />
         </Box>
 
         <Box>
-          <Text fontWeight="bold" mb={1}>Taxa de Administração (%)</Text>
+          <Text fontWeight="bold" mb={1}>
+            Taxa de Administração (%)
+          </Text>
           <InputGroup>
             <Input
               width={"40%"}
@@ -241,17 +379,22 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
               pr={8}
             />
             <InputRightElement pr={120}>
-              <Text fontWeight="bold" color="gray.600">%</Text>
+              <Text fontWeight="bold" color="gray.600">
+                %
+              </Text>
             </InputRightElement>
           </InputGroup>
         </Box>
 
         <Box>
-          <Text fontWeight="bold" mb={1}>Valor Total para Premiação</Text>
+          <Text fontWeight="bold" mb={1}>
+            Valor Total para Premiação
+          </Text>
           <Text fontSize="2xl" fontWeight="bold" color="green.600">
-            R$ {valorTotalPremiacao.toLocaleString('pt-BR', {
+            R${" "}
+            {valorTotalPremiacao.toLocaleString("pt-BR", {
               minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
+              maximumFractionDigits: 2
             })}
           </Text>
         </Box>
@@ -270,8 +413,8 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
               totalPercentualDistribuido > 100
                 ? "red"
                 : totalPercentualDistribuido === 100
-                ? "green"
-                : "blue"
+                  ? "green"
+                  : "blue"
             }
           />
 
@@ -286,8 +429,8 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
                 totalPercentualDistribuido > 100
                   ? "red.500"
                   : totalPercentualDistribuido === 100
-                  ? "green.600"
-                  : "blue.500"
+                    ? "green.600"
+                    : "blue.500"
               }
             >
               {totalPercentualDistribuido.toFixed(2)}%
@@ -297,38 +440,60 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
             </Text>
           </Flex>
         </Box>
-
       </Flex>
 
       <Divider mb={10} />
 
       <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
         <Box>
-          <Heading size="md" mb={3}>Configuração de Rateio</Heading>
+          <Heading size="md" mb={3}>
+            Configuração de Rateio
+          </Heading>
           <TableContainer overflowX="hidden">
             <Table size="sm" variant="striped" colorScheme="blue">
               <Thead backgroundColor={"blackAlpha.300"}>
                 <Tr>
-                  <Th w="38%" textAlign="center" whiteSpace="nowrap" px={2}>Critério</Th>
-                  <Th w="10%" textAlign="center" px={1}>%</Th>
-                  <Th w="17%" textAlign="right" px={2}>Valor Estimado (R$)</Th>
-                  <Th w="35%" textAlign="center" whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis" px={2}>
+                  <Th w="38%" textAlign="center" whiteSpace="nowrap" px={2}>
+                    Critério
+                  </Th>
+                  <Th w="10%" textAlign="center" px={1}>
+                    %
+                  </Th>
+                  <Th w="17%" textAlign="right" px={2}>
+                    Valor Estimado (R$)
+                  </Th>
+                  <Th
+                    w="35%"
+                    textAlign="center"
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    px={2}
+                  >
                     Condição
                   </Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {CRITERIOS_PREMIACAO.map((criterioPremiacao) => {
-                  const porcentagem = (rateioInterno?.[criterioPremiacao.key] as number);
-                  const valorPremiacaoRateio = porcentagem != null ? (valorTotalPremiacao * porcentagem) / 100 : 0;
-                  const maxPermitido = 100 - (totalPercentualDistribuido - porcentagem);
+                  const porcentagem = rateioInterno?.[
+                    criterioPremiacao.key
+                  ] as number;
+                  const valorPremiacaoRateio =
+                    porcentagem != null
+                      ? (valorTotalPremiacao * porcentagem) / 100
+                      : 0;
+                  const maxPermitido =
+                    100 - (totalPercentualDistribuido - porcentagem);
                   const atingiuLimite = totalPercentualDistribuido >= 100;
                   const campoVazio = porcentagem == null;
 
                   return (
                     <Tr key={criterioPremiacao.key}>
                       <Td textAlign="center" fontSize="sm" width={"20%"}>
-                        <Text color={criterioPremiacao.habilitar ? 'black' : 'grey'}>
+                        <Text
+                          color={criterioPremiacao.habilitar ? "black" : "grey"}
+                        >
                           {criterioPremiacao.label}
                         </Text>
                       </Td>
@@ -337,30 +502,65 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
                           type="number"
                           value={porcentagem || ""}
                           placeholder="%"
-                          bg={atingiuLimite && campoVazio ? "gray.100" : "white"}
-                          title={atingiuLimite && campoVazio ? "Percentual máximo atingido" : ""}
-                          borderColor={totalPercentualDistribuido > 100 ? "red.500" : "gray.400"}
+                          bg={
+                            atingiuLimite && campoVazio ? "gray.100" : "white"
+                          }
+                          title={
+                            atingiuLimite && campoVazio
+                              ? "Percentual máximo atingido"
+                              : ""
+                          }
+                          borderColor={
+                            totalPercentualDistribuido > 100
+                              ? "red.500"
+                              : "gray.400"
+                          }
                           borderRadius="md"
                           max={String(maxPermitido)}
                           width="70px"
                           size="sm"
                           textAlign="center"
-                          disabled={!rateioEditavel || !criterioPremiacao.habilitar || (atingiuLimite && campoVazio)}
-                          onChange={(e) => 
-                            handleChange(criterioPremiacao.key, e.target.value === "" ? undefined : Number(e.target.value))
+                          disabled={
+                            !rateioEditavel ||
+                            !criterioPremiacao.habilitar ||
+                            (atingiuLimite && campoVazio)
+                          }
+                          onChange={(e) =>
+                            handleChange(
+                              criterioPremiacao.key,
+                              e.target.value === ""
+                                ? undefined
+                                : Number(e.target.value)
+                            )
                           }
                         />
                       </Td>
-                      <Td textAlign="center" fontWeight="bold" fontSize="sm" px={2}>
-                        <Text color={criterioPremiacao.habilitar ? 'black' : 'grey'}>
-                          R$ {valorPremiacaoRateio.toLocaleString('pt-BR', {
+                      <Td
+                        textAlign="center"
+                        fontWeight="bold"
+                        fontSize="sm"
+                        px={2}
+                      >
+                        <Text
+                          color={criterioPremiacao.habilitar ? "black" : "grey"}
+                        >
+                          R${" "}
+                          {valorPremiacaoRateio.toLocaleString("pt-BR", {
                             minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
+                            maximumFractionDigits: 2
                           }) ?? 0}
                         </Text>
                       </Td>
-                      <Td fontSize="sm" px={2} whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
-                        <Text color={criterioPremiacao.habilitar ? 'black' : 'grey'}>
+                      <Td
+                        fontSize="sm"
+                        px={2}
+                        whiteSpace="nowrap"
+                        overflow="hidden"
+                        textOverflow="ellipsis"
+                      >
+                        <Text
+                          color={criterioPremiacao.habilitar ? "black" : "grey"}
+                        >
                           {criterioPremiacao.condicao}
                         </Text>
                       </Td>
@@ -373,21 +573,38 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
         </Box>
 
         <Box>
-          <Heading size="md" mb={3}>Premiação - Líder por Critério</Heading>
+          <Heading size="md" mb={3}>
+            Premiação - Líder por Critério
+          </Heading>
           <TableContainer overflowX="hidden">
             <Table size="sm" variant="striped" colorScheme="green">
               <Thead backgroundColor={"blackAlpha.300"}>
                 <Tr>
-                  <Th w="38%" textAlign="center" whiteSpace="nowrap">Critério</Th>
-                  <Th w="32%" textAlign="center">Participante Líder</Th>
-                  <Th w="10%" textAlign="center">Valor do Prêmio</Th>
+                  <Th w="38%" textAlign="center" whiteSpace="nowrap">
+                    Critério
+                  </Th>
+                  <Th w="32%" textAlign="center">
+                    Participante Líder
+                  </Th>
+                  <Th w="10%" textAlign="center">
+                    Valor do Prêmio
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {premiacoes.map((item, index) => (
-                  <Tr key={index} >
-                    <Td textAlign="center" fontSize="sm" px={2} color={!item.habilitar === true ? 'grey' : "black"}>{item.criterio}</Td>
-                    <Td textAlign="center" fontSize="sm" px={2}>{item.habilitar === true ? item.participante : "-"}</Td>
+                  <Tr key={index}>
+                    <Td
+                      textAlign="center"
+                      fontSize="sm"
+                      px={2}
+                      color={!item.habilitar === true ? "grey" : "black"}
+                    >
+                      {item.criterio}
+                    </Td>
+                    <Td textAlign="center" fontSize="sm" px={2}>
+                      {item.habilitar === true ? item.participante : "-"}
+                    </Td>
                     <Td textAlign="center" fontWeight="bold" fontSize="sm">
                       R$ {item.habilitar === true ? item.valor.toFixed(2) : "-"}
                     </Td>
@@ -417,4 +634,4 @@ export default function TabelasRateioPremiacoes({ rateioEditavel, bolaoId, ratei
       </Button>
     </Box>
   );
-};
+}

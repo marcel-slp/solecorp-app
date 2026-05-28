@@ -13,6 +13,7 @@ import * as styles from "./styles.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { registrarUsuario } from "../../api";
 import { ModalGenerico } from "../../components/ModalGenerico";
+import BolaoTermosUso from "../../components/BolaoTermosUso";
 
 export function Registro() {
 	const [nome, setNome] = useState('');
@@ -91,8 +92,6 @@ export function Registro() {
 					</Link>
 
 					<Checkbox
-						style={{paddingRight: '20px'}}
-						className={styles.linkTermosCondicoes}
 						isChecked={checkTermosCondicoes}
 						backgroundColor={'white'}
 						onChange={(e) => setCheckTermosCondicoes(e.target.checked)}
@@ -122,7 +121,7 @@ export function Registro() {
 				isOpen={isOpen} 
 				onClose={onClose} 
 				titulo={''} 
-				conteudo={<Text>Texto Termos e Condições</Text>} 
+				conteudo={<BolaoTermosUso />} 
 				tamanho="full"
 			/>
 		</div>

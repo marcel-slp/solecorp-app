@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Badge,
   Box,
@@ -5,30 +6,47 @@ import {
   HStack,
   Icon,
   Image,
+  List,
+  ListItem,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Text,
+  useDisclosure,
   VStack
 } from "@chakra-ui/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { IoIosFootball } from "react-icons/io";
 import { FaCircleCheck } from "react-icons/fa6";
 import defaultParticipante from "@/assets/images/default_participante.jpeg";
 import { getDataHoraPartida, getImagemSelecoesURL } from "../../utils/Utils";
 import { Partida } from "../../stores/partidasStore";
 import { Palpite } from "../../stores/palpitesStore";
+import { ParticipanteBolao } from "../../stores/bolaoStore";
 
 interface ListaJogosDiaProps {
   partidas: Record<string, Partida>;
-  participantesQtd: number;
   palpites?: Record<string, Palpite[]>;
   mostrarPalpites?: boolean;
+  participantesBolao?: ParticipanteBolao[];
+  criadorOuGerente?: boolean;
 }
 
 export default function ListaJogosDia({
   partidas,
-  participantesQtd,
   palpites = {},
-  mostrarPalpites = true
+  mostrarPalpites = true,
+  participantesBolao = [],
+  criadorOuGerente
 }: ListaJogosDiaProps) {
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [jogoSelecionado, setJogoSelecionado] = useState<Partida | null>(null);
+  const [faltantes, setFaltantes] = useState<ParticipanteBolao[]>([]);
+
   const { jogosProcessados, titulo } = useMemo(() => {
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
@@ -71,35 +89,51 @@ export default function ListaJogosDia({
 
     const jogosProcessados = jogosBase.map((jogo) => {
       let palpitesFeitos = 0;
+      const userIdsQuePalpitaram = new Set<number>();
 
-      if (mostrarPalpites) {
-        for (const lista of Object.values(palpites)) {
-          const palpite = lista.find(p => p.partidaId === jogo.id);
+      if (mostrarPalpites && participantesBolao.length > 0) {
+        Object.entries(palpites).forEach(([userIdStr, listaPalpites]) => {
+          const userId = Number(userIdStr);
+          
+          const palpiteDoUsuario = listaPalpites.find(p => p.partidaId === jogo.id);
 
-          if (
-            palpite &&
-            (palpite.placarCasa !== null || palpite.placarFora !== null)
-          ) {
+          if (palpiteDoUsuario && 
+              (palpiteDoUsuario.placarCasa !== null || palpiteDoUsuario.placarFora !== null)) {
             palpitesFeitos++;
+            userIdsQuePalpitaram.add(userId);
           }
-        }
+        });
       }
 
-      const faltantes = participantesQtd - palpitesFeitos;
+      const faltantesCount = mostrarPalpites ? participantesBolao.length - palpitesFeitos : 0;
+
+      const participantesFaltantes = mostrarPalpites 
+        ? participantesBolao.filter(p => !userIdsQuePalpitaram.has(p.userId))
+        : [];
 
       return {
         ...jogo,
         simboloCasa: getImagemSelecoesURL(jogo.simboloCasa),
         simboloFora: getImagemSelecoesURL(jogo.simboloFora),
-        palpitesFeitos,
-        palpitesFaltantes: faltantes,
-        estaCompleto: faltantes === 0 && participantesQtd > 0
+        palpitesFaltantes: faltantesCount,
+        participantesFaltantes,
+        estaCompleto: mostrarPalpites 
+          ? (faltantesCount === 0 && participantesBolao.length > 0)
+          : false
       };
     });
 
     return { jogosProcessados, titulo };
 
-  }, [partidas, palpites, participantesQtd, mostrarPalpites]);
+  }, [partidas, mostrarPalpites, participantesBolao, palpites]);
+
+  const abrirModalFaltantes = (jogo: any) => {
+    if (!criadorOuGerente) return;
+
+    setJogoSelecionado(jogo);
+    setFaltantes(jogo.participantesFaltantes || []);
+    onOpen();
+  };
 
   return (
     <>
@@ -165,18 +199,45 @@ export default function ListaJogosDia({
                         Todos palpitaram
                       </Badge>
                     ) : (
-                      <Badge colorScheme="red">
-                        {jogo.palpitesFaltantes} faltando
+                      <Badge 
+                        colorScheme="red" 
+                        cursor={criadorOuGerente ? "pointer" : "default"}
+                        onClick={() => abrirModalFaltantes(jogo)}
+                        _hover={criadorOuGerente ? { bg: "red.600", color: "white" } : {}}
+                      >
+                        {jogo.palpitesFaltantes} palpites faltando
                       </Badge>
                     )}
                   </HStack>
                 )}
-
               </Box>
             ))}
           </HStack>
         )}
       </Box>
+      
+      <Modal isOpen={isOpen} onClose={onClose} size="md">
+        <ModalOverlay />
+        <ModalContent pb={4}>
+          <ModalHeader>
+            Palpites Faltantes - {jogoSelecionado?.timeCasa} x {jogoSelecionado?.timeFora}
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {faltantes.length === 0 ? (
+              <Text color="green.600">Todos os participantes já palpitaram!</Text>
+            ) : (
+              <List spacing={2}>
+                {faltantes.map((p: any) => (
+                  <ListItem key={p.userId} fontSize="sm">
+                    • {p.nome}
+                  </ListItem>
+                ))}
+              </List>
+            )}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </>
   );
 }
