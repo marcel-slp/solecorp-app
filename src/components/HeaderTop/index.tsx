@@ -1,15 +1,15 @@
-import { 
+import {
   AddIcon,
   Button,
-  HamburgerIcon, 
-  Icon, 
-  Modal, 
-  ModalBody, 
-  ModalCloseButton, 
-  ModalContent, 
-  ModalFooter, 
-  ModalHeader, 
-  ModalOverlay, 
+  HamburgerIcon,
+  Icon,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Popover,
   PopoverBody,
   PopoverContent,
@@ -26,19 +26,20 @@ import {
   Text
 } from "@chakra-ui/react";
 import * as styles from "./styles.css";
-import { IoMdLogOut} from 'react-icons/io';
+import { IoMdLogOut } from "react-icons/io";
 import { BsPersonCircle } from "react-icons/bs";
 import { MdEmojiEvents } from "react-icons/md";
-import { FaFutbol, FaGear, FaHouse, FaPeopleGroup, FaRegCircleQuestion } from "react-icons/fa6";
+import { FaFutbol, FaGear, FaHouse, FaPeopleGroup } from "react-icons/fa6";
 import { TbShieldFilled } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PerfilSistema } from "../../models/PerfilSistema";
+import { FaQuestionCircle } from "react-icons/fa";
 
 export type Props = {
-    modoBolao?: boolean;
-    publicHeader?: boolean;
-    mobile?: boolean;
+  modoBolao?: boolean;
+  publicHeader?: boolean;
+  mobile?: boolean;
 };
 
 const paginasGerenciamento = [
@@ -72,7 +73,7 @@ const paginasGerenciamento = [
   }
 ];
 
-export function HeaderTop({ modoBolao, publicHeader=false, mobile }: Props) {
+export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const [nomeUsuario, setNomeUsuario] = useState<string | null>(null);
@@ -80,14 +81,14 @@ export function HeaderTop({ modoBolao, publicHeader=false, mobile }: Props) {
   const [perfilUsuario, setPerfilUsuario] = useState<string | null>(null);
 
   const handleLogout = () => {
-    localStorage.removeItem('auth');
-    navigate('/login');
+    localStorage.removeItem("auth");
+    navigate("/login");
     onClose();
   };
 
   useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem("auth") ?? "{}");    
-    
+    const auth = JSON.parse(localStorage.getItem("auth") ?? "{}");
+
     if (auth.nome && auth.email && auth.nomePerfil) {
       setNomeUsuario(auth.nome);
       setEmailUsuario(auth.email);
@@ -99,10 +100,13 @@ export function HeaderTop({ modoBolao, publicHeader=false, mobile }: Props) {
     }
   }, []);
 
-  const esconderIconesBolaoAdmin = publicHeader || mobile || (modoBolao && perfilUsuario != PerfilSistema.ADMIN);
+  const esconderIconesBolaoAdmin =
+    publicHeader ||
+    mobile ||
+    (modoBolao && perfilUsuario != PerfilSistema.ADMIN);
   const esconderIconesBolaoUser = publicHeader || !modoBolao || mobile;
   const esconderIconesManager = publicHeader || modoBolao || mobile;
-  
+
   return (
     <div className={styles.headerTop}>
       <div className={styles.leftSection}>
@@ -112,33 +116,40 @@ export function HeaderTop({ modoBolao, publicHeader=false, mobile }: Props) {
 
         <div className={styles.titleWrapper}>
           <div className={styles.titleRow}>
-            <Text style={{marginTop: '5px'}}>
+            <Text style={{ marginTop: "5px" }}>
               {modoBolao ? "Bolão Control" : "SoleCorp"}
             </Text>
 
-            <Link to={mobile ? "/mobile/boloes-mobile" : "/home"} aria-label="Ir para home">
+            <Link
+              to={mobile ? "/mobile/boloes-mobile" : "/home"}
+              aria-label="Ir para home"
+            >
               <Icon as={FaHouse} className={styles.iconSmall} />
             </Link>
-            <Link to="/boloes" aria-label="Ir para bolões" hidden={esconderIconesBolaoUser}>
+            <Link
+              to="/boloes"
+              aria-label="Ir para bolões"
+              hidden={esconderIconesBolaoUser}
+            >
               <Icon as={FaFutbol} className={styles.iconSmall} />
             </Link>
 
             <Menu>
               <MenuButton as={Box} cursor={"pointer"}>
                 {!esconderIconesBolaoAdmin && (
-                  <Icon 
-                    as={FaGear} 
+                  <Icon
+                    as={FaGear}
                     className={styles.iconAdmin}
                     aria-label="Admin"
                   />
                 )}
               </MenuButton>
 
-              <MenuList bg={'whiteAlpha'} zIndex={2000}>
+              <MenuList bg={"whiteAlpha"} zIndex={2000}>
                 {paginasGerenciamento.map((pagina) => (
                   <MenuItem
                     key={pagina.path}
-                    bg={'green.500'}
+                    bg={"green.500"}
                     onClick={() => navigate(pagina.path)}
                   >
                     {pagina.label}
@@ -168,40 +179,92 @@ export function HeaderTop({ modoBolao, publicHeader=false, mobile }: Props) {
             <Link to="/gerenciar-premios-individuais" aria-label="Gerenciar Prêmios Individuais" hidden={esconderIconesBolaoAdmin}>
               <Icon as={GiPodium } className={styles.iconSmall} />
             </Link> */}
-            <Link to="/eventos" aria-label="Ir para eventos" hidden={esconderIconesManager}>
-            <Icon as={MdEmojiEvents} className={styles.iconSmall} />
+            <Link
+              to="/eventos"
+              aria-label="Ir para eventos"
+              hidden={esconderIconesManager}
+            >
+              <Icon as={MdEmojiEvents} className={styles.iconSmall} />
             </Link>
-            <Link to="/participantes" aria-label="Ir para participantes" hidden={esconderIconesManager}>
+            <Link
+              to="/participantes"
+              aria-label="Ir para participantes"
+              hidden={esconderIconesManager}
+            >
               <Icon as={FaPeopleGroup} className={styles.iconSmall} />
             </Link>
-            <Link to="/entidades" aria-label="Ir para novo evento" hidden={esconderIconesManager}>
+            <Link
+              to="/entidades"
+              aria-label="Ir para novo evento"
+              hidden={esconderIconesManager}
+            >
               <Icon as={TbShieldFilled} className={styles.iconSmall} />
-            </Link> 
-            <Link to="/novo-participante" aria-label="Ir para novo participante" hidden={esconderIconesManager}>
-              <Icon as={AddIcon} className={styles.iconSmall} marginBottom="5px"/>
             </Link>
-            <Link to={mobile ? "/mobile/not-found-mobile" : "/not-found"} aria-label="Ir para ajuda">
-              <Icon as={FaRegCircleQuestion} className={styles.iconSmall} />
+            <Link
+              to="/novo-participante"
+              aria-label="Ir para novo participante"
+              hidden={esconderIconesManager}
+            >
+              <Icon
+                as={AddIcon}
+                className={styles.iconSmall}
+                marginBottom="5px"
+              />
             </Link>
-            <Link to={mobile ? "/mobile/not-found-mobile" : "/not-found"} aria-label="Ir para pesquisa" hidden={publicHeader}>
-              <Icon as={SearchIcon} className={styles.iconSmall} marginBottom="5px"/>
-            </Link>
+            <a
+              href="https://www.solecorp.com.br/bolao-help"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Ir para ajuda"
+            >
+              <FaQuestionCircle
+                className={styles.iconSmall}
+                style={{ marginTop: "5px" }}
+              />
+            </a>
+            <a
+              href="https://www.solecorp.com.br/busca"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Ir para busca"
+            >
+              <SearchIcon
+                className={styles.iconSmall}
+                style={{ marginTop: "5px" }}
+              />
+            </a>
           </div>
         </div>
       </div>
 
       <div className={styles.rightSection}>
-        <Popover placement='bottom'>
+        <Popover placement="bottom">
           <PopoverTrigger>
-            <Icon as={BsPersonCircle} className={styles.iconSmall}/>
+            <Icon as={BsPersonCircle} className={styles.iconSmall} />
           </PopoverTrigger>
-          <PopoverContent color='white' bg='blue.800' borderColor='blue.800' width='fit-content'>
+          <PopoverContent
+            color="white"
+            bg="blue.800"
+            borderColor="blue.800"
+            width="fit-content"
+          >
             <PopoverBody>
               {nomeUsuario && emailUsuario ? (
                 <>
-                  <Text fontSize="sm"><strong>Nome:</strong> {nomeUsuario}</Text>
-                  <Text fontSize="sm"><strong>Email:</strong> {emailUsuario}</Text>
-                  <Text fontSize="sm" onClick={onOpen} style={{marginTop: '10px'}} cursor='pointer'>Sair</Text>
+                  <Text fontSize="sm">
+                    <strong>Nome:</strong> {nomeUsuario}
+                  </Text>
+                  <Text fontSize="sm">
+                    <strong>Email:</strong> {emailUsuario}
+                  </Text>
+                  <Text
+                    fontSize="sm"
+                    onClick={onOpen}
+                    style={{ marginTop: "10px" }}
+                    cursor="pointer"
+                  >
+                    Sair
+                  </Text>
                 </>
               ) : (
                 <Text fontSize="sm">Usuário não logado</Text>
@@ -209,32 +272,25 @@ export function HeaderTop({ modoBolao, publicHeader=false, mobile }: Props) {
             </PopoverBody>
           </PopoverContent>
         </Popover>
-        <Icon 
-          as={IoMdLogOut} 
-          cursor='pointer' 
-          className={styles.iconSmall} 
+        <Icon
+          as={IoMdLogOut}
+          cursor="pointer"
+          className={styles.iconSmall}
           onClick={() => onOpen()}
         />
 
         {isOpen && (
-          <Modal
-              isOpen={!!isOpen}
-              onClose={onClose}
-          >
+          <Modal isOpen={!!isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
               <ModalHeader>Logout</ModalHeader>
               <ModalCloseButton />
-              <ModalBody>
-                Deseja realmente sair?
-              </ModalBody>
+              <ModalBody>Deseja realmente sair?</ModalBody>
               <ModalFooter>
-                <Button colorScheme='blue' mr={3} onClick={handleLogout}>
+                <Button colorScheme="blue" mr={3} onClick={handleLogout}>
                   Sim
                 </Button>
-                <Button onClick={onClose}>
-                  Cancelar
-                </Button>
+                <Button onClick={onClose}>Cancelar</Button>
               </ModalFooter>
             </ModalContent>
           </Modal>
