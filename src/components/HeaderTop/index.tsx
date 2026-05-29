@@ -113,7 +113,7 @@ export function HeaderTop({ modoBolao, publicHeader=false, mobile }: Props) {
         <div className={styles.titleWrapper}>
           <div className={styles.titleRow}>
             <Text style={{marginTop: '5px'}}>
-              {modoBolao ? "Bolão Control" : "SoleCorp Sports Manager"}
+              {modoBolao ? "Bolão Control" : "SoleCorp"}
             </Text>
 
             <Link to={mobile ? "/mobile/boloes-mobile" : "/home"} aria-label="Ir para home">
