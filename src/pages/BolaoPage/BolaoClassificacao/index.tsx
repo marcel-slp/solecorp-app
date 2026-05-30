@@ -5,7 +5,6 @@ import {
   Heading,
   HStack,
   Icon,
-  Image,
   Spinner,
   Tab,
   TabList,
@@ -14,7 +13,6 @@ import {
   Tabs,
   Text
 } from "@chakra-ui/react";
-import tituloClassificacao from "@/assets/images/tituloClassificacao.jpg";
 import TabelaClassificacaoBolao from "../../../components/TabelaClassificacaoBolao/index.tsx";
 import { useOutletContext } from "react-router-dom";
 import { Bolao } from "../../../stores/bolaoStore.ts";
@@ -145,11 +143,6 @@ function BolaoClassificacao() {
     <>
       <div className={styles.classificacaoContainer}>
         <div className={styles.tituloImagem}>
-          <Image
-            src={tituloClassificacao}
-            alt="Título Classificação"
-            style={{ maxHeight: "120px", objectFit: "contain" }}
-          />
           <HStack spacing={4} align="center">
             <Button
               leftIcon={<BsImage />}

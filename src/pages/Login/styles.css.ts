@@ -21,6 +21,7 @@ export const registroContainer = style({
       margin: '20px',
       maxWidth: 'fit-content',
       padding: '0.5rem 1.2rem',
+      justifySelf: 'center'
     }
   }
 });
@@ -64,4 +65,13 @@ export const linkAlterarSenha = style({
       fontSize: '13.5px',
     }
   }
+});
+
+export const imageLogo = style({
+  width: "30%", 
+  height: "30%",
+  justifySelf: 'center',
+  alignSelf: 'center',
+  marginBottom: '15px',
+  right: '50px',
 });

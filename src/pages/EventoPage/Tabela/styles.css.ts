@@ -15,12 +15,6 @@ export const tituloImagem = style({
   justifyContent: 'flex-start',
 });
 
-export const tituloImagemImg = style({
-  width: '100%',
-  height: 'auto',
-  borderRadius: 0,
-});
-
 export const folha = style({
   width: '90%',
   backgroundColor: 'rgba(226, 226, 226, 0.336)',

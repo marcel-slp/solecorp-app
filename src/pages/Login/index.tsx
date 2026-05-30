@@ -9,6 +9,8 @@ import { FormEvent, useState } from "react";
 import * as styles from "./styles.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loginUsuario } from "../../api";
+import defaultLogin from "@/assets/images/login_logo.jpeg";
+import { Image } from "@chakra-ui/icons";
 
 export function Login() {
 	const [email, setEmail] = useState('');
@@ -46,6 +48,11 @@ export function Login() {
 
 	return (
 		<div className={styles.registroContainer}>
+			<Image
+				src={defaultLogin}
+				alt="Login Logo"
+				className={styles.imageLogo}
+			/>
 			<Text className={styles.tituloRegistro}>
 				Login
 			</Text>
