@@ -3,7 +3,7 @@ export enum EventoBase {
 };
 
 export const ORDEM_FASES = [
-    "32 Avos",
+    "16 Avos de Final",
     "Oitavas de Final",
     "Quartas de Final",
     "Semifinais",
