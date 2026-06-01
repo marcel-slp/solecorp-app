@@ -84,7 +84,7 @@ export default function ListaJogosDia({
     if (jogosBase.length) {
       const dataRef = new Date(jogosBase[0].dataJogo);
 
-      titulo = `Próximos Jogos (${dataRef.toLocaleDateString()})`;
+      titulo = `Próximos Jogos (${dataRef.toLocaleDateString('pt-BR')})`;
     }
 
     const jogosProcessados = jogosBase.map((jogo) => {
