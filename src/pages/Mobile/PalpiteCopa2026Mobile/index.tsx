@@ -10,9 +10,6 @@ function PalpiteCopa2026Mobile() {
   return (
     <>
       <div className={styles.folhaContainer}>
-        {/* <div className={styles.tituloImagem}>
-          <img src={tituloTabela} />
-        </div> */}
         <div className={styles.folha}>
           <TabelaPalpitesJogosCopa2026Mobile bolaoId={bolao.id}/>
         </div>

@@ -48,22 +48,26 @@ export const formatarDataHoraBrasil = (dataString: string | null | undefined): s
   });
 };
 
-export const formatarData = (dataStr: string): string => {
-    if (!dataStr) return "";
+export const formatarData = (dataStr: string, formato: 'extenso' | 'ddmmaaaa'): string => {
+  if (!dataStr) return "";
 
-    const [ano, mes, dia] = dataStr.split("-").map(Number);
+  const [ano, mes, dia] = dataStr.split("-").map(Number);
+  const data = new Date(ano, mes - 1, dia);
 
-    const data = new Date(Date.UTC(ano, mes - 1, dia));
+  const diaNumero = String(data.getDate()).padStart(2, '0');
+  const mesNumero = String(mes).padStart(2, '0');
+  const mesExtenso = data.toLocaleString("pt-BR", { month: "long" });
+  const anoCompleto = data.getFullYear();
 
-    const diaFormatado = String(data.getUTCDate()).padStart(2, '0');
-    const mesFormatado = data.toLocaleString("pt-BR", { 
-      month: "long",
-      timeZone: "America/Sao_Paulo" 
-    });
-    const anoFormatado = data.getUTCFullYear();
+  switch (formato) {
+    case 'ddmmaaaa':
+      return `${diaNumero}/${mesNumero}/${anoCompleto}`;
 
-    return `${diaFormatado} ${mesFormatado} ${anoFormatado}`;
-  };
+    case 'extenso':
+    default:
+      return `${diaNumero} ${mesExtenso} ${anoCompleto}`;
+  }
+};
 
 export function getDataHoraPartida(dataJogo: string, horaJogo?: string) {
   if (!dataJogo) return null;

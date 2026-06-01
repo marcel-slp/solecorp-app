@@ -22,7 +22,7 @@ import { useMemo, useState } from "react";
 import { IoIosFootball } from "react-icons/io";
 import { FaCircleCheck } from "react-icons/fa6";
 import defaultParticipante from "@/assets/images/default_participante.jpeg";
-import { getDataHoraPartida, getImagemSelecoesURL } from "../../utils/Utils";
+import { formatarData, getDataHoraPartida, getImagemSelecoesURL } from "../../utils/Utils";
 import { Partida } from "../../stores/partidasStore";
 import { Palpite } from "../../stores/palpitesStore";
 import { ParticipanteBolao } from "../../stores/bolaoStore";
@@ -79,13 +79,11 @@ export default function ListaJogosDia({
           return partidasArray.filter(p => p.dataSomente === proxima.dataSomente);
         })();
 
-    const titulo = "Próximos Jogos";
+    let titulo = "Próximos Jogos";
 
-    // if (jogosBase.length) {
-    //   const dataRef = new Date(jogosBase[0].dataJogo);
-
-    //   titulo = `Próximos Jogos (${dataRef.toLocaleDateString('pt-BR')})`;
-    // }
+    if (jogosBase.length) {
+      titulo = `Próximos Jogos (${formatarData(jogosBase[0].dataJogo, 'ddmmaaaa')})`;
+    }
 
     const jogosProcessados = jogosBase.map((jogo) => {
       let palpitesFeitos = 0;

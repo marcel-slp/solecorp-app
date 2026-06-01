@@ -254,7 +254,7 @@ export function PartidaUnicaPalpitesMobile({
         <CardBody>
           <div className={styles.headerLinha}>
             <div>{numeroPartidaInterno}</div>
-            <div>{formatarData(dataJogoInterno)}</div>
+            <div>{formatarData(dataJogoInterno, 'extenso')}</div>
             <div>{horaJogoInterno}</div>
             <div>{localJogoInterno}</div>
           </div>
