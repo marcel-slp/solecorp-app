@@ -17,13 +17,16 @@ function Footer ({ modoBolao, mobile=false }: FooterProps) {
       <div className={styles.footerText}
       >
         <div className={styles.footerTitle}>
-          {modoBolao ? "Bolão Control" : "SoleCorp Sports Manager"}
+          {modoBolao ? "Bolão Control" : "SoleCorp"}
         </div>
         <div className={styles.footerSubtitle}>
           Sistema Gerenciador de Competições Esportivas
         </div>
         <div className={styles.footerSubtitle}>
           Patente BR RS 10504-6 - Marca Registrada
+        </div>
+        <div className={styles.footerSubtitle}>
+          Versão 1.0.0
         </div>
       </div>
     </div>
