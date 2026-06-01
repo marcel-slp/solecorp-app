@@ -188,7 +188,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
         `${primeiro.dataJogo}T${primeiro.horaJogo}:00`
       );
       const agora = new Date();
-      const umaHoraAntes = new Date(dataHoraJogo.getTime() - 3600000); // 60 minutos
+      const umaHoraAntes = new Date(dataHoraJogo.getTime() - 3600000);
 
       return agora >= umaHoraAntes;
     } catch {

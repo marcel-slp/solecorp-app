@@ -79,13 +79,13 @@ export default function ListaJogosDia({
           return partidasArray.filter(p => p.dataSomente === proxima.dataSomente);
         })();
 
-    let titulo = "Próximos Jogos";
+    const titulo = "Próximos Jogos";
 
-    if (jogosBase.length) {
-      const dataRef = new Date(jogosBase[0].dataJogo);
+    // if (jogosBase.length) {
+    //   const dataRef = new Date(jogosBase[0].dataJogo);
 
-      titulo = `Próximos Jogos (${dataRef.toLocaleDateString('pt-BR')})`;
-    }
+    //   titulo = `Próximos Jogos (${dataRef.toLocaleDateString('pt-BR')})`;
+    // }
 
     const jogosProcessados = jogosBase.map((jogo) => {
       let palpitesFeitos = 0;

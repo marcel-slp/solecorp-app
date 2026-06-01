@@ -27,7 +27,7 @@ import { Partida } from "../../stores/partidasStore";
 import defaultParticipante from "@/assets/images/default_participante.jpeg";
 import { useEffect, useMemo, useState } from "react";
 import { palpitesStore } from "../../stores/palpitesStore";
-import { retornaUserId } from "../../utils/Utils";
+import { formatarData, retornaUserId } from "../../utils/Utils";
 import { Placar } from "../../models/generateCopa2026";
 import { bolaoStore } from "../../stores/bolaoStore";
 
@@ -205,17 +205,40 @@ export function PartidaUnicaPalpitesMobile({
     onOpen();
   };
 
-  const formatarData = (dataStr: string): string => {
-    if (!dataStr) return "";
+  // const formatarData = (dataStr: string): string => {
+  //   if (!dataStr) return "";
 
-    const data = new Date(dataStr);
+  //   const [ano, mes, dia] = dataStr.split("-").map(Number);
 
-    const dia = data.getDate();
-    const mes = data.toLocaleString("pt-BR", { month: "long" });
-    const ano = data.getFullYear();
+  //   const data = new Date(Date.UTC(ano, mes - 1, dia));
 
-    return `${dia} ${mes} ${ano}`;
-  };
+  //   const diaFormatado = String(data.getUTCDate()).padStart(2, '0');
+  //   const mesFormatado = data.toLocaleString("pt-BR", { 
+  //     month: "long",
+  //     timeZone: "America/Sao_Paulo" 
+  //   });
+  //   const anoFormatado = data.getUTCFullYear();
+
+  //   return `${diaFormatado} ${mesFormatado} ${anoFormatado}`;
+  // };
+
+  // const formatarData = (dataStr: string): string => {
+  //   if (!dataStr) return "";
+
+  //   const data = new Date(dataStr);
+
+  //   console.log("data Date", data );
+
+  //   const dia = data.getDate().toLocaleString("pt-BR");
+  //   console.log("data dia", dia );
+  //   const mes = data.toLocaleString("pt-BR", { month: "long" });
+  //   const ano = data.getFullYear();
+
+  //   return `${dia} ${mes} ${ano}`;
+  // };
+
+  console.log("data jogo", dataJogoInterno );
+  
 
   return (
     <>

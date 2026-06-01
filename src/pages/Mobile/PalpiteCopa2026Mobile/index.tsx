@@ -1,4 +1,4 @@
-import tituloTabela from "@/assets/images/tituloTabela.jpg";
+// import tituloTabela from "@/assets/images/tituloTabela.jpg";
 import * as styles from "./styles.css";
 import { useOutletContext } from "react-router-dom";
 import { Bolao } from "../../../stores/bolaoStore";
@@ -10,9 +10,9 @@ function PalpiteCopa2026Mobile() {
   return (
     <>
       <div className={styles.folhaContainer}>
-        <div className={styles.tituloImagem}>
+        {/* <div className={styles.tituloImagem}>
           <img src={tituloTabela} />
-        </div>
+        </div> */}
         <div className={styles.folha}>
           <TabelaPalpitesJogosCopa2026Mobile bolaoId={bolao.id}/>
         </div>

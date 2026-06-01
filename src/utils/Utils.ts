@@ -48,6 +48,23 @@ export const formatarDataHoraBrasil = (dataString: string | null | undefined): s
   });
 };
 
+export const formatarData = (dataStr: string): string => {
+    if (!dataStr) return "";
+
+    const [ano, mes, dia] = dataStr.split("-").map(Number);
+
+    const data = new Date(Date.UTC(ano, mes - 1, dia));
+
+    const diaFormatado = String(data.getUTCDate()).padStart(2, '0');
+    const mesFormatado = data.toLocaleString("pt-BR", { 
+      month: "long",
+      timeZone: "America/Sao_Paulo" 
+    });
+    const anoFormatado = data.getUTCFullYear();
+
+    return `${diaFormatado} ${mesFormatado} ${anoFormatado}`;
+  };
+
 export function getDataHoraPartida(dataJogo: string, horaJogo?: string) {
   if (!dataJogo) return null;
 
