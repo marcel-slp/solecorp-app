@@ -21,7 +21,7 @@ export function BolaoLayoutMobile({ bolao, children }: BolaoLayoutProps) {
   
   return (
     <>
-      <HeaderNavMobile />
+      <HeaderNavMobile bolao={bolao}/>
       <div className={styles.content}>
         {children}
       </div>

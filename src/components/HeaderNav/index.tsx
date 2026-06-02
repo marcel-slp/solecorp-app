@@ -1,18 +1,23 @@
 import { Link, useLocation } from "react-router-dom";
 import * as styles from "./styles.css";
-import { DownloadIcon, EditIcon, Icon, Image } from "@chakra-ui/icons";
+import { Button, DownloadIcon, EditIcon, Icon, Image } from "@chakra-ui/icons";
 import { IoIosCamera, IoIosMore, IoIosPrint, IoIosSave, IoMdRedo, IoMdShare, IoMdUndo } from "react-icons/io";
-import { bolaoStore } from "../../stores/bolaoStore";
+import { Bolao, bolaoStore } from "../../stores/bolaoStore";
+import { getImagemURL, recordToArray } from "../../utils/Utils";
+import { useState } from "react";
+import { palpitesStore } from "../../stores/palpitesStore";
 
 interface Props {
-  nome: string;
-  imagem: string;
+  bolao: Bolao;
   modoBolao?: boolean;
 }
 
-export function HeaderNav({ nome, imagem, modoBolao }: Props) {
+export function HeaderNav({ bolao, modoBolao }: Props) {
 
   const { participanteBolaoLogado } = bolaoStore();
+  const { palpitesUsuario, salvarPalpites } = palpitesStore();
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const location = useLocation();
 
@@ -22,14 +27,40 @@ export function HeaderNav({ nome, imagem, modoBolao }: Props) {
     return currentPath.endsWith(path);
   };
 
+  const isPalpitesPage = currentPath.includes("palpite");
+
   const usuarioLogadoPalpiteHabilitado = participanteBolaoLogado?.habilitarPalpite ?? false;
+
+  const salvarPalpitesHandle = async () => {
+    if (!bolao.id)
+      return alert("Algo deu errado. Palpite não associado a nenhum bolão");
+
+    setIsSaving(true);
+    setIsSaved(false);
+
+    try {
+      const okSalvarPalpites = await salvarPalpites(
+        recordToArray(palpitesUsuario)
+      );
+
+      setIsSaving(false);
+
+      if (okSalvarPalpites) {
+        setIsSaved(true);
+        setTimeout(() => setIsSaved(false), 2000);
+      }
+    } catch (err) {
+      alert("Falha ao salvar palpites");
+      console.error(err);
+    }
+  };
 
   return (
     <div className={styles.navigationContainer}>
       <Link to="./inicio" style={{ width: "40px", height: "40px" }}>
         <div className={styles.imageLink}>
           <Image
-            src={imagem}
+            src={String(getImagemURL(String(bolao.imagemBolao)))}
             alt="Logo"
             className={styles.imageLogo}
           />
@@ -37,7 +68,7 @@ export function HeaderNav({ nome, imagem, modoBolao }: Props) {
       </Link>
 
       <div className={styles.nomeEvento}>
-        {nome}
+        {bolao.nome}
       </div>
 
       <Link
@@ -73,6 +104,17 @@ export function HeaderNav({ nome, imagem, modoBolao }: Props) {
       >
         {modoBolao ? 'PALPITE' :'TABELA'}
       </Link>
+
+      {isPalpitesPage && (
+        <Button
+          className={styles.saveButton}
+          isLoading={isSaving}
+          colorScheme="blue"
+          onClick={() => salvarPalpitesHandle()}
+        >
+          {isSaved ? "Salvo!" : "Salvar Palpites"}
+        </Button>
+      )}
 
       {!modoBolao && (
         <>

@@ -7,6 +7,10 @@ import {
   FormHelperText,
 	Checkbox,
 	useDisclosure,
+	Flex,
+	InputGroup,
+	InputRightElement,
+	IconButton,
 } from "@chakra-ui/react";
 import { FormEvent, useEffect, useState } from "react";
 import * as styles from "./styles.css";
@@ -14,11 +18,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { registrarUsuario } from "../../api";
 import { ModalGenerico } from "../../components/ModalGenerico";
 import BolaoTermosUso from "../../components/BolaoTermosUso";
+import { FaArrowLeft } from "react-icons/fa6";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 export function Registro() {
 	const [nome, setNome] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [showPassword, setShowPassword] = useState(false);
 	const [message, setMessage] = useState('');
 	const [checkTermosCondicoes, setCheckTermosCondicoes] = useState<boolean>(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -72,13 +79,25 @@ export function Registro() {
 				</FormControl>
 				<FormControl isRequired>
 					<FormLabel className={styles.item}>Senha</FormLabel>
-					<Input 
-							type="password"  
-							autoComplete={"new-password"} 
-							pattern={"^(?=.*[A-Z])(?=.*\\d).{6,}$"}
-							value={password} 
-							onChange={(e) => setPassword(e.target.value)}
-					/>
+					<InputGroup>
+            <Input
+              type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
+              pattern="^(?=.*[A-Z])(?=.*\d).{6,}$"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <InputRightElement>
+              <IconButton
+                aria-label={showPassword ? "Esconder senha" : "Mostrar senha"}
+                icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                onClick={() => setShowPassword(!showPassword)}
+                variant="ghost"
+                size="sm"
+                color="gray.600"
+              />
+            </InputRightElement>
+          </InputGroup>
 					<FormHelperText>
 						Senha deve conter pelo menos 6 caracteres, sendo uma maiúscula e um número.
 					</FormHelperText>
@@ -100,21 +119,24 @@ export function Registro() {
 					</Checkbox>
 				</div>
 
-				<Button 
-					className={styles.item}
-					disabled={!checkTermosCondicoes}
-					colorScheme="blue" 
-					type="submit"
-				>
-					Cadastrar
-				</Button>
-				<Button 
-					className={styles.item} 
-					colorScheme="blue"
-					onClick={() => navigate('/login')}
-				>
-					Ir para o Login
-				</Button>
+				<Flex justify="space-between" align="center" mt={6} gap={4}>
+          <Button 
+            disabled={!checkTermosCondicoes}
+            colorScheme="blue" 
+            type="submit"
+            size="lg"
+          >
+            Cadastrar
+          </Button>
+
+          <Link 
+            to="/login"
+            className={styles.linkLogin}
+          >
+            <FaArrowLeft style={{ marginRight: "8px" }} />
+            Ir para o Login
+          </Link>
+        </Flex>
 			</form>
 			<Text color={message.includes('sucesso') ? 'green' : 'red'}>{message}</Text>
 			<ModalGenerico 

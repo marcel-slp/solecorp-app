@@ -33,7 +33,6 @@ export const navLinks = style({
 
 export const itemLink = style({
   color: 'white',
-  padding: '8px 14px',
   borderRadius: '6px',
   fontSize: '12px',
   fontWeight: '500',
@@ -41,8 +40,12 @@ export const itemLink = style({
   whiteSpace: 'nowrap',
   '@media': {
     'screen and (max-width: 768px)': {
-      padding: '7px 11px',
+      padding: '7px 9px',
       fontSize: '0.9rem',
     }
   }
+});
+
+export const saveButton = style({
+  marginLeft: '10px'
 });

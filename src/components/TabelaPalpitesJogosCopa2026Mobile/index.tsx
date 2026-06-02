@@ -7,7 +7,8 @@ import {
   Spinner,
   Text,
   SimpleGrid,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -18,7 +19,7 @@ import {
 import { partidasStore } from "../../stores/partidasStore";
 import { palpitesStore } from "../../stores/palpitesStore";
 import { criteriosPontuacaoStore } from "../../stores/criteriosPontuacaoStore";
-import { recordToArray, retornaUserId } from "../../utils/Utils";
+import { retornaUserId } from "../../utils/Utils";
 import { ORDEM_FASES } from "../../models/BolaoCopaDefault";
 import { calcularPontuacaoPorPartida } from "../TabelaClassificacaoBolao/scorePorPartida";
 import { EscolherJogadorModal } from "../EscolherJogadorModal";
@@ -61,8 +62,6 @@ function TabelaPalpitesJogosCopa2026Mobile({
   const { participantesBolao, carregarParticipantesBolao } = bolaoStore();
 
   const [isReady, setIsReady] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
   const [melhorJogadorInterno, setMelhorJogadorInterno] = useState<string>("");
   const [melhorGoleiroInterno, setMelhorGoleiroInterno] = useState<string>("");
   const [artilheiroInterno, setArtilheiroInterno] = useState<string>("");
@@ -82,6 +81,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
   const [melhor1FaseInterno, setMelhor1FaseInterno] = useState<string>("");
   const userIdLogado = retornaUserId();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   useEffect(() => {
     const loadAll = async () => {
@@ -196,46 +196,71 @@ function TabelaPalpitesJogosCopa2026Mobile({
     }
   }, [jogosFaseGrupos]);
 
-  const salvarPalpitesHandle = async () => {
-    if (!bolaoId)
-      return alert("Algo deu errado. Palpite não associado a nenhum bolão");
-
-    setIsSaving(true);
-    setIsSaved(false);
+  const salvarPremioIndividual = async (campo: string, valor: string) => {
+    if (!bolaoId) return;
 
     try {
-      const okSalvarPalpites = await salvarPalpites(
-        recordToArray(palpitesUsuario)
-      );
+      const premiosId = premiosIndividuaisPalpite?.id || "";
 
-      const premiosIndividuaisId = premiosIndividuaisPalpite
-        ? premiosIndividuaisPalpite.id
-        : "";
+      const dados = {
+        bolaoId,
+        userId: userIdLogado,
+        campeonatoId: 1,
+        melhorJogador: melhorJogadorInterno,
+        melhorGoleiro: melhorGoleiroInterno,
+        artilheiro: artilheiroInterno,
+        campeao: campeaoInterno,
+        viceCampeao: viceCampeaoInterno,
+        terceiroLugar: terceiroLugarInterno,
+        melhor1Fase: melhor1FaseInterno,
+        [campo]: valor
+      };
 
-      const okSalvarPremiosIndividuaisPalpite =
-        await editarPremiosIndividuaisPalpite(premiosIndividuaisId, {
-          bolaoId: bolaoId,
-          userId: userIdLogado,
-          campeonatoId: 1,
-          melhorJogador: melhorJogadorInterno,
-          melhorGoleiro: melhorGoleiroInterno,
-          artilheiro: artilheiroInterno,
-          campeao: campeaoInterno,
-          viceCampeao: viceCampeaoInterno,
-          terceiroLugar: terceiroLugarInterno,
-          melhor1Fase: melhor1FaseInterno
+      const success = await editarPremiosIndividuaisPalpite(premiosId, dados);
+
+      if (success) {
+        toast({
+          title: "Salvo!",
+          status: "success",
+          duration: 1500,
+          isClosable: true,
         });
-
-      setIsSaving(false);
-
-      if (okSalvarPalpites && okSalvarPremiosIndividuaisPalpite) {
-        setIsSaved(true);
-        setTimeout(() => setIsSaved(false), 2000);
       }
     } catch (err) {
-      alert("Falha ao salvar palpites");
-      console.error(err);
+      toast({
+        title: `Erro ao salvar ${err}`,
+        status: "error",
+        duration: 2000,
+      });
     }
+  };
+
+  const handleSelecionarPremio = (campo: string, valor: string) => {
+    switch (campo) {
+      case "melhorJogador":
+        setMelhorJogadorInterno(valor);
+        break;
+      case "melhorGoleiro":
+        setMelhorGoleiroInterno(valor);
+        break;
+      case "artilheiro":
+        setArtilheiroInterno(valor);
+        break;
+      case "campeao":
+        setCampeaoInterno(valor);
+        break;
+      case "viceCampeao":
+        setViceCampeaoInterno(valor);
+        break;
+      case "terceiroLugar":
+        setTerceiroLugarInterno(valor);
+        break;
+      case "melhor1Fase":
+        setMelhor1FaseInterno(valor);
+        break;
+    }
+
+    salvarPremioIndividual(campo, valor);
   };
 
   if (!isReady) {
@@ -268,7 +293,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
                 <Text fontWeight="semibold" mb={1}>
                   Melhor Jogador
                 </Text>
-                <Text fontSize="sm">{melhorJogadorInterno}</Text>
+                <Text fontSize="sm">{melhorJogadorInterno || "—"}</Text>
               </Box>
             </Button>
 
@@ -283,7 +308,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
                 <Text fontWeight="semibold" mb={1}>
                   Melhor Goleiro
                 </Text>
-                <Text fontSize="sm">{melhorGoleiroInterno}</Text>
+                <Text fontSize="sm">{melhorGoleiroInterno || "—"}</Text>
               </Box>
             </Button>
 
@@ -298,7 +323,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
                 <Text fontWeight="semibold" mb={1}>
                   Artilheiro
                 </Text>
-                <Text fontSize="sm">{artilheiroInterno}</Text>
+                <Text fontSize="sm">{artilheiroInterno || "—"}</Text>
               </Box>
             </Button>
           </SimpleGrid>
@@ -316,7 +341,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
             >
               <Box flexDirection={"column"}>
                 <Text fontWeight="semibold">Campeão</Text>
-                <Text fontSize="sm">{campeaoInterno}</Text>
+                <Text fontSize="sm">{campeaoInterno || "—"}</Text>
               </Box>
             </Button>
 
@@ -329,7 +354,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
             >
               <Box flexDirection={"column"}>
                 <Text fontWeight="semibold">Vice-Campeão</Text>
-                <Text fontSize="sm">{viceCampeaoInterno}</Text>
+                <Text fontSize="sm">{viceCampeaoInterno || "—"}</Text>
               </Box>
             </Button>
 
@@ -342,7 +367,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
             >
               <Box flexDirection={"column"}>
                 <Text fontWeight="semibold">3º Lugar</Text>
-                <Text fontSize="sm">{terceiroLugarInterno}</Text>
+                <Text fontSize="sm">{terceiroLugarInterno || "—"}</Text>
               </Box>
             </Button>
 
@@ -355,7 +380,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
             >
               <Box flexDirection={"column"}>
                 <Text fontWeight="semibold">Melhor da 1ª Fase</Text>
-                <Text fontSize="sm">{melhor1FaseInterno}</Text>
+                <Text fontSize="sm">{melhor1FaseInterno || "—"}</Text>
               </Box>
             </Button>
 
@@ -382,14 +407,6 @@ function TabelaPalpitesJogosCopa2026Mobile({
         className={styles.faseTitleContainer}
       >
         <Heading className={styles.sectionTitle}>Fase de Grupos</Heading>
-        <Button
-          className={styles.saveButton}
-          isLoading={isSaving}
-          colorScheme={isSaved ? "green" : "blue"}
-          onClick={() => salvarPalpitesHandle()}
-        >
-          {isSaved ? "Salvo!" : "Salvar Palpites"}
-        </Button>
       </Flex>
 
       <SimpleGrid
@@ -413,14 +430,6 @@ function TabelaPalpitesJogosCopa2026Mobile({
 
       <Flex align="center" justify="space-between" mb={6} mt={6}>
         <Heading>Fase de Mata-Mata</Heading>
-        <Button
-          isLoading={isSaving}
-          colorScheme={isSaved ? "green" : "blue"}
-          w={"55%"}
-          onClick={() => salvarPalpitesHandle()}
-        >
-          {isSaved ? "Salvo!" : "Salvar Palpites"}
-        </Button>
       </Flex>
 
       {ORDEM_FASES.map((fase) => {
@@ -462,10 +471,11 @@ function TabelaPalpitesJogosCopa2026Mobile({
         tipo={modalAberto as any}
         onSelecionar={(nome) => {
           if (modalAberto === "listaMelhorJogador")
-            setMelhorJogadorInterno(nome);
+            handleSelecionarPremio("melhorJogador", nome);
           if (modalAberto === "listaMelhorGoleiro")
-            setMelhorGoleiroInterno(nome);
-          if (modalAberto === "listaArtilheiro") setArtilheiroInterno(nome);
+            handleSelecionarPremio("melhorGoleiro", nome);
+          if (modalAberto === "listaArtilheiro") 
+            handleSelecionarPremio("artilheiro", nome);
         }}
         jogadoresDisponiveis={jogadores}
       />
@@ -486,10 +496,10 @@ function TabelaPalpitesJogosCopa2026Mobile({
             | "melhor1Fase"
         }
         onSelecionar={(nome) => {
-          if (modalAberto === "campeao") setCampeaoInterno(nome);
-          if (modalAberto === "viceCampeao") setViceCampeaoInterno(nome);
-          if (modalAberto === "terceiroLugar") setTerceiroLugarInterno(nome);
-          if (modalAberto === "melhor1Fase") setMelhor1FaseInterno(nome);
+          if (modalAberto === "campeao") handleSelecionarPremio("campeao", nome);
+          if (modalAberto === "viceCampeao") handleSelecionarPremio("viceCampeao", nome);
+          if (modalAberto === "terceiroLugar") handleSelecionarPremio("terceiroLugar", nome);
+          if (modalAberto === "melhor1Fase") handleSelecionarPremio("melhor1Fase", nome);
         }}
         selecoesDisponiveis={selecoes}
         selecoesEscolhidas={

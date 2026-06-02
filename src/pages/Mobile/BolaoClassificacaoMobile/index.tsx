@@ -5,12 +5,10 @@ import {
   Heading,
   HStack,
   Icon,
-  Image,
   Select,
   Spinner,
   Text
 } from "@chakra-ui/react";
-import tituloClassificacao from "@/assets/images/tituloClassificacao.jpg";
 import { useOutletContext } from "react-router-dom";
 import { Bolao } from "../../../stores/bolaoStore.ts";
 import { CRITERIOS_ABAS } from "../../../utils/Utils.ts";
@@ -116,11 +114,6 @@ function BolaoClassificacaoMobile() {
       <div className={styles.classificacaoContainer}>
         
         <div className={styles.tituloImagem}>
-          <Image
-            src={tituloClassificacao}
-            alt="Título Classificação"
-          />
-
           <HStack spacing={2} wrap="wrap" justify="center">
             <Button leftIcon={<BsImage />} colorScheme="blue" onClick={handleGenerateImage} isLoading={isGenerating}>
               Imagem

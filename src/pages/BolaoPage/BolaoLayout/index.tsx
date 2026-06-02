@@ -3,9 +3,7 @@ import HeaderNav from "../../../components/HeaderNav";
 import { Bolao, 
   bolaoStore 
 } from "../../../stores/bolaoStore";
-import { getImagemURL, 
-  retornaUserId
-} from "../../../utils/Utils";
+import { retornaUserId } from "../../../utils/Utils";
 import { useEffect } from "react";
 
 interface BolaoLayoutProps {
@@ -24,7 +22,7 @@ export function BolaoLayout({ bolao, children }: BolaoLayoutProps) {
   
   return (
     <>
-      <HeaderNav nome={bolao.nome} imagem={String(getImagemURL(String(bolao.imagemBolao)))} modoBolao/>
+      <HeaderNav bolao={bolao} modoBolao/>
       <Box as="main" flex="1" p={6} bg="white" minH="calc(100vh - 140px)">
         {children}
       </Box>

@@ -66,3 +66,22 @@ export const linkTermosCondicoes = style({
     }
   }
 });
+
+export const linkLogin = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyItems: 'end',
+  color: '#000000',
+  fontWeight: 'bold',
+  fontSize: '0.9rem',
+  textDecoration: 'none',
+  padding: '8px 12px',
+  borderRadius: '6px',
+  backgroundColor: 'transparent',
+  transition: 'all 0.2s ease',
+
+  ':hover': {
+    color: '#1a73e8',
+    backgroundColor: 'rgba(0,0,0,0.05)',
+  },
+});

@@ -205,41 +205,6 @@ export function PartidaUnicaPalpitesMobile({
     onOpen();
   };
 
-  // const formatarData = (dataStr: string): string => {
-  //   if (!dataStr) return "";
-
-  //   const [ano, mes, dia] = dataStr.split("-").map(Number);
-
-  //   const data = new Date(Date.UTC(ano, mes - 1, dia));
-
-  //   const diaFormatado = String(data.getUTCDate()).padStart(2, '0');
-  //   const mesFormatado = data.toLocaleString("pt-BR", { 
-  //     month: "long",
-  //     timeZone: "America/Sao_Paulo" 
-  //   });
-  //   const anoFormatado = data.getUTCFullYear();
-
-  //   return `${diaFormatado} ${mesFormatado} ${anoFormatado}`;
-  // };
-
-  // const formatarData = (dataStr: string): string => {
-  //   if (!dataStr) return "";
-
-  //   const data = new Date(dataStr);
-
-  //   console.log("data Date", data );
-
-  //   const dia = data.getDate().toLocaleString("pt-BR");
-  //   console.log("data dia", dia );
-  //   const mes = data.toLocaleString("pt-BR", { month: "long" });
-  //   const ano = data.getFullYear();
-
-  //   return `${dia} ${mes} ${ano}`;
-  // };
-
-  console.log("data jogo", dataJogoInterno );
-  
-
   return (
     <>
       <Card

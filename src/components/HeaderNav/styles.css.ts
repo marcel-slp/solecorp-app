@@ -46,6 +46,7 @@ export const itemLink = style({
   fontSize: "14px",
   textTransform: "uppercase",
   textDecoration: "none",
+  borderRadius: '8px'
 });
 
 export const iconBar = style({
@@ -64,4 +65,12 @@ export const headerIcon = style({
   ':hover': {
     opacity: 0.7,
   },
+});
+
+export const saveButton = style({
+  '@media': {
+    '(max-width: 768px)': {
+      width: '150px'
+    }
+  }
 });
