@@ -191,8 +191,9 @@ function TabelaPalpitesJogosCopa2026({
         });
       }
     } catch (err) {
+      console.error("Erro ao salvar palpites. Erro: ", err);
       toast({
-        title: `Erro ao salvar ${err}`,
+        title: `Erro ao salvar`,
         status: "error",
         duration: 2000,
       });

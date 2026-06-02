@@ -4,18 +4,22 @@ import {
   FormControl,
   FormLabel,
   Input,
+	InputGroup,
+	InputRightElement,
+	IconButton,
 } from "@chakra-ui/react";
 import { FormEvent, useState } from "react";
 import * as styles from "./styles.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loginUsuario } from "../../api";
 import defaultLogin from "@/assets/images/login_logo.jpeg";
-import { Image } from "@chakra-ui/icons";
+import { Image, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 export function Login() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [message, setMessage] = useState('');
+	const [showPassword, setShowPassword] = useState(false);
 
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -68,12 +72,25 @@ export function Login() {
 				</FormControl>
 				<FormControl isRequired className={styles.item}>
 					<FormLabel>Senha</FormLabel>
-					<Input 
-							type="password"  
-							autoComplete={"current-password"}
-							value={password} 
+					<InputGroup>
+						<Input
+							type={showPassword ? "text" : "password"}
+							autoComplete="new-password"
+							pattern="^(?=.*[A-Z])(?=.*\d).{6,}$"
+							value={password}
 							onChange={(e) => setPassword(e.target.value)}
-					/>
+						/>
+						<InputRightElement>
+							<IconButton
+								aria-label={showPassword ? "Esconder senha" : "Mostrar senha"}
+								icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+								onClick={() => setShowPassword(!showPassword)}
+								variant="ghost"
+								size="sm"
+								color="gray.600"
+							/>
+						</InputRightElement>
+					</InputGroup>
 				</FormControl>
 
 				<Button 

@@ -92,7 +92,7 @@ export default function HeaderNavMobile({ bolao }: HeaderNavMobileProps) {
                 aria-label="Salvar Palpites"
                 icon={isSaved ? <FaCheck /> : <FaSave />}
                 isLoading={isSaving}
-                colorScheme="blue"
+                colorScheme="yellow"
                 variant="solid"
                 size="md"
                 onClick={salvarPalpitesHandle}

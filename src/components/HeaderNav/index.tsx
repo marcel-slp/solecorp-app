@@ -109,7 +109,7 @@ export function HeaderNav({ bolao, modoBolao }: Props) {
         <Button
           className={styles.saveButton}
           isLoading={isSaving}
-          colorScheme="blue"
+          colorScheme="yellow"
           onClick={() => salvarPalpitesHandle()}
         >
           {isSaved ? "Salvo!" : "Salvar Palpites"}
