@@ -227,6 +227,8 @@ export function PartidaUnicaPalpitesMobile({
           <div className={styles.timeCasaLinha}>
             <Image
               src={partida.simboloCasa}
+              loading="lazy"
+              decoding="async"
               className={styles.simb}
               fallbackSrc={defaultParticipante}
             />
@@ -276,6 +278,8 @@ export function PartidaUnicaPalpitesMobile({
           <div className={styles.timeForaLinha}>
             <Image
               src={partida.simboloFora}
+              loading="lazy"
+              decoding="async"
               className={styles.simb}
               fallbackSrc={defaultParticipante}
             />
@@ -401,6 +405,8 @@ export function PartidaUnicaPalpitesMobile({
                               <Flex align="center" justify="center" gap={2}>
                                 <Image
                                   src={partida.simboloCasa}
+                                  loading="lazy"
+                                  decoding="async"
                                   className={styles.simb}
                                   fallbackSrc={defaultParticipante}
                                   boxSize="24px"
@@ -411,6 +417,8 @@ export function PartidaUnicaPalpitesMobile({
                                 </Text>
                                 <Image
                                   src={partida.simboloFora}
+                                  loading="lazy"
+                                  decoding="async"
                                   className={styles.simb}
                                   fallbackSrc={defaultParticipante}
                                   boxSize="24px"
@@ -424,6 +432,8 @@ export function PartidaUnicaPalpitesMobile({
                                   <Flex align="center" justify="center" gap={2}>
                                     <Image
                                       src={partida.simboloCasa}
+                                      loading="lazy"
+                                      decoding="async"
                                       fallbackSrc={defaultParticipante}
                                       boxSize="24px"
                                     />
@@ -433,6 +443,8 @@ export function PartidaUnicaPalpitesMobile({
                                     </Text>
                                     <Image
                                       src={partida.simboloFora}
+                                      loading="lazy"
+                                      decoding="async"
                                       fallbackSrc={defaultParticipante}
                                       boxSize="24px"
                                     />

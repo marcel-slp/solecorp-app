@@ -39,6 +39,7 @@ import { bolaoStore } from "../../stores/bolaoStore";
 import { PalpitesPremiosIndividuaisModal } from "../PalpitesPremiosIndividuaisModal";
 import * as styles from "./styles.css";
 import { PartidaUnicaPalpitesMobile } from "../PartidaUnicaPalpitesMobile";
+import LazyRender from "../LazyRender";
 
 interface TabelaPalpitesJogosCopa2026Mobile {
   bolaoId: string;
@@ -79,6 +80,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
   const [viceCampeaoInterno, setViceCampeaoInterno] = useState<string>("");
   const [terceiroLugarInterno, setTerceiroLugarInterno] = useState<string>("");
   const [melhor1FaseInterno, setMelhor1FaseInterno] = useState<string>("");
+
   const userIdLogado = retornaUserId();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -264,6 +266,12 @@ function TabelaPalpitesJogosCopa2026Mobile({
     salvarPremioIndividual(campo, valor);
   };
 
+  const todosJogos = useMemo(() => {
+    const grupos = jogosFaseGrupos;
+    const mataMata = Object.values(jogosMataMata).flat();
+    return [...grupos, ...mataMata];
+  }, [jogosFaseGrupos, jogosMataMata]);
+
   if (!isReady) {
     return <Spinner size="xl" />;
   }
@@ -413,19 +421,22 @@ function TabelaPalpitesJogosCopa2026Mobile({
       <SimpleGrid
         columns={{ base: 1, md: 2, xl: 3 }}
         spacing={4}
-        width="100%"
-        height="100%"
       >
-        {jogosFaseGrupos.map((jogo) => (
-          <Box key={jogo.id} className={styles.partidaContainer}>
-            <PartidaUnicaPalpitesMobile
-              key={jogo.id}
-              partida={jogo}
-              bolaoId={bolaoId}
-              placarPalpite={placaresPalpitesPorPartidaId[jogo.id]}
-              pontuacaoPartida={String(pontuacoesPorJogo[jogo.id]) || "0"}
-            />
-          </Box>
+        {todosJogos.map((jogo) => (
+          <LazyRender 
+            key={jogo.id}
+            minHeight={220}
+            fallback={<Box height="220px" bg="gray.50" borderRadius="xl" />} 
+          >
+            <Box className={styles.partidaContainer}>
+              <PartidaUnicaPalpitesMobile
+                partida={jogo}
+                bolaoId={bolaoId}
+                placarPalpite={placaresPalpitesPorPartidaId[jogo.id]}
+                pontuacaoPartida={String(pontuacoesPorJogo[jogo.id]) || "0"}
+              />
+            </Box>
+          </LazyRender>
         ))}
       </SimpleGrid>
 
@@ -449,6 +460,8 @@ function TabelaPalpitesJogosCopa2026Mobile({
               height="100%"
             >
               {jogosDaFase.map((jogo) => (
+                <LazyRender key={jogo.id} minHeight={220}>
+                  <Box className={styles.partidaContainer}>
                 <PartidaUnicaPalpitesMobile
                   key={jogo.id}
                   partida={jogo}
@@ -456,6 +469,8 @@ function TabelaPalpitesJogosCopa2026Mobile({
                   placarPalpite={placaresPalpitesPorPartidaId[jogo.id]}
                   pontuacaoPartida={String(pontuacoesPorJogo[jogo.id]) || "0"}
                 />
+                </Box>
+                </LazyRender>
               ))}
             </SimpleGrid>
           </Box>

@@ -14,6 +14,9 @@ export default defineConfig({
         entryFileNames: 'assets/[name].js',
         chunkFileNames: 'assets/[name].js',
         assetFileNames: 'assets/[name].[ext]',
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+        }
       }
     },
     assetsInlineLimit: 0,

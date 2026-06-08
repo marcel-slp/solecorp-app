@@ -82,7 +82,7 @@ export const PDFClassificacao = ({ bolaoNome }: PDFProps) => {
                     <Text style={styles.default.cellPts}>PTS</Text>
                   </View>
 
-                  {dados.slice(0, 10).map((item: PontuacaoParticipanteComPosicao, i: number) => (
+                  {dados.map((item: PontuacaoParticipanteComPosicao, i: number) => (
                     <View key={i} style={styles.default.tableRow}>
                       <Text style={styles.default.cellPos}>{item.posicao}</Text>
                       <Text style={styles.default.cellNome}>{item.participante}</Text>

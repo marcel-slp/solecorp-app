@@ -74,7 +74,6 @@ function BolaoClassificacao() {
           quality: 1,
           pixelRatio: 2,
           backgroundColor: "#ffffff",
-          width: 2250,
           height: imageRef.current!.scrollHeight
         });
 

@@ -32,7 +32,7 @@ export const headerLinha = style({
     '(max-width: 768px)': {
       justifyContent: "center",
       fontSize: "12px",
-      gridTemplateColumns: '15px 82px 31px 1fr'
+      gridTemplateColumns: '21px 82px 31px 1fr'
     }
   }
 });
