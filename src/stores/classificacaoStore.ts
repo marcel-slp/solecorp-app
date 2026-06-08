@@ -26,7 +26,7 @@ function aplicarRankingComEmpate<T>(
   return lista.map((item, index) => {
     const pontos = getPontos(item);
 
-    if (ultimaPontuacao !== null && (pontos < ultimaPontuacao  || pontos == ultimaPontuacao)) {
+    if (ultimaPontuacao !== null && pontos < ultimaPontuacao) {
       posicaoAtual = index + 1;
     }
 
