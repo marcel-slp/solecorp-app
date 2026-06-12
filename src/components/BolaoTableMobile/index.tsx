@@ -90,6 +90,7 @@ export default function BolaoTableMobile({ boloes }: BolaoTableProps) {
                   <HStack spacing={4} align="center" flex="1">
                     <Image
                       src={String(getImagemURL(String(bolao.imagemBolao)))}
+                      loading="lazy"
                       alt="Logo"
                       w="38px"
                       h="38px"
