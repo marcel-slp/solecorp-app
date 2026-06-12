@@ -77,9 +77,11 @@ export const premiosIndividuaisStore = create<premiosIndividuaisStore>((set) => 
         set({ premiosIndividuaisPalpite: response.data });
       } else {
         console.error("Erro ao carregar premios individuais:", response.error);
+        throw Error;
       }
     } catch (err) {
       console.error("Erro ao carregar premios individuais:", err);
+      throw err;
     }
   },
 

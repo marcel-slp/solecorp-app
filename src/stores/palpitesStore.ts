@@ -68,10 +68,12 @@ export const palpitesStore = create<PalpitesStore>((set) => ({
       } else {
         set({ palpitesUsuario: {} });
         console.error("Erro ao carregar palpites:", response.error);
+        throw Error;
       }
     } catch (err) {
       console.error("Falha ao carregar palpites:", err);
       set({ palpitesUsuario: {} });
+      throw err;
     }
   },
 

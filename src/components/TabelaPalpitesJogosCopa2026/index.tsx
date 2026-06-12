@@ -9,6 +9,7 @@ import {
   SimpleGrid,
   useDisclosure,
   useToast,
+  Icon,
 } from "@chakra-ui/react";
 import { PartidaUnicaPalpites } from "../PartidaUnicaPalpites";
 import { useEffect, useMemo, useState } from "react";
@@ -31,6 +32,7 @@ import { selecoesStore } from "../../stores/selecoesStore";
 import { EscolherSelecaoModal } from "../EscolherSelecaoModal";
 import { bolaoStore } from "../../stores/bolaoStore";
 import { PalpitesPremiosIndividuaisModal } from "../PalpitesPremiosIndividuaisModal";
+import { MdError } from "react-icons/md";
 
 interface TabelaPalpitesJogosCopa2026Props {
   bolaoId: string;
@@ -44,12 +46,14 @@ function TabelaPalpitesJogosCopa2026({
     criteriosPontuacaoStore();
   const { palpitesUsuario, salvarPalpites, carregarPalpitesPorUsuario } =
     palpitesStore();
-  const { premiosIndividuaisPalpite, carregarPremiosIndividuaisPalpite, editarPremiosIndividuaisPalpite } = premiosIndividuaisStore();
+  const { premiosIndividuaisPalpite, carregarPremiosIndividuaisPalpite, editarPremiosIndividuaisPalpite } = 
+    premiosIndividuaisStore();
   const { jogadores, carregarJogadores } = jogadoresStore();
   const { selecoes, carregarSelecoes } = selecoesStore();
   const { participantesBolao, carregarParticipantesBolao } = bolaoStore();
 
   const [isReady, setIsReady] = useState(false);
+  const [error, setError] = useState<string|null>();
   const [melhorJogadorInterno, setMelhorJogadorInterno] = useState<string>("");
   const [melhorGoleiroInterno, setMelhorGoleiroInterno] = useState<string>("");
   const [artilheiroInterno, setArtilheiroInterno] = useState<string>("");
@@ -66,12 +70,19 @@ function TabelaPalpitesJogosCopa2026({
 
   useEffect(() => {
     const loadAll = async () => {
-      await Promise.all([
-        carregarPartidas(1),
-        carregarPontuacaoCriterios(bolaoId),
-        carregarPalpitesPorUsuario(bolaoId, userIdLogado),
-        carregarPremiosIndividuaisPalpite(bolaoId, userIdLogado)
-      ]);
+      setError(null);
+      try{
+        await Promise.all([
+          carregarPartidas(1),
+          carregarPontuacaoCriterios(bolaoId),
+          carregarPalpitesPorUsuario(bolaoId, userIdLogado),
+          carregarPremiosIndividuaisPalpite(bolaoId, userIdLogado)
+        ]);
+      } catch {
+        setError("Falha em carregar palpites. Tente novamente mais tarde ou entre em contato com o administrador");
+        setIsReady(false);
+      }
+
       setIsReady(true);
     };
 
@@ -152,7 +163,7 @@ function TabelaPalpitesJogosCopa2026({
     try {
       const dataHoraJogo = new Date(`${primeiro.dataJogo}T${primeiro.horaJogo}:00`);
       const agora = new Date();
-      const umaHoraAntes = new Date(dataHoraJogo.getTime() - 3600000); // 60 minutos
+      const umaHoraAntes = new Date(dataHoraJogo.getTime() - 3600000);
 
       return agora >= umaHoraAntes;
     } catch {
@@ -228,9 +239,7 @@ function TabelaPalpitesJogosCopa2026({
     salvarPremioIndividual(campo, valor);
   };
 
-  if (!isReady) {
-    return <Spinner size="xl" />;
-  }
+  
 
   const handleClickPalpitesPremiosIndividuais = async () => {
     if(participantesBolao.length == 0) {
@@ -239,11 +248,27 @@ function TabelaPalpitesJogosCopa2026({
     onOpen();
   };
 
+  if (!isReady) {
+    return <Spinner size="xl" />;
+  }
+
+  if (error) {
+    return (
+      <Box textAlign="center" py={20}>
+        <Icon color='red' fontSize={50} as={MdError }/>
+        <Text color="red.500">{error}</Text>
+        <Button mt={4} colorScheme="blue" onClick={() => window.location.reload()}>
+          Tentar novamente
+        </Button>
+      </Box>
+    );
+  }
+
   return (
     <Box>
       <Box p={3} borderWidth="1px" borderRadius="lg" bg="white" width={"50%"} justifySelf={"center"} mb={4}>
         <Heading size="md" mb={4}>
-          Prêmios Individuais da Copa
+          Prêmios Individuais da Copa - Palpite o pódio e prêmios!
         </Heading>
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
           <Button

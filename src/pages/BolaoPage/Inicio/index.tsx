@@ -70,7 +70,7 @@ export function InicioBolao() {
     carregarClassificacao(bolao.id);
   }, [bolao.id, carregarClassificacao]);
 
-  const rankingAoRedorUsuario = getRankingAoRedorUsuario(loggedUserId, 5);
+  const rankingAoRedorUsuario = getRankingAoRedorUsuario(loggedUserId, 2);
   const top10Geral = getTopN(10);
 
   const abrirModal = (titulo: string, conteudo: ReactNode) => {
@@ -227,11 +227,11 @@ export function InicioBolao() {
                     <Icon as={FaArrowTrendUp} mr={2} />
                     Sua Posição no Ranking
                   </Text>
-                  <VStack spacing={3} align="stretch">
+                  <VStack spacing={1} align="stretch">
                     {rankingAoRedorUsuario.map((item) => (
                       <HStack
                         key={item.userId}
-                        p={4}
+                        p={2}
                         bg={item.userId === loggedUserId ? "blue.50" : "white"}
                         borderRadius="md"
                         borderWidth={
@@ -257,11 +257,11 @@ export function InicioBolao() {
                   <Text fontWeight="bold" mb={4}>
                     Top 10 Geral
                   </Text>
-                  <VStack spacing={3} align="stretch">
+                  <VStack spacing={1} align="stretch">
                     {top10Geral.map((item) => (
                       <HStack
                         key={item.userId}
-                        p={4}
+                        p={2}
                         bg="white"
                         borderRadius="md"
                         borderWidth="1px"

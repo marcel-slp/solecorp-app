@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import * as styles from "./styles.css.ts";
 import { Box, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text } from "@chakra-ui/react";
 import { classificacaoStore } from "../../stores/classificacaoStore.ts";
+import { retornaUserId } from "../../utils/Utils.ts";
 
 interface TabelaClassificacaoBolaoMobileProps {
   criterioFiltro: string;
@@ -11,6 +12,8 @@ interface TabelaClassificacaoBolaoMobileProps {
 function TabelaClassificacaoBolaoMobile({criterioFiltro, isGeral}: TabelaClassificacaoBolaoMobileProps) {
 
   const { getClassificacaoPorCriterio } = classificacaoStore();
+
+  const loggedUserId = retornaUserId();
 
   const classificacao = useMemo(() => {
     return getClassificacaoPorCriterio(criterioFiltro);
@@ -39,13 +42,27 @@ function TabelaClassificacaoBolaoMobile({criterioFiltro, isGeral}: TabelaClassif
           <Tbody>
             {classificacao.map((item) => (
               <Tr key={item.userId} className={styles.trBodyContainer}>
-                <Td fontWeight="bold" color="navy">
+                <Td 
+                  fontWeight="bold"  
+                  color={item.userId === loggedUserId ? "green.500" : "black"}
+                  bg={item.userId === loggedUserId ? "blue.50" : "white"}
+                >
                   {item.posicao}
                 </Td>
-                <Td pl={3} color="black" fontWeight="medium">
+                <Td 
+                  pl={3} 
+                  color={item.userId === loggedUserId ? "green.500" : "black"}
+                  fontWeight="medium"
+                  bg={item.userId === loggedUserId ? "blue.50" : "white"}
+                >
                   {item.participante}
                 </Td>
-                <Td fontWeight="bold" fontSize="lg" color="navy">
+                <Td 
+                  fontWeight="bold" 
+                  fontSize="lg"
+                  color={item.userId === loggedUserId ? "green.500" : "black"}
+                  bg={item.userId === loggedUserId ? "blue.50" : "white"}
+                >
                   {item.pts}
                 </Td>
               </Tr>

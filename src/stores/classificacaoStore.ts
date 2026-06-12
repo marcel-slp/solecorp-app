@@ -246,14 +246,6 @@ export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
   getTopN: (n: number = 10) => {
     const { rankingGeral } = get();
 
-    if (!rankingGeral.length) return [];
-
-    const posicoes = [...new Set(rankingGeral.map(r => r.posicao))];
-
-    const posicaoLimite = posicoes.find(p => p && p >= n);
-
-    if (!posicaoLimite) return rankingGeral;
-
-    return rankingGeral.filter(r => r.posicao && r.posicao <= posicaoLimite);
+    return rankingGeral.slice(0, n);
   }
 }));
