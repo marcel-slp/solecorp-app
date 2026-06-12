@@ -497,7 +497,7 @@ export const buscarPalpitesPorBolaoIdUserId = async (bolaoId: string, userId: nu
   error: string | null;
 }> => {
   try {
-    const res = await axios.get<Palpite[]>(`${API_URL}/buscar_palpites_bolaoid_userid_TESTANDO.php?bolaoId=${bolaoId}&userId=${userId}`);
+    const res = await axios.get<Palpite[]>(`${API_URL}/buscar_palpites_bolaoid_userid.php?bolaoId=${bolaoId}&userId=${userId}`);
     return { data: res.data, error: null, success: true };
   } catch (err: unknown) {
     return {
