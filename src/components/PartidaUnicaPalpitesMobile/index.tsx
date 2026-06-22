@@ -20,7 +20,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Card,
-  CardBody
+  CardBody,
+  Box
 } from "@chakra-ui/react";
 import * as styles from "./styles.css";
 import { Partida } from "../../stores/partidasStore";
@@ -30,19 +31,24 @@ import { palpitesStore } from "../../stores/palpitesStore";
 import { formatarData, retornaUserId } from "../../utils/Utils";
 import { Placar } from "../../models/generateCopa2026";
 import { bolaoStore } from "../../stores/bolaoStore";
+import { InfoPorPartida } from "../TabelaPalpitesJogosCopa2026";
 
 interface PartidaUnicaPalpitesMobileProps {
   partida: Partida;
   placarPalpite: Placar;
   bolaoId: string;
-  pontuacaoPartida: string;
+  infoPartida: Record<number, InfoPorPartida>;
+  // pontuacaoPartida: string;
+  // iconesParticipantes: Record<number, React.ReactNode[]>;
 }
 
 export function PartidaUnicaPalpitesMobile({
   partida,
   placarPalpite,
-  pontuacaoPartida,
-  bolaoId
+  //pontuacaoPartida,
+  bolaoId,
+  infoPartida
+  //iconesParticipantes = {}
 }: PartidaUnicaPalpitesMobileProps) {
   const { salvarPalpite } = palpitesStore();
   const { participantesBolao, carregarParticipantesBolao } = bolaoStore();
@@ -63,6 +69,8 @@ export function PartidaUnicaPalpitesMobile({
   const [dataJogoInterno, setDataJogoInterno] = useState("");
   const [horaJogoInterno, setHoraJogoInterno] = useState("");
   const [localJogoInterno, setLocalJogoInterno] = useState("");
+
+  const userIdLogado = retornaUserId();
 
   useEffect(() => {
     setPlacarCasaInterno(
@@ -360,7 +368,7 @@ export function PartidaUnicaPalpitesMobile({
             <Flex align="center" gap={2}>
               <Text>Pontos:</Text>
               <Badge colorScheme="green" fontSize="md" px={3} py={1}>
-                {pontuacaoPartida}
+                {infoPartida[userIdLogado].ptsTotal || "0"}
               </Badge>
             </Flex>
           </div>
@@ -378,18 +386,17 @@ export function PartidaUnicaPalpitesMobile({
           <Modal isOpen={isOpen} onClose={onClose} size="lg">
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>
-                Palpites da Partida {partida.numeroPartida}
-              </ModalHeader>
+              <ModalHeader>Palpites da Partida {partida.numeroPartida}</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <TableContainer>
                   <Table variant="simple" size="sm">
                     <Thead>
                       <Tr>
-                        <Th>Participante</Th>
+                        <Th textAlign="center">Participante</Th>
                         <Th textAlign="center">Palpite</Th>
                         {exibirPenaltis && <Th textAlign="center">Pênaltis</Th>}
+                        <Th textAlign="center">Acertos</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -397,16 +404,14 @@ export function PartidaUnicaPalpitesMobile({
                         const palpite = palpitesBolao[p.userId]?.find(
                           (pal) => pal.partidaId === partida.id
                         );
-
+                        const iconesParticipante = infoPartida?.[p.userId].icones || [];
                         return (
                           <Tr key={p.userId}>
-                            <Td fontWeight="medium">{p.nome}</Td>
+                            <Td textAlign="start">{p.nome}</Td>
                             <Td textAlign="center">
                               <Flex align="center" justify="center" gap={2}>
                                 <Image
                                   src={partida.simboloCasa}
-                                  loading="lazy"
-                                  decoding="async"
                                   className={styles.simb}
                                   fallbackSrc={defaultParticipante}
                                   boxSize="24px"
@@ -417,8 +422,6 @@ export function PartidaUnicaPalpitesMobile({
                                 </Text>
                                 <Image
                                   src={partida.simboloFora}
-                                  loading="lazy"
-                                  decoding="async"
                                   className={styles.simb}
                                   fallbackSrc={defaultParticipante}
                                   boxSize="24px"
@@ -432,8 +435,6 @@ export function PartidaUnicaPalpitesMobile({
                                   <Flex align="center" justify="center" gap={2}>
                                     <Image
                                       src={partida.simboloCasa}
-                                      loading="lazy"
-                                      decoding="async"
                                       fallbackSrc={defaultParticipante}
                                       boxSize="24px"
                                     />
@@ -443,8 +444,6 @@ export function PartidaUnicaPalpitesMobile({
                                     </Text>
                                     <Image
                                       src={partida.simboloFora}
-                                      loading="lazy"
-                                      decoding="async"
                                       fallbackSrc={defaultParticipante}
                                       boxSize="24px"
                                     />
@@ -454,6 +453,15 @@ export function PartidaUnicaPalpitesMobile({
                                 )}
                               </Td>
                             )}
+                            <Td fontWeight="medium">
+                              <Flex align="center">
+                                {iconesParticipante.map((icone, idx) => (
+                                  <Box key={idx} fontSize="md">
+                                    {icone}
+                                  </Box>
+                                ))}
+                              </Flex>
+                            </Td>
                           </Tr>
                         );
                       })}

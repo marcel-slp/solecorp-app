@@ -36,6 +36,7 @@ import BolaoListaMobile from './pages/Mobile/BolaoListaMobile'
 import PalpiteCopa2026Mobile from './pages/Mobile/PalpiteCopa2026Mobile'
 import { BolaoPageMobile } from './pages/Mobile/BolaoPageMobile'
 import BolaoClassificacaoMobile from './pages/Mobile/BolaoClassificacaoMobile'
+import ManutencaoPage from './pages/Erros/ManutencaoPage'
 
 const modoBolao = true;
 
@@ -48,6 +49,7 @@ export function Router() {
         <Route path="alterar-senha" element={<AlterarSenha />} />
         <Route path="convite/bolao/:bolaoId" element={<BolaoConvite />} />
         <Route path="not-found" element={<NaoEncontradoPage />} />
+        <Route path="manutencao" element={<ManutencaoPage />} />
         <Route path="escolher-dispositivo" element={<EscolherDispositivo />} />
       </Route>
 

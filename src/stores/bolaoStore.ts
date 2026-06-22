@@ -83,7 +83,7 @@ interface BolaoStore {
   carregarParticipantesBolao: (bolaoId: string, userId: number) => Promise<void>
   carregarParticipanteBolaoLogado: (bolaoId: string, userId: number) => Promise<void>
   editarParticipanteBolao: (dadosParticipante: ParticipanteBolaoDTO) => Promise<boolean>
-  removerParticipanteBolao: (userId: number) => Promise<boolean>
+  removerParticipanteBolao: (userId: number, bolaoId: string) => Promise<boolean>
   adicionarBolao: (dadosNovoBolao: NovoBolao) => Promise<boolean>
   carregarBoloesPorUserId: (userId: number) => Promise<void>
   carregarBoloesGerenciamento: () => Promise<void>
@@ -282,9 +282,9 @@ export const bolaoStore = create<BolaoStore>((set) => ({
     }
   },
 
-  removerParticipanteBolao: async (userId: number) => {
+  removerParticipanteBolao: async (userId: number, bolaoId: string) => {
     try {
-      const res = await deletarParticipanteBolao(userId);
+      const res = await deletarParticipanteBolao(userId, bolaoId);
 
       if(res.success) {
         set((state) => ({

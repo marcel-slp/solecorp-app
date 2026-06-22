@@ -6,9 +6,6 @@ export type Criterio = {
   tipo: string,
   situacao: string,
   descricao?: string,
-  // pontosPadrao?: number,
-  // pontosPrimeiraFasePadrao?: number,
-  // pontosSegundaFasePadrao?: number,
   condicao?: string;
 }
 
@@ -34,9 +31,6 @@ interface CriteriosPontuacaoStore {
   adicionarPontuacaoCriterio: (pontuacaoCriterio: NovoPontuacaoCriterio) => Promise<boolean>
   editarPontuacaoCriterio: (pontuacaoId: string, dadosPontuacaoCriterio: NovoPontuacaoCriterio) => Promise<boolean>
   removerPontuacaoCriterio: (id: string) => Promise<boolean>
-  //adicionarCriterio: (criterio: NovoCriterio) => Promise<boolean>
-  //editarCriterio: (id: string, dadosCriterio: NovoCriterio) => Promise<boolean>
-  //removerCriterio: (id: string) => Promise<boolean>
   limparCriterios: () => void //TODO: limpar os registros no banco de dados
   limparPontuacaoCriterios: () => void //TODO: limpar os registros no banco de dados
 }
@@ -44,33 +38,6 @@ interface CriteriosPontuacaoStore {
 export const criteriosPontuacaoStore = create<CriteriosPontuacaoStore>((set) => ({
   criterios: [],
   pontuacaoCriterios: [],
-
-  // adicionarCriterio: async (criterio) => {
-  //   const novoCriterio = {
-  //     id: crypto.randomUUID().slice(0,5),
-  //     ...criterio,
-  //   }
-
-  //   try {
-  //     const response = await salvarCriterio(novoCriterio);
-
-  //     if(response.success) {
-  //       set((state) => ({
-  //         criterios: [
-  //           ...state.criterios,
-  //           novoCriterio,
-  //         ],
-  //       }));
-  //       return true;
-  //     } else {
-  //       console.error("Erro ao salvar criterio:", response.message);
-  //       return false;
-  //     }
-  //   } catch (err) {
-  //     console.error("Falha ao salvar criterio:", err);
-  //     return false;
-  //   }
-  // },
 
   carregarCriterios: async () => {
     try {
@@ -84,49 +51,6 @@ export const criteriosPontuacaoStore = create<CriteriosPontuacaoStore>((set) => 
       console.error('Erro ao carregar criterios:', err);
     }
   },
-
-  // editarCriterio: async (id, dadosCriterio) => {
-  //   try {
-  //     const res = await editarCriterio({
-  //       id: id,
-  //       ...dadosCriterio
-  //     });
-
-  //     if(res.success) {
-  //       set((state) => ({
-  //         criterios: state.criterios.map((p) =>
-  //           p.id === id ? { ...p, ...dadosCriterio } : p
-  //         ),
-  //       }));
-  //       return true;
-  //     } else {
-  //       console.error("Erro ao editar criterio:", res.message);
-  //       return false;
-  //     }
-  //   } catch (err) {
-  //     console.error("Falha ao editar criterio:", err);
-  //     return false;
-  //   }
-  // },
-
-  // removerCriterio: async (id: string) => {
-  //   try {
-  //     const res = await deletarCriterio(id);
-
-  //     if(res.success) {
-  //       set((state) => ({
-  //         criterios: state.criterios.filter((p) => p.id !== id),
-  //       }));
-  //       return true;
-  //     } else {
-  //       console.error("Erro ao remover criterio:", res.message);
-  //       return false;
-  //     }
-  //   } catch (err) {
-  //     console.error("Falha ao remover criterio:", err);
-  //     return false;
-  //   }
-  // },
 
   carregarPontuacaoCriterios: async (bolaoId: string) => {
     try {

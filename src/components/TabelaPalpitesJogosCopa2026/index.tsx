@@ -33,9 +33,16 @@ import { EscolherSelecaoModal } from "../EscolherSelecaoModal";
 import { bolaoStore } from "../../stores/bolaoStore";
 import { PalpitesPremiosIndividuaisModal } from "../PalpitesPremiosIndividuaisModal";
 import { MdError } from "react-icons/md";
+import { BiSolidCheckboxChecked } from "react-icons/bi";
+import { FaSquareXmark } from "react-icons/fa6";
 
 interface TabelaPalpitesJogosCopa2026Props {
   bolaoId: string;
+}
+
+export interface InfoPorPartida {
+  ptsTotal: number;
+  icones: React.ReactNode[];
 }
 
 function TabelaPalpitesJogosCopa2026({
@@ -44,7 +51,7 @@ function TabelaPalpitesJogosCopa2026({
   const { partidas, carregarPartidas } = partidasStore();
   const { pontuacaoCriterios, carregarPontuacaoCriterios } =
     criteriosPontuacaoStore();
-  const { palpitesUsuario, salvarPalpites, carregarPalpitesPorUsuario } =
+  const { palpitesUsuario, palpitesBolao, salvarPalpites, carregarPalpitesPorUsuario } =
     palpitesStore();
   const { premiosIndividuaisPalpite, carregarPremiosIndividuaisPalpite, editarPremiosIndividuaisPalpite } = 
     premiosIndividuaisStore();
@@ -118,27 +125,126 @@ function TabelaPalpitesJogosCopa2026({
     if (selecoes.length <= 0) carregarSelecoes();
   };
 
-  const pontuacoesPorJogo = useMemo(() => {
-    if (!isReady || !palpitesUsuario) return {};
+  const infoPorPartida = useMemo(() => {
+    if (
+      !isReady ||
+      participantesBolao.length === 0 ||
+      !Object.keys(palpitesBolao).length
+    ) {
+      return {};
+    }
 
-    return Object.fromEntries(
-      Object.entries(partidas).map(([id, partida]) => {
-        const palpite = Object.values(palpitesUsuario)
-          .flat()
-          .find((p) => p.partidaId === id);
+    const mapa: Record<
+      string,
+      Record<
+        number,
+        {
+          ptsTotal: number;
+          icones: React.ReactNode[];
+        }
+      >
+    > = {};
 
-        if (!palpite) return [id, 0];
+    Object.entries(partidas).forEach(([partidaId, partida]) => {
+      mapa[partidaId] = {};
 
-        const pontuacaoPorPartida = calcularPontuacaoPorPartida(
+      participantesBolao.forEach((participante) => {
+        const palpite = palpitesBolao[participante.userId]?.find(
+          (p) => p.partidaId === partidaId
+        );
+
+        if (!palpite) {
+          mapa[partidaId][participante.userId] = {
+            ptsTotal: 0,
+            icones: []
+          };
+          return;
+        }
+
+        const pontuacao = calcularPontuacaoPorPartida(
           partida,
           palpite,
           pontuacaoCriterios
         );
 
-        return [id, pontuacaoPorPartida.ptsTotalPartida];
-      })
-    );
-  }, [isReady, palpitesUsuario, pontuacaoCriterios, partidas]);
+        const icones: React.ReactNode[] = [];
+
+        if (pontuacao.ptsPlacarCravado > 0) {
+          icones.push(
+            <BiSolidCheckboxChecked
+              color="gold"
+              fontSize="26px"
+              key={`cravado-${participante.userId}`}
+            />
+          );
+        }
+
+        if (pontuacao.ptsResultado > 0) {
+          icones.push(
+            <BiSolidCheckboxChecked
+              color="green"
+              fontSize="26px"
+              key={`resultado-${participante.userId}`}
+            />
+          );
+        }
+
+        if (pontuacao.ptsDiferencaGols > 0) {
+          icones.push(
+            <BiSolidCheckboxChecked
+              color="purple"
+              fontSize="26px"
+              key={`diferenca-${participante.userId}`}
+            />
+          );
+        }
+
+        if (pontuacao.ptsGols > 0) {
+          icones.push(
+            <BiSolidCheckboxChecked
+              color="turquoise"
+              fontSize="26px"
+              key={`gols-${participante.userId}`}
+            />
+          );
+        }
+
+        if (pontuacao.ptsPenaltis > 0) {
+          icones.push(
+            <BiSolidCheckboxChecked
+              color="silver"
+              fontSize="26px"
+              key={`penaltis-${participante.userId}`}
+            />
+          );
+        }
+
+        if (pontuacao.ptsTotalPartida === 0) {
+          icones.push(
+            <FaSquareXmark
+              color="red"
+              fontSize="18px"
+              style={{marginLeft: '5px'}}
+              key={`zero-${participante.userId}`}
+            />
+          );
+        }
+
+        mapa[partidaId][participante.userId] = {
+          ptsTotal: pontuacao.ptsTotalPartida,
+          icones
+        };
+      });
+    });
+
+    return mapa;
+  }, [
+    isReady,
+    partidas,
+    participantesBolao,
+    palpitesBolao,
+    pontuacaoCriterios
+  ]);
 
   const jogosFaseGrupos = useMemo(() => {
     return isReady ? generateGroupGamesFromDB(partidas) : [];
@@ -238,8 +344,6 @@ function TabelaPalpitesJogosCopa2026({
 
     salvarPremioIndividual(campo, valor);
   };
-
-  
 
   const handleClickPalpitesPremiosIndividuais = async () => {
     if(participantesBolao.length == 0) {
@@ -383,15 +487,18 @@ function TabelaPalpitesJogosCopa2026({
         <Heading>Fase de Grupos</Heading>
       </Flex>
 
-      {jogosFaseGrupos.map((jogo) => (
-        <PartidaUnicaPalpites
-          key={jogo.id}
-          partida={jogo}
-          bolaoId={bolaoId}
-          placarPalpite={placaresPalpitesPorPartidaId[jogo.id]}
-          pontuacaoPartida={String(pontuacoesPorJogo[jogo.id]) || "0"}
-        />
-      ))}
+      {jogosFaseGrupos.map((jogo) => {
+        const info = infoPorPartida[jogo.id];
+        return (
+          <PartidaUnicaPalpites
+            key={jogo.id}
+            partida={jogo}
+            bolaoId={bolaoId}
+            placarPalpite={placaresPalpitesPorPartidaId[jogo.id]}
+            infoPartida={info}
+          />
+        )
+      })}
 
       <Flex align="center" justify="space-between" mb={6} mt={6}>
         <Heading>Fase de Mata-Mata</Heading>
@@ -406,15 +513,18 @@ function TabelaPalpitesJogosCopa2026({
             <Heading size="md" mb={4}>
               {fase}
             </Heading>
-            {jogosDaFase.map((jogo) => (
-              <PartidaUnicaPalpites
-                key={jogo.id}
-                partida={jogo}
-                bolaoId={bolaoId}
-                placarPalpite={placaresPalpitesPorPartidaId[jogo.id]}
-                pontuacaoPartida={String(pontuacoesPorJogo[jogo.id]) || "0"}
-              />
-            ))}
+            {jogosDaFase.map((jogo) => {
+              const info = infoPorPartida[jogo.id];
+              return (
+                <PartidaUnicaPalpites
+                  key={jogo.id}
+                  partida={jogo}
+                  bolaoId={bolaoId}
+                  placarPalpite={placaresPalpitesPorPartidaId[jogo.id]}
+                  infoPartida={info}
+                />
+              )
+            })}
           </Box>
         );
       })}

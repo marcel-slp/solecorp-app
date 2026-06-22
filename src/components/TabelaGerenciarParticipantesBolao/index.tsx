@@ -64,8 +64,24 @@ export default function TabelaGerenciarParticipantesBolao() {
   };
 
   const handleRemoverParticipanteBolao = async (userId: number) => {
+    let sucesso = false;
+
+    try {
+      if(bolaoId) {
+        sucesso = await removerParticipanteBolao(userId, bolaoId);
+      }
+
+      if (!sucesso) {
+        alert("Ocorreu um erro ao deletar o participante. Verifique os logs.");
+      }
+
+    } catch (err) {
+      alert("Falha ao deletar participante");
+      console.error(err);
+      handleFecharRemoverBolaoPopup();
+    }
+
     handleFecharRemoverBolaoPopup();
-    await removerParticipanteBolao(userId);
   };
 
   return (
@@ -112,7 +128,7 @@ export default function TabelaGerenciarParticipantesBolao() {
                     Habilitar palpites?
                   </Checkbox>
                   <IconButton
-                    aria-label="Deletar Bolao"
+                    aria-label="Deletar Participante Bolao"
                     icon={<DeleteIcon />}
                     onClick={() => handleAbrirRemoverBolaoPopup(participanteBolao.userId)}
                   />

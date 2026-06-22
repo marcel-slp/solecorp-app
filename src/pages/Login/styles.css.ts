@@ -50,18 +50,9 @@ export const item = style({
   }
 });
 
-export const linkAlterarSenha = style({
-  marginTop: '16px',
-  textAlign: 'right',
-  fontSize: '14px',
-  width: '100%',
-  paddingRight: '4px',
-
+export const linhaAlterarSenha = style({
   '@media': {
     '(max-width: 480px)': {
-      textAlign: 'right',
-      paddingRight: '6px',
-      marginTop: '12px',
       fontSize: '13.5px',
     }
   }

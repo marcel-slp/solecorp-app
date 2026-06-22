@@ -395,9 +395,9 @@ export const editarParticipanteBolao = async (participanteBolao: ParticipanteBol
   }
 };
 
-export const deletarParticipanteBolao = async (userId: number) => {
+export const deletarParticipanteBolao = async (userId: number, bolaoId: string) => {
   try {
-    await axios.delete(`${API_URL}/deletar_participante_bolao.php?userId=${userId}`);
+    await axios.delete(`${API_URL}/deletar_participante_bolao.php?userId=${userId}&bolaoId=${bolaoId}`);
     return { success: true };
   } catch (err) {
     return { success: false, message: (err as Error).message };

@@ -1,5 +1,5 @@
-import { 
-  Input, 
+import {
+  Input,
   Image,
   Flex,
   Badge,
@@ -18,7 +18,8 @@ import {
   Th,
   ModalCloseButton,
   ModalHeader,
-  ModalOverlay
+  ModalOverlay,
+  Box
 } from "@chakra-ui/react";
 import * as styles from "./styles.css";
 import { Partida } from "../../stores/partidasStore";
@@ -28,19 +29,22 @@ import { palpitesStore } from "../../stores/palpitesStore";
 import { retornaUserId } from "../../utils/Utils";
 import { Placar } from "../../models/generateCopa2026";
 import { bolaoStore } from "../../stores/bolaoStore";
+import { InfoPorPartida } from "../TabelaPalpitesJogosCopa2026";
 
 interface PartidaUnicaPalpitesProps {
   partida: Partida;
   placarPalpite: Placar;
   bolaoId: string;
-  pontuacaoPartida: string;
+  infoPartida: Record<number, InfoPorPartida>;
+  // pontuacaoPartida: Record<number,InfoPorPartida>
+  // iconesParticipantes: Record<number, React.ReactNode[]>;
 }
 
 export function PartidaUnicaPalpites({
   partida,
   placarPalpite,
-  pontuacaoPartida,
-  bolaoId
+  bolaoId,
+  infoPartida
 }: PartidaUnicaPalpitesProps) {
   const { salvarPalpite } = palpitesStore();
   const { participantesBolao, carregarParticipantesBolao } = bolaoStore();
@@ -54,18 +58,38 @@ export function PartidaUnicaPalpites({
   const [timeForaInterno, setTimeForaInterno] = useState("");
   const [placarCasaInterno, setPlacarCasaInterno] = useState("");
   const [placarForaInterno, setPlacarForaInterno] = useState("");
-  const [placarPenaltisCasaInterno, setPlacarPenaltisCasaInterno] = useState("");
-  const [placarPenaltisForaInterno, setPlacarPenaltisForaInterno] = useState("");
+  const [placarPenaltisCasaInterno, setPlacarPenaltisCasaInterno] =
+    useState("");
+  const [placarPenaltisForaInterno, setPlacarPenaltisForaInterno] =
+    useState("");
   const [dataJogoInterno, setDataJogoInterno] = useState("");
   const [horaJogoInterno, setHoraJogoInterno] = useState("");
   const [localJogoInterno, setLocalJogoInterno] = useState("");
 
-  useEffect(() => {
-    setPlacarCasaInterno(placarPalpite && placarPalpite.placarCasa != null ? placarPalpite.placarCasa.toString() : "");
-    setPlacarForaInterno(placarPalpite && placarPalpite.placarFora != null ? placarPalpite.placarFora.toString() : "");
+  const userIdLogado = retornaUserId();
 
-    setPlacarPenaltisCasaInterno(placarPalpite && placarPalpite.placarPenaltisCasa != null ? placarPalpite.placarPenaltisCasa.toString() : "");
-    setPlacarPenaltisForaInterno(placarPalpite && placarPalpite.placarPenaltisFora != null ? placarPalpite.placarPenaltisFora.toString() : "");
+  useEffect(() => {
+    setPlacarCasaInterno(
+      placarPalpite && placarPalpite.placarCasa != null
+        ? placarPalpite.placarCasa.toString()
+        : ""
+    );
+    setPlacarForaInterno(
+      placarPalpite && placarPalpite.placarFora != null
+        ? placarPalpite.placarFora.toString()
+        : ""
+    );
+
+    setPlacarPenaltisCasaInterno(
+      placarPalpite && placarPalpite.placarPenaltisCasa != null
+        ? placarPalpite.placarPenaltisCasa.toString()
+        : ""
+    );
+    setPlacarPenaltisForaInterno(
+      placarPalpite && placarPalpite.placarPenaltisFora != null
+        ? placarPalpite.placarPenaltisFora.toString()
+        : ""
+    );
 
     setNumeroPartidaInterno(partida.numeroPartida.toString());
     setTimeCasaInterno(partida.timeCasa);
@@ -73,49 +97,87 @@ export function PartidaUnicaPalpites({
     setDataJogoInterno(partida.dataJogo ?? "");
     setHoraJogoInterno(partida.horaJogo ?? "");
     setLocalJogoInterno(partida.localJogo ?? "");
-  }, [partida.numeroPartida, partida.timeCasa, partida.timeFora, partida.dataJogo, partida.horaJogo, partida.localJogo, partida.placarCasa, partida.placarFora, placarPalpite]);
+  }, [
+    partida.numeroPartida,
+    partida.timeCasa,
+    partida.timeFora,
+    partida.dataJogo,
+    partida.horaJogo,
+    partida.localJogo,
+    partida.placarCasa,
+    partida.placarFora,
+    placarPalpite
+  ]);
 
-  const atualizarPlacarPalpite = (novoPlacarCasa?: string, novoPlacarFora?: string, novoPlacarPenaltisCasa?: string, novoPlacarPenaltisFora?: string) => {
+  const atualizarPlacarPalpite = (
+    novoPlacarCasa?: string,
+    novoPlacarFora?: string,
+    novoPlacarPenaltisCasa?: string,
+    novoPlacarPenaltisFora?: string
+  ) => {
     if (jogoJaComecou) return;
 
-    const palpiteIdInterno = placarPalpite && placarPalpite.palpiteId ? placarPalpite.palpiteId : crypto.randomUUID().slice(0,5);
+    const palpiteIdInterno =
+      placarPalpite && placarPalpite.palpiteId
+        ? placarPalpite.palpiteId
+        : crypto.randomUUID().slice(0, 5);
 
-    if(!bolaoId) return alert("Algo deu errado. Palpite não associado a nenhum bolão")
+    if (!bolaoId)
+      return alert("Algo deu errado. Palpite não associado a nenhum bolão");
 
-    if (novoPlacarPenaltisCasa !== undefined && novoPlacarPenaltisFora !== undefined && !validarPenaltis()) return;
+    if (
+      novoPlacarPenaltisCasa !== undefined &&
+      novoPlacarPenaltisFora !== undefined &&
+      !validarPenaltis()
+    )
+      return;
 
     salvarPalpite({
       id: palpiteIdInterno,
       partidaId: partida.id,
       placarCasa: novoPlacarCasa ? Number(novoPlacarCasa) : null,
       placarFora: novoPlacarFora ? Number(novoPlacarFora) : null,
-      placarPenaltisCasa: novoPlacarPenaltisCasa ? Number(novoPlacarPenaltisCasa) : null,
-      placarPenaltisFora: novoPlacarPenaltisFora ? Number(novoPlacarPenaltisFora) : null,
-      userId:  loggedUserId,
+      placarPenaltisCasa: novoPlacarPenaltisCasa
+        ? Number(novoPlacarPenaltisCasa)
+        : null,
+      placarPenaltisFora: novoPlacarPenaltisFora
+        ? Number(novoPlacarPenaltisFora)
+        : null,
+      userId: loggedUserId,
       bolaoId: bolaoId,
       campeonatoId: 1
     });
   };
 
   const validarPenaltis = (): boolean => {
-    if (placarPenaltisCasaInterno === "" || placarPenaltisForaInterno === "") return true;
+    if (placarPenaltisCasaInterno === "" || placarPenaltisForaInterno === "")
+      return true;
 
     if (placarPenaltisCasaInterno === placarPenaltisForaInterno) {
       alert("Placar de pênaltis não pode ser empate! Escolha um vencedor.");
-      atualizarPlacarPalpite(placarCasaInterno, placarForaInterno, undefined, undefined);
+      atualizarPlacarPalpite(
+        placarCasaInterno,
+        placarForaInterno,
+        undefined,
+        undefined
+      );
       return false;
     }
     return true;
   };
 
-  const abrirPenaltis = placarCasaInterno !== "" && placarForaInterno !== "" && placarCasaInterno === placarForaInterno && !!partida.fase;
+  const abrirPenaltis =
+    placarCasaInterno !== "" &&
+    placarForaInterno !== "" &&
+    placarCasaInterno === placarForaInterno &&
+    !!partida.fase;
 
   const jogoJaComecou = useMemo(() => {
     if (!partida.dataJogo || !partida.horaJogo) return false;
 
     const dataHoraJogo = new Date(`${partida.dataJogo}T${partida.horaJogo}:00`);
     const agora = new Date();
-    
+
     const umaHoraAntes = new Date(dataHoraJogo.getTime() - 60 * 60 * 1000);
 
     return agora >= umaHoraAntes;
@@ -135,13 +197,13 @@ export function PartidaUnicaPalpites({
   }, [participantesBolao, palpitesBolao, partida.id]);
 
   const handleClickVerPalpites = async () => {
-    if(participantesBolao.length == 0) {
+    if (participantesBolao.length == 0) {
       carregarParticipantesBolao(bolaoId, loggedUserId);
     }
-    
+
     const palpitesJaCarregados = Object.keys(palpitesBolao).length > 0;
 
-    if(!palpitesJaCarregados) {
+    if (!palpitesJaCarregados) {
       await carregarPalpitesPorBolao(bolaoId);
     }
     onOpen();
@@ -153,7 +215,11 @@ export function PartidaUnicaPalpites({
 
       <div className={styles.nomeSimbEsqContainer}>
         <div className={styles.nome}>{timeCasaInterno}</div>
-        <Image src={partida.simboloCasa} className={styles.simb} fallbackSrc={defaultParticipante} />
+        <Image
+          src={partida.simboloCasa}
+          className={styles.simb}
+          fallbackSrc={defaultParticipante}
+        />
       </div>
 
       <Input
@@ -162,7 +228,10 @@ export function PartidaUnicaPalpites({
         textAlign="center"
         type="number"
         value={placarCasaInterno}
-        onChange={(e) => atualizarPlacarPalpite(e.target.value, placarForaInterno)} />
+        onChange={(e) =>
+          atualizarPlacarPalpite(e.target.value, placarForaInterno)
+        }
+      />
 
       <div className={styles.itemLinha}>x</div>
 
@@ -172,17 +241,22 @@ export function PartidaUnicaPalpites({
         textAlign="center"
         type="number"
         value={placarForaInterno}
-        onChange={(e) => atualizarPlacarPalpite(placarCasaInterno, e.target.value)} />
+        onChange={(e) =>
+          atualizarPlacarPalpite(placarCasaInterno, e.target.value)
+        }
+      />
 
       <div className={styles.nomeSimbDirContainer}>
-        <Image src={partida.simboloFora} className={styles.simb} fallbackSrc={defaultParticipante} />
+        <Image
+          src={partida.simboloFora}
+          className={styles.simb}
+          fallbackSrc={defaultParticipante}
+        />
         <div className={styles.nome}>{timeForaInterno}</div>
       </div>
 
       <Flex align="center" justifyContent="start" gap={2} fontSize="sm" mt={2}>
-        <Text>
-          Placar da Partida:
-        </Text>
+        <Text>Placar da Partida:</Text>
         <Badge
           colorScheme="blue"
           px={3}
@@ -196,74 +270,111 @@ export function PartidaUnicaPalpites({
               <Text as="span" fontSize="md">
                 {partida.placarCasa} × {partida.placarFora}
               </Text>
-              {(partida.placarPenaltisCasa != null && partida.placarPenaltisFora != null) && (
-                <Text as="span" fontSize="xs" color="blue.400">
-                  ({partida.placarPenaltisCasa} × {partida.placarPenaltisFora})
-                </Text>
-              )}
+              {partida.placarPenaltisCasa != null &&
+                partida.placarPenaltisFora != null && (
+                  <Text as="span" fontSize="xs" color="blue.400">
+                    ({partida.placarPenaltisCasa} × {partida.placarPenaltisFora}
+                    )
+                  </Text>
+                )}
             </>
           ) : (
             "–"
           )}
         </Badge>
 
-        <Flex align="center" justifyContent="start">
-          <Text>
-            Pontos:
-          </Text>
+        <Flex align="center" justifyContent="start" gap={2}>
+          <Text>Pontos:</Text>
           <Badge colorScheme="green" fontSize="md" px={3} py={1}>
-            {pontuacaoPartida}
+            {infoPartida[userIdLogado].ptsTotal || "0"}
           </Badge>
         </Flex>
       </Flex>
 
-      <Input isDisabled backgroundColor="white" textAlign="center" type="date" value={dataJogoInterno} />
-      <Input isDisabled backgroundColor="white" textAlign="center" type="time" value={horaJogoInterno} />
-      <Input isDisabled backgroundColor="white" textAlign="center" type="text" value={localJogoInterno} />
+      <Input
+        isDisabled
+        backgroundColor="white"
+        textAlign="center"
+        type="date"
+        value={dataJogoInterno}
+      />
+      <Input
+        isDisabled
+        backgroundColor="white"
+        textAlign="center"
+        type="time"
+        value={horaJogoInterno}
+      />
+      <Input
+        isDisabled
+        backgroundColor="white"
+        textAlign="center"
+        type="text"
+        value={localJogoInterno}
+      />
 
       {abrirPenaltis ? (
-        <><div></div>
-        <Flex
-          align="center"
-          gap={3}
-          justify="start"
-          ml={'95px'}
-          width={'max-content'}
-          className={styles.itemLinha}
-        >
-          <Text fontWeight="bold" color="gray.600">
-            Pênaltis:
-          </Text>
+        <>
+          <div></div>
+          <Flex
+            align="center"
+            gap={3}
+            justify="start"
+            ml={"95px"}
+            width={"max-content"}
+            className={styles.itemLinha}
+          >
+            <Text fontWeight="bold" color="gray.600">
+              Pênaltis:
+            </Text>
 
-          <Input
-            isDisabled={jogoJaComecou}
-            backgroundColor="white"
-            textAlign="center"
-            type="number"
-            value={placarPenaltisCasaInterno}
-            width={'52px'}
-            height={'30px'}
-            onChange={(e) => atualizarPlacarPalpite(placarCasaInterno, placarForaInterno, e.target.value, placarPenaltisForaInterno)}
-            onBlur={() => validarPenaltis()} />
+            <Input
+              isDisabled={jogoJaComecou}
+              backgroundColor="white"
+              textAlign="center"
+              type="number"
+              value={placarPenaltisCasaInterno}
+              width={"52px"}
+              height={"30px"}
+              onChange={(e) =>
+                atualizarPlacarPalpite(
+                  placarCasaInterno,
+                  placarForaInterno,
+                  e.target.value,
+                  placarPenaltisForaInterno
+                )
+              }
+              onBlur={() => validarPenaltis()}
+            />
 
-          <div className={styles.xLinhaPenaltis}>x</div>
+            <div className={styles.xLinhaPenaltis}>x</div>
 
-          <Input
-            isDisabled={jogoJaComecou}
-            backgroundColor="white"
-            textAlign="center"
-            type="number"
-            width={'52px'}
-            height={'30px'}
-            value={placarPenaltisForaInterno}
-            onChange={(e) => atualizarPlacarPalpite(placarCasaInterno, placarForaInterno, placarPenaltisCasaInterno, e.target.value)}
-            onBlur={() => validarPenaltis()} />
-        </Flex></>
+            <Input
+              isDisabled={jogoJaComecou}
+              backgroundColor="white"
+              textAlign="center"
+              type="number"
+              width={"52px"}
+              height={"30px"}
+              value={placarPenaltisForaInterno}
+              onChange={(e) =>
+                atualizarPlacarPalpite(
+                  placarCasaInterno,
+                  placarForaInterno,
+                  placarPenaltisCasaInterno,
+                  e.target.value
+                )
+              }
+              onBlur={() => validarPenaltis()}
+            />
+          </Flex>
+        </>
       ) : (
-        <><div></div><div></div></>
-      )
-    
-    }
+        <>
+          <div></div>
+          <div></div>
+        </>
+      )}
       <div></div>
       <div></div>
       <div></div>
@@ -282,24 +393,21 @@ export function PartidaUnicaPalpites({
       >
         Ver Palpites
       </Button>
-      
+
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>
-            Palpites da Partida {partida.numeroPartida}
-          </ModalHeader>
+          <ModalHeader>Palpites da Partida {partida.numeroPartida}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <TableContainer>
               <Table variant="simple" size="sm">
                 <Thead>
                   <Tr>
-                    <Th>Participante</Th>
+                    <Th textAlign="center">Participante</Th>
                     <Th textAlign="center">Palpite</Th>
-                    {exibirPenaltis && (
-                      <Th textAlign="center">Pênaltis</Th>
-                    )}
+                    {exibirPenaltis && <Th textAlign="center">Pênaltis</Th>}
+                    <Th textAlign="center">Acertos</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -307,24 +415,25 @@ export function PartidaUnicaPalpites({
                     const palpite = palpitesBolao[p.userId]?.find(
                       (pal) => pal.partidaId === partida.id
                     );
-
+                    const iconesParticipante = infoPartida?.[p.userId].icones || [];
                     return (
                       <Tr key={p.userId}>
-                        <Td fontWeight="medium">{p.nome}</Td>
+                        <Td textAlign="start">{p.nome}</Td>
                         <Td textAlign="center">
                           <Flex align="center" justify="center" gap={2}>
-                            <Image 
-                              src={partida.simboloCasa} 
-                              className={styles.simb} 
+                            <Image
+                              src={partida.simboloCasa}
+                              className={styles.simb}
                               fallbackSrc={defaultParticipante}
                               boxSize="24px"
                             />
                             <Text fontWeight="medium">
-                              {palpite?.placarCasa ?? "-"} × {palpite?.placarFora ?? "-"}
+                              {palpite?.placarCasa ?? "-"} ×{" "}
+                              {palpite?.placarFora ?? "-"}
                             </Text>
-                            <Image 
-                              src={partida.simboloFora} 
-                              className={styles.simb} 
+                            <Image
+                              src={partida.simboloFora}
+                              className={styles.simb}
                               fallbackSrc={defaultParticipante}
                               boxSize="24px"
                             />
@@ -335,16 +444,17 @@ export function PartidaUnicaPalpites({
                             {palpite?.placarPenaltisCasa != null &&
                             palpite?.placarPenaltisFora != null ? (
                               <Flex align="center" justify="center" gap={2}>
-                                <Image 
-                                  src={partida.simboloCasa} 
+                                <Image
+                                  src={partida.simboloCasa}
                                   fallbackSrc={defaultParticipante}
                                   boxSize="24px"
                                 />
                                 <Text fontWeight="medium" color="blue.400">
-                                  {palpite.placarPenaltisCasa} × {palpite.placarPenaltisFora}
+                                  {palpite.placarPenaltisCasa} ×{" "}
+                                  {palpite.placarPenaltisFora}
                                 </Text>
-                                <Image 
-                                  src={partida.simboloFora} 
+                                <Image
+                                  src={partida.simboloFora}
                                   fallbackSrc={defaultParticipante}
                                   boxSize="24px"
                                 />
@@ -354,6 +464,15 @@ export function PartidaUnicaPalpites({
                             )}
                           </Td>
                         )}
+                        <Td fontWeight="medium">
+                          <Flex align="center">
+                            {iconesParticipante.map((icone, idx) => (
+                              <Box key={idx} fontSize="md">
+                                {icone}
+                              </Box>
+                            ))}
+                          </Flex>
+                        </Td>
                       </Tr>
                     );
                   })}
@@ -363,6 +482,6 @@ export function PartidaUnicaPalpites({
           </ModalBody>
         </ModalContent>
       </Modal>
-      </div>
+    </div>
   );
 }
