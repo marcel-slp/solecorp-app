@@ -1,20 +1,15 @@
 //import * as styles from "./styles.css";
 import ErrorPage from "../../../components/ErrorPage";
-import { FiRefreshCw } from "react-icons/fi";
+import { GiGearHammer } from "react-icons/gi";
 
 function ManutencaoPage() {
   return (
-    <ErrorPage
-        titulo={'Página em Manutenção'}
-        texto={'Lamentamos, mas estamos temporariamente em manutenção. Voltaremos o mais breve possível'}
-        botoes={[
-            {
-                label: 'Atualizar a página',
-                to: '/manutencao',
-            }
-        ]}
-        icone={FiRefreshCw}
-    />
+      <ErrorPage
+          titulo={'Página em Manutenção'}
+          texto={'Lamentamos, mas estamos temporariamente em manutenção. Voltaremos o mais breve possível'}
+          botoes={[]}
+          icone={GiGearHammer}
+      />
   );
 }
 
