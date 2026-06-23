@@ -2,7 +2,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import ManutencaoPage from "../../pages/Erros/ManutencaoPage";
 import { PerfilSistema } from "../../models/PerfilSistema";
 
-const EM_MANUTENCAO = true;
+const EM_MANUTENCAO = false;
 
 export default function ProtectedRoute() {
   const location = useLocation();
