@@ -1,8 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import ManutencaoPage from "../../pages/Erros/ManutencaoPage";
 import { PerfilSistema } from "../../models/PerfilSistema";
-
-const EM_MANUTENCAO = false;
+import { configuracoesStore } from "../../stores/configuracoesStore";
 
 export default function ProtectedRoute() {
   const location = useLocation();
@@ -16,7 +15,10 @@ export default function ProtectedRoute() {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
-  if (EM_MANUTENCAO && auth.nomePerfil !== PerfilSistema.ADMIN) {
+  const emManutencao =
+    configuracoesStore((state) => state.configuracoes["modo_manutencao"]) === 1;
+
+  if (emManutencao && auth.nomePerfil !== PerfilSistema.ADMIN) {
     return <ManutencaoPage />;
   }
 

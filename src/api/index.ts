@@ -12,6 +12,7 @@ import { Rateio, RateioDTO } from '../stores/rateiosStore';
 import { PremiosIndividuais, PremiosIndividuaisPalpite } from '../stores/premiosIndividuaisStore';
 import { Selecao } from '../stores/selecoesStore';
 import { Jogador } from '../stores/jogadoresStore';
+import { BuscarConfiguracoesResponse } from '../stores/configuracoesStore';
 
 const API_URL = 'https://solecorp.com.br/ambiente/api';
 
@@ -960,3 +961,22 @@ export const deletarPremiosIndividuaisOriginal = async (id: string) => {
     return { success: false, message: (err as Error).message };
   }
 };
+
+export const buscarConfiguracoes = async () => {
+  try {
+    const { data } = await axios.get<BuscarConfiguracoesResponse>(
+      `${API_URL}/buscar_configuracoes.php`
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Erro ao carregar configurações:", error);
+
+    return {
+      success: false,
+      configuracoes: []
+    };
+  }
+
+  
+}
