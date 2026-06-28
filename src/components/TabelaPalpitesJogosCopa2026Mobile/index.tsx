@@ -53,7 +53,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
   const { partidas, carregarPartidas } = partidasStore();
   const { pontuacaoCriterios, carregarPontuacaoCriterios } =
     criteriosPontuacaoStore();
-  const { palpitesUsuario, palpitesBolao, salvarPalpites, carregarPalpitesPorUsuario } =
+  const { palpitesUsuario, palpitesBolao, salvarPalpites, carregarPalpitesPorUsuario, carregarPalpitesPorBolao } =
     palpitesStore();
   const {
     premiosIndividuaisPalpite,
@@ -93,7 +93,9 @@ function TabelaPalpitesJogosCopa2026Mobile({
         carregarPartidas(1),
         carregarPontuacaoCriterios(bolaoId),
         carregarPalpitesPorUsuario(bolaoId, userIdLogado),
-        carregarPremiosIndividuaisPalpite(bolaoId, userIdLogado)
+        carregarPremiosIndividuaisPalpite(bolaoId, userIdLogado),
+        carregarParticipantesBolao(bolaoId, retornaUserId()),
+        carregarPalpitesPorBolao(bolaoId)
       ]);
       setIsReady(true);
     };
@@ -106,6 +108,8 @@ function TabelaPalpitesJogosCopa2026Mobile({
     carregarPalpitesPorUsuario,
     salvarPalpites,
     carregarPremiosIndividuaisPalpite,
+    carregarParticipantesBolao,
+    carregarPalpitesPorBolao,
     userIdLogado
   ]);
 
@@ -146,11 +150,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
   };
 
   const infoPorPartida = useMemo(() => {
-    if (
-      !isReady ||
-      participantesBolao.length === 0 ||
-      !Object.keys(palpitesBolao).length
-    ) {
+    if (!isReady || participantesBolao.length === 0 || !Object.keys(palpitesBolao).length) {
       return {};
     }
 
@@ -258,13 +258,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
     });
 
     return mapa;
-  }, [
-    isReady,
-    partidas,
-    participantesBolao,
-    palpitesBolao,
-    pontuacaoCriterios
-  ]);
+  }, [isReady, partidas, participantesBolao, palpitesBolao, pontuacaoCriterios]);
 
   const jogosFaseGrupos = useMemo(() => {
     return isReady ? generateGroupGamesFromDB(partidas) : [];
@@ -366,12 +360,6 @@ function TabelaPalpitesJogosCopa2026Mobile({
 
     salvarPremioIndividual(campo, valor);
   };
-
-  const todosJogos = useMemo(() => {
-    const grupos = jogosFaseGrupos;
-    const mataMata = Object.values(jogosMataMata).flat();
-    return [...grupos, ...mataMata];
-  }, [jogosFaseGrupos, jogosMataMata]);
 
   if (!isReady) {
     return <Spinner size="xl" />;
@@ -523,7 +511,7 @@ function TabelaPalpitesJogosCopa2026Mobile({
         columns={{ base: 1, md: 2, xl: 3 }}
         spacing={4}
       >
-        {todosJogos.map((jogo) => {
+        {jogosFaseGrupos.map((jogo) => {
           const info = infoPorPartida[jogo.id];
           return (
             <LazyRender 

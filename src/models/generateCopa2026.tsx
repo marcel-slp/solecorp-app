@@ -1,8 +1,8 @@
 import defaultParticipante from "@/assets/images/default_participante.jpeg";
-//import { ROUND_OF_32_MATCHUPS, Selecao } from "./BolaoCopaDefault";
 import { Partida } from "../stores/partidasStore";
 import { getImagemSelecoesURL } from "../utils/Utils";
 import { Palpite } from "../stores/palpitesStore";
+import { ORDEM_FASES } from "./BolaoCopaDefault";
 
 export interface Jogo {
   id: string;
@@ -120,7 +120,15 @@ export function generateNextRoundFromDB(partidas: Record<number, Partida>) {
     fases[fase].sort(sortByDataHoraJogo);
   });
 
-  return fases;
+  const resultadoOrdenado: Record<string, Partida[]> = {};
+
+  ORDEM_FASES.forEach((fase) => {
+    if (fases[fase]) {
+      resultadoOrdenado[fase] = fases[fase];
+    }
+  });
+
+  return resultadoOrdenado;
 }
 
 function normalize(p: Partida | Palpite): FontePlacar {
