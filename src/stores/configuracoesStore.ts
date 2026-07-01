@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { buscarConfiguracoes } from "../api";
+import { buscarConfiguracoes, editarConfiguracoes } from "../api";
 
 export interface Configuracao {
-  id: number;
+  id: string;
   nome: string;
   valor: number;
 }
@@ -12,29 +12,73 @@ export interface BuscarConfiguracoesResponse {
   configuracoes: Configuracao[];
 }
 
-interface ConfiguracoesStore {
-  configuracoes: Record<string, number>;
-
-  carregarConfiguracoes: () => Promise<void>;
+export interface Configuracao {
+  id: string;
+  nome: string;
+  valor: number;
 }
 
-export const configuracoesStore =
-  create<ConfiguracoesStore>((set) => ({
-    configuracoes: {},
+interface ConfiguracoesStore {
+  configuracoes: Configuracao[];
+  loading: boolean;
 
-    carregarConfiguracoes: async () => {
+  carregarConfiguracoes: () => Promise<void>;
+  atualizarConfiguracao: (id: string, nome: string, valor: number) => Promise<boolean>;
+
+  getValor: (nome: string) => number | undefined;
+  getConfig: (nome: string) => Configuracao | undefined;
+  isAtivo: (nome: string) => boolean;
+}
+
+export const configuracoesStore = create<ConfiguracoesStore>((set, get) => ({
+  configuracoes: [],
+  loading: false,
+
+  carregarConfiguracoes: async () => {
+    set({ loading: true });
+
+    try {
       const response = await buscarConfiguracoes();
 
-      if (!response.success) return;
+      if (response.success && Array.isArray(response.configuracoes)) {
+        set({ configuracoes: response.configuracoes });
+      }
+    } catch (err) {
+      console.error("Erro ao carregar configurações:", err);
+    } finally {
+      set({ loading: false });
+    }
+  },
 
-      const mapa = response.configuracoes.reduce(
-        (acc, item) => {
-          acc[item.nome] = item.valor;
-          return acc;
-        },
-        {} as Record<string, number>
-      );
+  atualizarConfiguracao: async (id: string, nome: string, valor: number) => {
+    try {
+      const res = await editarConfiguracoes([{ id, nome, valor }]);
 
-      set({ configuracoes: mapa });
-    },
-  }));
+      if (res.success) {
+        set((state) => ({
+          configuracoes: state.configuracoes.map((c) =>
+            c.id === id ? { ...c, valor } : c
+          ),
+        }));
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error("Erro ao atualizar configuração:", err);
+      return false;
+    }
+  },
+
+  getValor: (nome: string) => {
+    const config = get().configuracoes.find((c) => c.nome === nome);
+    return config?.valor;
+  },
+
+  getConfig: (nome: string) => {
+    return get().configuracoes.find((c) => c.nome === nome);
+  },
+
+  isAtivo: (nome: string) => {
+    return get().getValor(nome) === 1;
+  },
+}));

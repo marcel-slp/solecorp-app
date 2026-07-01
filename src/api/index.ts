@@ -12,7 +12,7 @@ import { Rateio, RateioDTO } from '../stores/rateiosStore';
 import { PremiosIndividuais, PremiosIndividuaisPalpite } from '../stores/premiosIndividuaisStore';
 import { Selecao } from '../stores/selecoesStore';
 import { Jogador } from '../stores/jogadoresStore';
-import { BuscarConfiguracoesResponse } from '../stores/configuracoesStore';
+import { BuscarConfiguracoesResponse, Configuracao } from '../stores/configuracoesStore';
 
 const API_URL = 'https://solecorp.com.br/ambiente/api';
 
@@ -977,6 +977,24 @@ export const buscarConfiguracoes = async () => {
       configuracoes: []
     };
   }
-
-  
 }
+
+export const editarConfiguracoes = async (configuracoes: Configuracao[]) => {
+  try {
+    const res = await axios.post(`${API_URL}/editar_configuracoes.php`, 
+      configuracoes, {headers: {"Content-Type": "application/json"}}
+    );
+
+    return { 
+      success: true, 
+      data: res.data 
+    };
+  } catch (err) {
+    console.error("Erro ao editar configurações:", err);
+    
+    return { 
+      success: false, 
+      message: (err as Error).message 
+    };
+  }
+};

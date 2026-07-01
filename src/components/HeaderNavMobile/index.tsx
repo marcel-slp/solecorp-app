@@ -29,8 +29,6 @@ export default function HeaderNavMobile({ bolao }: HeaderNavMobileProps) {
   const isPalpitesPage = currentPath.includes("palpite");
 
   const salvarPalpitesHandle = async () => {
-    console.log("Entrou no salvarPalpitesHandle");
-
     if (!bolao.id)
       return alert("Algo deu errado. Palpite não associado a nenhum bolão");
 

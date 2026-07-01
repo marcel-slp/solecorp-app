@@ -23,6 +23,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Switch,
   Text
 } from "@chakra-ui/react";
 import * as styles from "./styles.css";
@@ -35,6 +36,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PerfilSistema } from "../../models/PerfilSistema";
 import { FaQuestionCircle } from "react-icons/fa";
+import { configuracoesStore } from "../../stores/configuracoesStore";
 
 export type Props = {
   modoBolao?: boolean;
@@ -74,6 +76,7 @@ const paginasGerenciamento = [
 ];
 
 export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
+  const { atualizarConfiguracao, getConfig, getValor } = configuracoesStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const [nomeUsuario, setNomeUsuario] = useState<string | null>(null);
@@ -84,6 +87,23 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
     localStorage.removeItem("auth");
     navigate("/login");
     onClose();
+  };
+
+  const configManutencao = getConfig("modo_manutencao");
+
+  const isModoManutencao = getValor("modo_manutencao") === 1;
+
+  const toggleModoManutencao = async () => {
+    const novoValor = isModoManutencao ? 0 : 1;
+    if(configManutencao) {
+      const sucesso = await atualizarConfiguracao(configManutencao.id, configManutencao?.nome, novoValor);
+
+      if (!sucesso) {
+        console.error("Falha ao alterar modo de manutenção");
+      }
+    } else {
+      alert("Não foi possível carregar estado de manutenção");
+    }
   };
 
   useEffect(() => {
@@ -158,27 +178,6 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
               </MenuList>
             </Menu>
 
-            {/* <Link to="/inserir-placares-copa-2026" aria-label="Inserir Placares" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={FaTableList} className={styles.iconSmall} />
-            </Link>
-            <Link to="/gerenciar-perfil" aria-label="Gerenciar Perfis do Sistema" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={FaUsersGear} className={styles.iconSmall} />
-            </Link>
-            <Link to="/gerenciar-usuarios" aria-label="Gerenciar Usuários do Sistema" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={RiUserSettingsFill} className={styles.iconSmall} />
-            </Link>
-            <Link to="/gerenciar-boloes" aria-label="Gerenciar Todos os Bolões do Sistema" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={FaClipboardList} className={styles.iconSmall} />
-            </Link>
-            <Link to="/gerenciar-jogadores" aria-label="Gerenciar Jogadores para Prêmios Individuais" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={GiBabyfootPlayers } className={styles.iconSmall} />
-            </Link>
-            <Link to="/gerenciar-selecoes" aria-label="Gerenciar Seleções para Prêmios Individuais" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={GiBrazilFlag } className={styles.iconSmall} />
-            </Link>
-            <Link to="/gerenciar-premios-individuais" aria-label="Gerenciar Prêmios Individuais" hidden={esconderIconesBolaoAdmin}>
-              <Icon as={GiPodium } className={styles.iconSmall} />
-            </Link> */}
             <Link
               to="/eventos"
               aria-label="Ir para eventos"
@@ -238,6 +237,19 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
       </div>
 
       <div className={styles.rightSection}>
+        <Text marginRight={-2} marginTop={2}>
+          Modo Manutenção?
+        </Text>
+        <Switch
+          hidden={esconderIconesBolaoAdmin}
+          isChecked={isModoManutencao}
+          onChange={toggleModoManutencao}
+          colorScheme="orange"
+          title="Modo Manutenção"
+          marginRight={2}
+          marginTop={2}
+        />
+
         <Popover placement="bottom">
           <PopoverTrigger>
             <Icon as={BsPersonCircle} className={styles.iconSmall} />
