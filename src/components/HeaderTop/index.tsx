@@ -37,6 +37,8 @@ import { useEffect, useState } from "react";
 import { PerfilSistema } from "../../models/PerfilSistema";
 import { FaQuestionCircle } from "react-icons/fa";
 import { configuracoesStore } from "../../stores/configuracoesStore";
+import BolaoTermosUso from "../BolaoTermosUso";
+import { ModalGenerico } from "../ModalGenerico";
 
 export type Props = {
   modoBolao?: boolean;
@@ -77,7 +79,8 @@ const paginasGerenciamento = [
 
 export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
   const { atualizarConfiguracao, getConfig, getValor } = configuracoesStore();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const logoutModal = useDisclosure(); 
+  const termosModal = useDisclosure();
   const navigate = useNavigate();
   const [nomeUsuario, setNomeUsuario] = useState<string | null>(null);
   const [emailUsuario, setEmailUsuario] = useState<string | null>(null);
@@ -86,7 +89,7 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
   const handleLogout = () => {
     localStorage.removeItem("auth");
     navigate("/login");
-    onClose();
+    logoutModal.onClose();
   };
 
   const configManutencao = getConfig("modo_manutencao");
@@ -237,7 +240,11 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
       </div>
 
       <div className={styles.rightSection}>
-        <Text marginRight={-2} marginTop={2}>
+        <Text 
+          marginRight={-2} 
+          marginTop={2}
+          hidden={esconderIconesBolaoAdmin}
+        >
           Modo Manutenção?
         </Text>
         <Switch
@@ -269,9 +276,16 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
                   <Text fontSize="sm">
                     <strong>Email:</strong> {emailUsuario}
                   </Text>
+                  <Link
+                    onClick={() => termosModal.onOpen()}
+                    to=''
+                    style={{fontSize: '13px'}}
+                  >
+                    Ver Termos e Condições
+                  </Link>
                   <Text
                     fontSize="sm"
-                    onClick={onOpen}
+                    onClick={logoutModal.onOpen}
                     style={{ marginTop: "10px" }}
                     cursor="pointer"
                   >
@@ -288,11 +302,11 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
           as={IoMdLogOut}
           cursor="pointer"
           className={styles.iconSmall}
-          onClick={() => onOpen()}
+          onClick={() => logoutModal.onOpen()}
         />
 
-        {isOpen && (
-          <Modal isOpen={!!isOpen} onClose={onClose}>
+        {logoutModal.isOpen && (
+          <Modal isOpen={!!logoutModal.isOpen} onClose={logoutModal.onClose}>
             <ModalOverlay />
             <ModalContent>
               <ModalHeader>Logout</ModalHeader>
@@ -302,11 +316,18 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
                 <Button colorScheme="blue" mr={3} onClick={handleLogout}>
                   Sim
                 </Button>
-                <Button onClick={onClose}>Cancelar</Button>
+                <Button onClick={logoutModal.onClose}>Cancelar</Button>
               </ModalFooter>
             </ModalContent>
           </Modal>
         )}
+        <ModalGenerico 
+          isOpen={termosModal.isOpen} 
+          onClose={termosModal.onClose} 
+          titulo={''} 
+          conteudo={<BolaoTermosUso />} 
+          tamanho="full"
+        />
       </div>
     </div>
   );
