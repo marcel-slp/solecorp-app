@@ -76,15 +76,15 @@ export const imageExportAbas = style({
 });
 
 export const imageExportAbaUnica = style({
-  width: "fit-content",
+  width: "100%",
   flexShrink: 0,
-  border: "1px solid #ddd",
-  borderRadius: "6px"
+  border: "1px solid #ddd"
 });
 
 export const imageExportAbaLabel = style({
   textAlign: "center",
-  marginBottom: "12px",
   fontSize: "16px",
-  fontWeight: "bold"
+  fontWeight: "bold",
+  backgroundColor: "#1e3a8a",
+  color: "white"
 });

@@ -72,4 +72,6 @@ export const imageExportAbaLabel = style({
   padding: '10px',
   fontSize: '15px',
   fontWeight: 'bold',
+  backgroundColor: "#1e3a8a",
+  color: "white"
 });

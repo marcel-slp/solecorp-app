@@ -25,7 +25,6 @@ function BolaoClassificacaoMobile() {
   const imageRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showForCapture, setShowForCapture] = useState(false);
-  const [exportMode, setExportMode] = useState<"all" | "general">("all");
 
   const [criterioSelecionado, setCriterioSelecionado] = useState(
     CRITERIOS_ABAS[0].key
@@ -37,8 +36,13 @@ function BolaoClassificacaoMobile() {
     carregarClassificacao(bolao.id);
   }, [bolao.id, carregarClassificacao]);
 
-  const handleGenerateImage = async (mode: "all" | "general" = "all") => {
-    setExportMode(mode);
+  const abaAtual = CRITERIOS_ABAS.find(
+    (a) => a.key === criterioSelecionado
+  );
+
+  const handleGenerateImage = async () => {
+    if (!imageRef.current) return;
+
     setIsGenerating(true);
     setShowForCapture(true);
 
@@ -50,10 +54,7 @@ function BolaoClassificacaoMobile() {
           backgroundColor: "#ffffff"
         });
 
-        const filename =
-          mode === "general"
-            ? `Classificacao_Geral_${bolao.nome}.png`
-            : `Solecorp_Rankings_${bolao.nome}.png`;
+        const filename = `${abaAtual?.label || criterioSelecionado}_${bolao.nome}.png`;
 
         const link = document.createElement("a");
         link.download = filename;
@@ -124,7 +125,7 @@ function BolaoClassificacaoMobile() {
             <Button
               leftIcon={<BsImage />}
               colorScheme="blue"
-              onClick={() => handleGenerateImage("general")}
+              onClick={handleGenerateImage}
               isLoading={isGenerating}
             >
               Imagem
@@ -204,40 +205,19 @@ function BolaoClassificacaoMobile() {
           }}
         >
           {bolao.nome} -{" "}
-          {exportMode === "general"
-            ? "Classificação Geral"
-            : "Classificação Completa"}
+          {abaAtual?.label}
         </Heading>
 
-        {exportMode === "general" ? (
-          <TabelaClassificacaoBolaoMobile
-            criterioFiltro="Geral"
-            isGeral={true}
-          />
-        ) : (
-          <div className={styles.imageExportAbas}>
-            {CRITERIOS_ABAS.map((aba) => {
-              const isGeral = aba.key === "Geral";
-              return (
-                <div key={aba.key} className={styles.imageExportAbaUnica}>
-                  <Text
-                    className={styles.imageExportAbaLabel}
-                    style={{
-                      backgroundColor: isGeral ? "#1e3a8a" : "transparent",
-                      color: isGeral ? "white" : "black"
-                    }}
-                  >
-                    {aba.label}
-                  </Text>
-                  <TabelaClassificacaoBolaoMobile
-                    criterioFiltro={aba.key}
-                    isGeral={isGeral}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
+        <div
+          key={abaAtual?.key}
+          className={styles.imageExportAbaUnica}
+        >
+          <Text className={styles.imageExportAbaLabel}>
+            {abaAtual?.label}
+          </Text>
+        </div>
+
+        <TabelaClassificacaoBolaoMobile criterioFiltro={criterioSelecionado} />
       </div>
     </>
   );

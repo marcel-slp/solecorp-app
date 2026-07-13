@@ -44,7 +44,9 @@ function BolaoClassificacao() {
   const imageRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showForCapture, setShowForCapture] = useState(false);
-  const [exportMode, setExportMode] = useState<"all" | "general">("all");
+  const [criterioSelecionado, setCriterioSelecionado] = useState(
+    CRITERIOS_ABAS[0].key
+  );
 
   const { loading, error, carregarClassificacao } = classificacaoStore();
 
@@ -52,8 +54,11 @@ function BolaoClassificacao() {
     carregarClassificacao(bolao.id);
   }, [bolao.id, carregarClassificacao]);
 
-  const handleGenerateImage = async (mode: "all" | "general" = "all") => {
-    setExportMode(mode);
+  const abaAtual = CRITERIOS_ABAS.find((a) => a.key === criterioSelecionado);
+
+  const handleGenerateImage = async () => {
+    if (!imageRef.current) return;
+
     setIsGenerating(true);
     setShowForCapture(true);
 
@@ -65,10 +70,7 @@ function BolaoClassificacao() {
           backgroundColor: "#ffffff"
         });
 
-        const filename =
-          mode === "general"
-            ? `Classificacao_Geral_${bolao.nome}.png`
-            : `Solecorp_Rankings_${bolao.nome}.png`;
+        const filename = `${abaAtual?.label || criterioSelecionado}_${bolao.nome}.png`;
 
         const link = document.createElement("a");
         link.download = filename;
@@ -136,22 +138,13 @@ function BolaoClassificacao() {
       <div className={styles.classificacaoContainer}>
         <div className={styles.tituloImagem}>
           <HStack spacing={4} align="center">
-            {/* <Button
-              leftIcon={<BsImage />}
-              colorScheme="blue"
-              onClick={() => handleGenerateImage("all")}
-              isLoading={isGenerating}
-            >
-              Baixar Imagem
-            </Button> */}
-
             <Button
               leftIcon={<BsImage />}
               colorScheme="blue"
-              onClick={() => handleGenerateImage("general")}
+              onClick={handleGenerateImage}
               isLoading={isGenerating}
             >
-              Baixar Imagem (Geral)
+              Baixar Imagem
             </Button>
 
             <PDFDownloadLink
@@ -181,7 +174,13 @@ function BolaoClassificacao() {
         </div>
 
         <div className={styles.folha}>
-          <Tabs variant="soft-rounded" width="fit-content">
+          <Tabs
+            variant="soft-rounded"
+            width="fit-content"
+            onChange={(index) => {
+              setCriterioSelecionado(CRITERIOS_ABAS[index].key);
+            }}
+          >
             <TabList>
               {CRITERIOS_ABAS.map((aba) => (
                 <Tab key={aba.key} bgColor={"white"} marginRight={"2"}>
@@ -222,49 +221,14 @@ function BolaoClassificacao() {
             fontSize: "28px"
           }}
         >
-          {bolao.nome} -{" "}
-          {exportMode === "general"
-            ? "Classificação Geral"
-            : "Classificação Completa"}
+          {bolao.nome} - {abaAtual?.label}
         </Heading>
 
-        {exportMode === "general" ? (
-          <TabelaClassificacaoBolao criterioFiltro="Geral" isGeral={true} />
-        ) : (
-          <div className={styles.imageExportAbas}>
-            {CRITERIOS_ABAS.map((aba) => {
-              const isGeral = aba.key === "Geral";
-              return (
-                <div
-                  key={aba.key}
-                  style={{
-                    width: "fit-content",
-                    flexShrink: 0,
-                    border: isGeral ? "1px solid #2C3E50" : "1px solid #ddd",
-                    borderRadius: "6px",
-                    overflow: "hidden"
-                  }}
-                >
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                      backgroundColor: isGeral ? "#2C3E50" : "transparent",
-                      color: isGeral ? "white" : "black"
-                    }}
-                  >
-                    {aba.label}
-                  </Text>
-                  <TabelaClassificacaoBolao
-                    criterioFiltro={aba.key}
-                    isGeral={isGeral}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
+        <div key={abaAtual?.key} className={styles.imageExportAbaUnica}>
+          <Text className={styles.imageExportAbaLabel}>{abaAtual?.label}</Text>
+        </div>
+
+        <TabelaClassificacaoBolao criterioFiltro={criterioSelecionado} />
       </div>
     </>
   );
