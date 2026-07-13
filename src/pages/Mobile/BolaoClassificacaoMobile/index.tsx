@@ -25,8 +25,11 @@ function BolaoClassificacaoMobile() {
   const imageRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showForCapture, setShowForCapture] = useState(false);
+  const [exportMode, setExportMode] = useState<"all" | "general">("all");
 
-  const [criterioSelecionado, setCriterioSelecionado] = useState(CRITERIOS_ABAS[0].key);
+  const [criterioSelecionado, setCriterioSelecionado] = useState(
+    CRITERIOS_ABAS[0].key
+  );
 
   const { loading, error, carregarClassificacao } = classificacaoStore();
 
@@ -34,9 +37,8 @@ function BolaoClassificacaoMobile() {
     carregarClassificacao(bolao.id);
   }, [bolao.id, carregarClassificacao]);
 
-  const handleGenerateImage = async () => {
-    if (!imageRef.current) return;
-
+  const handleGenerateImage = async (mode: "all" | "general" = "all") => {
+    setExportMode(mode);
     setIsGenerating(true);
     setShowForCapture(true);
 
@@ -45,11 +47,16 @@ function BolaoClassificacaoMobile() {
         const dataUrl = await htmlToImage.toPng(imageRef.current!, {
           quality: 1,
           pixelRatio: 2,
-          backgroundColor: "#ffffff",
+          backgroundColor: "#ffffff"
         });
 
+        const filename =
+          mode === "general"
+            ? `Classificacao_Geral_${bolao.nome}.png`
+            : `Solecorp_Rankings_${bolao.nome}.png`;
+
         const link = document.createElement("a");
-        link.download = `Solecorp_Rankings_${bolao.nome}.png`;
+        link.download = filename;
         link.href = dataUrl;
         link.click();
       } catch (err) {
@@ -59,17 +66,17 @@ function BolaoClassificacaoMobile() {
         setShowForCapture(false);
         setIsGenerating(false);
       }
-    }, 1000);
+    }, 700);
   };
 
-    const handleExportCSV = () => {
+  const handleExportCSV = () => {
     const { getClassificacaoPorCriterio } = classificacaoStore.getState();
-    
+
     let csvContent = "Rankings - " + bolao.nome + "\n\n";
 
     CRITERIOS_ABAS.forEach((aba) => {
       const dados = getClassificacaoPorCriterio(aba.key);
-      
+
       csvContent += `${aba.label}\n`;
       csvContent += "POS;PARTICIPANTE;PTS\n";
 
@@ -83,7 +90,7 @@ function BolaoClassificacaoMobile() {
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
-    
+
     link.href = url;
     link.download = `Classificacao_${bolao.nome}.csv`;
     link.style.visibility = "hidden";
@@ -112,29 +119,46 @@ function BolaoClassificacaoMobile() {
   return (
     <>
       <div className={styles.classificacaoContainer}>
-        
         <div className={styles.tituloImagem}>
           <HStack spacing={2} wrap="wrap" justify="center">
-            <Button leftIcon={<BsImage />} colorScheme="blue" onClick={handleGenerateImage} isLoading={isGenerating}>
+            <Button
+              leftIcon={<BsImage />}
+              colorScheme="blue"
+              onClick={() => handleGenerateImage("general")}
+              isLoading={isGenerating}
+            >
               Imagem
             </Button>
 
-            <PDFDownloadLink document={<PDFClassificacao bolaoNome={bolao.nome} />} fileName={`Solecorp_Rankings_${bolao.nome}.pdf`}>
+            <PDFDownloadLink
+              document={<PDFClassificacao bolaoNome={bolao.nome} />}
+              fileName={`Solecorp_Rankings_${bolao.nome}.pdf`}
+            >
               {({ loading }) => (
-                <Button leftIcon={<Icon as={BsFillPrinterFill} />} colorScheme="red" isLoading={loading}>
+                <Button
+                  leftIcon={<Icon as={BsFillPrinterFill} />}
+                  colorScheme="red"
+                  isLoading={loading}
+                >
                   PDF
                 </Button>
               )}
             </PDFDownloadLink>
 
-            <Button leftIcon={<BsFileExcel />} colorScheme="green" onClick={handleExportCSV}>
+            <Button
+              leftIcon={<BsFileExcel />}
+              colorScheme="green"
+              onClick={handleExportCSV}
+            >
               CSV
             </Button>
           </HStack>
         </div>
 
         <Box mb={6} px={2}>
-          <Text mb={2} fontWeight="medium">Selecione o Ranking:</Text>
+          <Text mb={2} fontWeight="medium">
+            Selecione o Ranking:
+          </Text>
           <Select
             value={criterioSelecionado}
             onChange={(e) => setCriterioSelecionado(e.target.value)}
@@ -152,7 +176,9 @@ function BolaoClassificacaoMobile() {
         </Box>
 
         <div className={styles.folha}>
-          <TabelaClassificacaoBolaoMobile criterioFiltro={criterioSelecionado} />
+          <TabelaClassificacaoBolaoMobile
+            criterioFiltro={criterioSelecionado}
+          />
         </div>
       </div>
 
@@ -163,32 +189,55 @@ function BolaoClassificacaoMobile() {
           left: showForCapture ? "0" : "-99999px",
           top: showForCapture ? "0" : "-99999px",
           visibility: showForCapture ? "visible" : "hidden",
-          padding: "20px 30px",
+          width: "fit-content",
+          padding: "30px",
           backgroundColor: "white",
           zIndex: 9999,
-          width: "2200px"
+          boxShadow: "0 0 10px rgba(0,0,0,0.1)"
         }}
       >
-        <Heading className={styles.imageExportTitulo}>
-          {bolao.nome} - Classificação Completa
+        <Heading
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+            fontSize: "28px"
+          }}
+        >
+          {bolao.nome} -{" "}
+          {exportMode === "general"
+            ? "Classificação Geral"
+            : "Classificação Completa"}
         </Heading>
 
-        <div className={styles.imageExportAbas}>
-          {CRITERIOS_ABAS.map((aba) => {
-            const isGeral = aba.key === "Geral";
-            return (
-              <div key={aba.key} className={styles.imageExportAbaUnica}>
-                <Text className={styles.imageExportAbaLabel} style={{
-                  backgroundColor: isGeral ? "#1e3a8a" : "transparent",
-                  color: isGeral ? "white" : "black"
-                }}>
-                  {aba.label}
-                </Text>
-                <TabelaClassificacaoBolaoMobile criterioFiltro={aba.key} isGeral={isGeral} />
-              </div>
-            );
-          })}
-        </div>
+        {exportMode === "general" ? (
+          <TabelaClassificacaoBolaoMobile
+            criterioFiltro="Geral"
+            isGeral={true}
+          />
+        ) : (
+          <div className={styles.imageExportAbas}>
+            {CRITERIOS_ABAS.map((aba) => {
+              const isGeral = aba.key === "Geral";
+              return (
+                <div key={aba.key} className={styles.imageExportAbaUnica}>
+                  <Text
+                    className={styles.imageExportAbaLabel}
+                    style={{
+                      backgroundColor: isGeral ? "#1e3a8a" : "transparent",
+                      color: isGeral ? "white" : "black"
+                    }}
+                  >
+                    {aba.label}
+                  </Text>
+                  <TabelaClassificacaoBolaoMobile
+                    criterioFiltro={aba.key}
+                    isGeral={isGeral}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </>
   );
