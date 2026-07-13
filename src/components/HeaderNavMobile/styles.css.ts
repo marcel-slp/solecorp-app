@@ -49,3 +49,20 @@ export const itemLink = style({
 export const saveButton = style({
   marginLeft: '10px'
 });
+
+export const imageLink = style({
+  width: "40px",
+  height: "40px",
+  backgroundColor: "white",
+  borderRadius: "4px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center"
+});
+
+export const imageLogo = style({
+  width: "38px", 
+  height: "38px", 
+  objectFit: "cover", 
+  borderRadius: "6px"
+});

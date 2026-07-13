@@ -205,6 +205,12 @@ export function InicioBolao() {
               )}
             </Flex>
 
+            <Box flex="1">
+              <div className={styles.qtdParticipantesContainer}>
+                Quantidade de participantes: {participantesBolao.length}
+              </div>
+            </Box>
+
             <Box mt={10}>
               <ListaJogosDia
                 partidas={partidas}

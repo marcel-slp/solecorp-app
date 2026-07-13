@@ -39,6 +39,10 @@ export const infoTorneioContainer = style({
   overflow: "hidden",
 });
 
+export const qtdParticipantesContainer = style({
+  fontWeight: "bold",
+});
+
 export const patrocinadoresContainer = style({
   display: "flex",
   justifyContent: "space-between",

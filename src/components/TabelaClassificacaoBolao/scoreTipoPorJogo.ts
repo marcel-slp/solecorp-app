@@ -49,12 +49,10 @@ export function calcularPontosTipoPorJogo(
     return pontos;
   }
 
-  const temPlacarPenaltisValido = (p: PlacarPalpitePontosPorJogo): boolean => {
-    return (
-      p.placarPenaltisCasa != null &&
-      p.placarPenaltisFora != null
-    );
-  };
+  const temPlacarPenaltisValido = (p: PlacarPalpitePontosPorJogo): boolean => 
+    p.placarPenaltisCasa != null && 
+    p.placarPenaltisFora != null && 
+    p.placarPenaltisCasa !== p.placarPenaltisFora;
 
   const isPrimeiraFase = partida.grupo !== null && partida.grupo !== undefined;
 

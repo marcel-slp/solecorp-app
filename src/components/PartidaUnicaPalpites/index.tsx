@@ -396,7 +396,7 @@ export function PartidaUnicaPalpites({
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxWidth={'fit-content'}>
           <ModalHeader>Palpites da Partida {partida.numeroPartida}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>

@@ -2,7 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import * as styles from "./styles.css";
 import { Bolao, bolaoStore } from "../../stores/bolaoStore";
 import { useState } from "react";
-import { recordToArray } from "../../utils/Utils";
+import { getImagemURL, recordToArray } from "../../utils/Utils";
+import { Image } from "@chakra-ui/icons";
 import { palpitesStore } from "../../stores/palpitesStore";
 import { IconButton } from "@chakra-ui/react";
 import { FaSave } from "react-icons/fa";
@@ -55,8 +56,14 @@ export default function HeaderNavMobile({ bolao }: HeaderNavMobileProps) {
   return (
     <div className={styles.navigationContainer}>
       <div className={styles.navLinks}>
-        <Link to="/mobile/boloes-mobile" className={styles.itemLink}>
-          BOLÕES
+        <Link to="/mobile/boloes-mobile" style={{ width: "40px", height: "40px" }}>
+          <div className={styles.imageLink}>
+            <Image
+              src={String(getImagemURL(String(bolao.imagemBolao)))}
+              alt="Logo"
+              className={styles.imageLogo}
+            />
+          </div>
         </Link>
 
         <Link

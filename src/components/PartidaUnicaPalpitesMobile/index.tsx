@@ -38,17 +38,13 @@ interface PartidaUnicaPalpitesMobileProps {
   placarPalpite: Placar;
   bolaoId: string;
   infoPartida: Record<number, InfoPorPartida>;
-  // pontuacaoPartida: string;
-  // iconesParticipantes: Record<number, React.ReactNode[]>;
 }
 
 export function PartidaUnicaPalpitesMobile({
   partida,
   placarPalpite,
-  //pontuacaoPartida,
   bolaoId,
   infoPartida
-  //iconesParticipantes = {}
 }: PartidaUnicaPalpitesMobileProps) {
   const { salvarPalpite } = palpitesStore();
   const { participantesBolao, carregarParticipantesBolao } = bolaoStore();
@@ -277,6 +273,7 @@ export function PartidaUnicaPalpitesMobile({
                         placarPenaltisForaInterno
                       )
                     }
+                    onBlur={() => validarPenaltis()}
                   />
                 </>
               )}
@@ -329,6 +326,7 @@ export function PartidaUnicaPalpitesMobile({
                         e.target.value
                       )
                     }
+                    onBlur={() => validarPenaltis()}
                   />
                 </>
               )}
@@ -385,7 +383,7 @@ export function PartidaUnicaPalpitesMobile({
 
           <Modal isOpen={isOpen} onClose={onClose} size="lg">
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent maxWidth={'fit-content'}>
               <ModalHeader>Palpites da Partida {partida.numeroPartida}</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
@@ -437,6 +435,7 @@ export function PartidaUnicaPalpitesMobile({
                                       src={partida.simboloCasa}
                                       fallbackSrc={defaultParticipante}
                                       boxSize="24px"
+                                      marginLeft={'20px'}
                                     />
                                     <Text fontWeight="medium" color="blue.400">
                                       {palpite.placarPenaltisCasa} ×{" "}

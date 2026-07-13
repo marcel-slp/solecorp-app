@@ -147,7 +147,7 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
               to={mobile ? "/mobile/boloes-mobile" : "/home"}
               aria-label="Ir para home"
             >
-              <Icon as={FaHouse} className={styles.iconSmall} />
+              <Icon as={mobile ? FaFutbol : FaHouse} className={styles.iconSmall} />
             </Link>
             <Link
               to="/boloes"
