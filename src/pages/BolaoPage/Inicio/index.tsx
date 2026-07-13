@@ -295,9 +295,7 @@ export function InicioBolao() {
             </Box>
 
             {criadorOuGerente && (
-              <>
-                <TabelaGerenciarParticipantesBolao />
-              </>
+              <TabelaGerenciarParticipantesBolao />
             )}
 
             <ModalGenerico

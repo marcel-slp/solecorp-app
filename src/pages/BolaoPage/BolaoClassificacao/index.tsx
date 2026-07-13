@@ -35,17 +35,6 @@ export interface PontuacaoParticipante {
   ptsTotalExtra2: number;
   ptsClassificacaoFaseGrupos: number;
   ptsClassificacaoPlayoff: number;
-  // //ptsMelhorTime1fase: number;
-  // ptsMelhorJogador: number;
-  // ptsMelhorGoleiro: number;
-  // ptsArtilheiro: number;
-  // ptsCampeao: number;
-  // ptsViceCampeao: number;
-  // ptsTerceiroLugar: number;
-  // //ptsConvocacao: number;
-  // ptsBonus1: number;
-  // ptsBonus2: number;
-  // ptsBonus3: number;
   ptsTotalParticipante: number;
   posicao?: number;
 }
@@ -55,6 +44,7 @@ function BolaoClassificacao() {
   const imageRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showForCapture, setShowForCapture] = useState(false);
+  const [exportMode, setExportMode] = useState<"all" | "general">("all");
 
   const { loading, error, carregarClassificacao } = classificacaoStore();
 
@@ -62,9 +52,8 @@ function BolaoClassificacao() {
     carregarClassificacao(bolao.id);
   }, [bolao.id, carregarClassificacao]);
 
-  const handleGenerateImage = async () => {
-    if (!imageRef.current) return;
-
+  const handleGenerateImage = async (mode: "all" | "general" = "all") => {
+    setExportMode(mode);
     setIsGenerating(true);
     setShowForCapture(true);
 
@@ -73,12 +62,16 @@ function BolaoClassificacao() {
         const dataUrl = await htmlToImage.toPng(imageRef.current!, {
           quality: 1,
           pixelRatio: 2,
-          backgroundColor: "#ffffff",
-          height: imageRef.current!.scrollHeight
+          backgroundColor: "#ffffff"
         });
 
+        const filename =
+          mode === "general"
+            ? `Classificacao_Geral_${bolao.nome}.png`
+            : `Solecorp_Rankings_${bolao.nome}.png`;
+
         const link = document.createElement("a");
-        link.download = `Solecorp_Rankings_${bolao.nome}.png`;
+        link.download = filename;
         link.href = dataUrl;
         link.click();
       } catch (err) {
@@ -88,17 +81,17 @@ function BolaoClassificacao() {
         setShowForCapture(false);
         setIsGenerating(false);
       }
-    }, 800);
+    }, 700);
   };
 
   const handleExportCSV = () => {
     const { getClassificacaoPorCriterio } = classificacaoStore.getState();
-    
+
     let csvContent = "Rankings - " + bolao.nome + "\n\n";
 
     CRITERIOS_ABAS.forEach((aba) => {
       const dados = getClassificacaoPorCriterio(aba.key);
-      
+
       csvContent += `${aba.label}\n`;
       csvContent += "POS;PARTICIPANTE;PTS\n";
 
@@ -112,7 +105,7 @@ function BolaoClassificacao() {
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
-    
+
     link.href = url;
     link.download = `Classificacao_${bolao.nome}.csv`;
     link.style.visibility = "hidden";
@@ -143,13 +136,22 @@ function BolaoClassificacao() {
       <div className={styles.classificacaoContainer}>
         <div className={styles.tituloImagem}>
           <HStack spacing={4} align="center">
-            <Button
+            {/* <Button
               leftIcon={<BsImage />}
               colorScheme="blue"
-              onClick={handleGenerateImage}
+              onClick={() => handleGenerateImage("all")}
               isLoading={isGenerating}
             >
               Baixar Imagem
+            </Button> */}
+
+            <Button
+              leftIcon={<BsImage />}
+              colorScheme="blue"
+              onClick={() => handleGenerateImage("general")}
+              isLoading={isGenerating}
+            >
+              Baixar Imagem (Geral)
             </Button>
 
             <PDFDownloadLink
@@ -168,9 +170,9 @@ function BolaoClassificacao() {
               )}
             </PDFDownloadLink>
 
-            <Button 
-              leftIcon={<BsFileExcel />} 
-              colorScheme="green" 
+            <Button
+              leftIcon={<BsFileExcel />}
+              colorScheme="green"
               onClick={handleExportCSV}
             >
               Exportar CSV
@@ -206,50 +208,63 @@ function BolaoClassificacao() {
           left: showForCapture ? "0" : "-99999px",
           top: showForCapture ? "0" : "-99999px",
           visibility: showForCapture ? "visible" : "hidden",
-          padding: "20px 30px",
+          width: "fit-content",
+          padding: "30px",
           backgroundColor: "white",
-          zIndex: 9999
+          zIndex: 9999,
+          boxShadow: "0 0 10px rgba(0,0,0,0.1)"
         }}
       >
-        <Heading className={styles.imageExportTitulo}>
-          {bolao.nome} - Classificação Completa
+        <Heading
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+            fontSize: "28px"
+          }}
+        >
+          {bolao.nome} -{" "}
+          {exportMode === "general"
+            ? "Classificação Geral"
+            : "Classificação Completa"}
         </Heading>
 
-        <div className={styles.imageExportAbas}>
-          {CRITERIOS_ABAS.map((aba) => {
-            const isGeral = aba.key === "Geral";
-
-            return (
-              <div
-                key={aba.key}
-                style={{
-                  width: "fit-content",
-                  flexShrink: 0,
-                  border: isGeral ? "1px solid #2C3E50" : "1px solid #ddd",
-                  borderRadius: "6px",
-                  overflow: "hidden"
-                }}
-              >
-                <Text
+        {exportMode === "general" ? (
+          <TabelaClassificacaoBolao criterioFiltro="Geral" isGeral={true} />
+        ) : (
+          <div className={styles.imageExportAbas}>
+            {CRITERIOS_ABAS.map((aba) => {
+              const isGeral = aba.key === "Geral";
+              return (
+                <div
+                  key={aba.key}
                   style={{
-                    textAlign: "center",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    backgroundColor: isGeral ? "#2C3E50" : "transparent",
-                    color: isGeral ? "white" : "black"
+                    width: "fit-content",
+                    flexShrink: 0,
+                    border: isGeral ? "1px solid #2C3E50" : "1px solid #ddd",
+                    borderRadius: "6px",
+                    overflow: "hidden"
                   }}
                 >
-                  {aba.label}
-                </Text>
-
-                <TabelaClassificacaoBolao
-                  criterioFiltro={aba.key}
-                  isGeral={isGeral}
-                />
-              </div>
-            );
-          })}
-        </div>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                      backgroundColor: isGeral ? "#2C3E50" : "transparent",
+                      color: isGeral ? "white" : "black"
+                    }}
+                  >
+                    {aba.label}
+                  </Text>
+                  <TabelaClassificacaoBolao
+                    criterioFiltro={aba.key}
+                    isGeral={isGeral}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </>
   );
