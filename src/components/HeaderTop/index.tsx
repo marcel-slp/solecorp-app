@@ -37,8 +37,7 @@ import { useEffect, useState } from "react";
 import { PerfilSistema } from "../../models/PerfilSistema";
 import { FaQuestionCircle } from "react-icons/fa";
 import { configuracoesStore } from "../../stores/configuracoesStore";
-import BolaoTermosUso from "../BolaoTermosUso";
-import { ModalGenerico } from "../ModalGenerico";
+// import { ModalGenerico } from "../ModalGenerico";
 
 export type Props = {
   modoBolao?: boolean;
@@ -321,13 +320,13 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
             </ModalContent>
           </Modal>
         )}
-        <ModalGenerico 
+        {/* <ModalGenerico 
           isOpen={termosModal.isOpen} 
           onClose={termosModal.onClose} 
           titulo={''} 
           conteudo={<BolaoTermosUso />} 
           tamanho="full"
-        />
+        /> */}
       </div>
     </div>
   );

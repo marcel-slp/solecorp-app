@@ -6,7 +6,7 @@ import {
   Input,
   FormHelperText,
 	Checkbox,
-	useDisclosure,
+	// useDisclosure,
 	Flex,
 	InputGroup,
 	InputRightElement,
@@ -16,8 +16,7 @@ import { FormEvent, useEffect, useState } from "react";
 import * as styles from "./styles.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { registrarUsuario } from "../../api";
-import { ModalGenerico } from "../../components/ModalGenerico";
-import BolaoTermosUso from "../../components/BolaoTermosUso";
+// import { ModalGenerico } from "../../components/ModalGenerico";
 import { FaArrowLeft } from "react-icons/fa6";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
@@ -28,7 +27,7 @@ export function Registro() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [message, setMessage] = useState('');
 	const [checkTermosCondicoes, setCheckTermosCondicoes] = useState<boolean>(false);
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	// const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -103,12 +102,12 @@ export function Registro() {
 					</FormHelperText>
 				</FormControl>
 				<div className={styles.linkTermosCondicoes}>
-					<Link
+					{/* <Link
 						onClick={() => onOpen()}
 						to=''
 					>
 						Ver Termos e Condições
-					</Link>
+					</Link> */}
 
 					<Checkbox
 						isChecked={checkTermosCondicoes}
@@ -139,13 +138,13 @@ export function Registro() {
         </Flex>
 			</form>
 			<Text color={message.includes('sucesso') ? 'green' : 'red'}>{message}</Text>
-			<ModalGenerico 
+			{/* <ModalGenerico 
 				isOpen={isOpen} 
 				onClose={onClose} 
 				titulo={''} 
 				conteudo={<BolaoTermosUso />} 
 				tamanho="full"
-			/>
+			/> */}
 		</div>
 	);
 }

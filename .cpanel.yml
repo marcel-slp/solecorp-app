@@ -1,7 +1,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/solecorp/public_html/ambiente/
+    - export DEPLOYPATH=/home/solecorp/public_html/ambiente-solecorp-app/
     - /bin/cp dist/index.html $DEPLOYPATH
     - /bin/cp -R dist/images $DEPLOYPATH
     - /bin/cp -R dist/assets $DEPLOYPATH

@@ -10,29 +10,27 @@ import {
   Icon,
   Button,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+//import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { bolaoStore } from "../../stores/bolaoStore";
-import { partidasStore } from "../../stores/partidasStore";
-import { retornaUserId } from "../../utils/Utils";
-import ListaJogosDia from "../../components/ListaJogosDoDia";
+// import { bolaoStore } from "../../stores/bolaoStore";
+// import { partidasStore } from "../../stores/partidasStore";
+// import { retornaUserId } from "../../utils/Utils";
 import jogadorHome from "@/assets/images/jogador_homebolao.png";
 import logoSmall from "@/assets/images/logosolecorp-2.jpg";
 import NewsFeed from "../../components/NewsFeed";
 import { FaBell, FaFileCirclePlus, FaFolder } from "react-icons/fa6";
-import BolaoTableHome from "../../components/BolaoTableHome";
 import * as styles from "./styles.css";
 
 export function Home() {
-  const { carregarBoloesPorUserId } = bolaoStore();
-  const { partidas, carregarPartidas } = partidasStore();
+  // const { carregarBoloesPorUserId } = bolaoStore();
+  // const { partidas, carregarPartidas } = partidasStore();
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    carregarBoloesPorUserId(retornaUserId());
-    carregarPartidas(1);
-  }, [carregarBoloesPorUserId, carregarPartidas]);
+  // useEffect(() => {
+  //   carregarBoloesPorUserId(retornaUserId());
+  //   carregarPartidas(1);
+  // }, [carregarBoloesPorUserId, carregarPartidas]);
 
   return (
     <Box className={styles.homeContainer}>
@@ -73,17 +71,17 @@ export function Home() {
             <Box className={styles.card}>
               <VStack spacing={4} align="center">
                 <Heading size="md" mb={4} textAlign="center">Bolões Abertos</Heading>
-                <BolaoTableHome />
+                {/* <BolaoTableHome /> */}
               </VStack>
             </Box>
           </Grid>
-
+{/* 
           <Box className={styles.card}>
             <ListaJogosDia
               partidas={partidas}
               mostrarPalpites={false}
             />
-          </Box>
+          </Box> */}
         </GridItem>
 
         <GridItem>
