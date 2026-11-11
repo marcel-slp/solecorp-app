@@ -1,18 +1,32 @@
 import { create } from 'zustand';
-import { PontuacaoParticipante } from '../pages/BolaoPage/BolaoClassificacao';
-import { calcularPontuacoesParticipantes } from '../components/TabelaClassificacaoBolao/scoreParticipantes';
-import { bolaoStore } from './bolaoStore';
-import { palpitesStore } from './palpitesStore';
-import { partidasStore } from './partidasStore';
-import { criteriosPontuacaoStore } from './criteriosPontuacaoStore';
-import { retornaUserId } from '../utils/Utils';
-import { premiosIndividuaisStore } from './premiosIndividuaisStore';
+// import { bolaoStore } from './bolaoStore';
+// import { palpitesStore } from './palpitesStore';
+// import { partidasStore } from './partidasStore';
+// import { criteriosPontuacaoStore } from './criteriosPontuacaoStore';
+// import { retornaUserId } from '../utils/Utils';
+// import { premiosIndividuaisStore } from './premiosIndividuaisStore';
+// import { calcularPontuacoesParticipantes } from '../utils/scoreParticipantes';
 
 export type PontuacaoParticipanteComPosicao = {
   posicao: number,
   participante: string,
   pts: number,
   userId: number,
+}
+
+export interface PontuacaoParticipante {
+  userId: number;
+  nome: string;
+  ptsPlacarCravado: number;
+  ptsResultado: number;
+  ptsGols: number;
+  ptsDiferencaGols: number;
+  ptsPenaltis: number;
+  ptsTotalExtra2: number;
+  ptsClassificacaoFaseGrupos: number;
+  ptsClassificacaoPlayoff: number;
+  ptsTotalParticipante: number;
+  posicao?: number;
 }
 
 function aplicarRankingComEmpate<T>(
@@ -44,135 +58,135 @@ interface ClassificacaoStore {
   loading: boolean;
   error: string | null;
 
-  carregarClassificacao: (bolaoId: string) => Promise<void>;
-  getRankingOrdenado: (bolaoId: string) => Promise<PontuacaoParticipanteComPosicao[]>;
+  // carregarClassificacao: (bolaoId: string) => Promise<void>;
+  // getRankingOrdenado: (bolaoId: string) => Promise<PontuacaoParticipanteComPosicao[]>;
   getClassificacaoPorCriterio: (criterioFiltro: string) => PontuacaoParticipanteComPosicao[];
   getRankingAoRedorUsuario: (userId: number, range: number) => PontuacaoParticipante[];
   getTopN: (n: number) => PontuacaoParticipante[];
 }
 
-export const classificacaoStore = create<ClassificacaoStore>((set, get) => ({
+export const classificacaoStore = create<ClassificacaoStore>((_set, get) => ({
   pontuacoes: [],
   rankingGeral: [],
   loading: false,
   error: null,
 
-  carregarClassificacao: async (bolaoId: string) => {
-    set({ loading: true, error: null });
+  // carregarClassificacao: async (bolaoId: string) => {
+  //   set({ loading: true, error: null });
 
-    try {
-      const { carregarParticipantesBolao } = bolaoStore.getState();
-      const { carregarPalpitesPorBolao } = palpitesStore.getState();
-      const { carregarPartidas } = partidasStore.getState();
-      const { carregarPontuacaoCriterios } = criteriosPontuacaoStore.getState();
-      const { carregarPremiosIndividuaisOriginal } = premiosIndividuaisStore.getState();
+  //   try {
+  //     const { carregarParticipantesBolao } = bolaoStore.getState();
+  //     const { carregarPalpitesPorBolao } = palpitesStore.getState();
+  //     const { carregarPartidas } = partidasStore.getState();
+  //     const { carregarPontuacaoCriterios } = criteriosPontuacaoStore.getState();
+  //     const { carregarPremiosIndividuaisOriginal } = premiosIndividuaisStore.getState();
 
-      await Promise.all([
-        carregarParticipantesBolao(bolaoId, retornaUserId()),
-        carregarPalpitesPorBolao(bolaoId),
-        carregarPartidas(1),
-        carregarPontuacaoCriterios(bolaoId),
-        carregarPremiosIndividuaisOriginal(1)
-      ]);
+  //     await Promise.all([
+  //       carregarParticipantesBolao(bolaoId, retornaUserId()),
+  //       carregarPalpitesPorBolao(bolaoId),
+  //       carregarPartidas(1),
+  //       carregarPontuacaoCriterios(bolaoId),
+  //       carregarPremiosIndividuaisOriginal(1)
+  //     ]);
 
-      const { participantesBolao } = bolaoStore.getState();
-      const { palpitesBolao } = palpitesStore.getState();
-      const { partidas } = partidasStore.getState();
-      const { pontuacaoCriterios } = criteriosPontuacaoStore.getState();
-      const { premiosIndividuaisOriginal } = premiosIndividuaisStore.getState();
+  //     const { participantesBolao } = bolaoStore.getState();
+  //     const { palpitesBolao } = palpitesStore.getState();
+  //     const { partidas } = partidasStore.getState();
+  //     const { pontuacaoCriterios } = criteriosPontuacaoStore.getState();
+  //     const { premiosIndividuaisOriginal } = premiosIndividuaisStore.getState();
 
-      if (participantesBolao.length === 0) {
-        set({ pontuacoes: [], rankingGeral: [], loading: false });
-        return;
-      }
+  //     if (participantesBolao.length === 0) {
+  //       set({ pontuacoes: [], rankingGeral: [], loading: false });
+  //       return;
+  //     }
 
-      if(premiosIndividuaisOriginal === null) {
-        return;
-      } 
+  //     if(premiosIndividuaisOriginal === null) {
+  //       return;
+  //     } 
 
-      const pontuacoesCalculadas = calcularPontuacoesParticipantes(
-        participantesBolao,
-        palpitesBolao,
-        partidas,
-        premiosIndividuaisOriginal,
-        pontuacaoCriterios
-      ) as PontuacaoParticipante[];
+  //     const pontuacoesCalculadas = calcularPontuacoesParticipantes(
+  //       participantesBolao,
+  //       palpitesBolao,
+  //       partidas,
+  //       premiosIndividuaisOriginal,
+  //       pontuacaoCriterios
+  //     ) as PontuacaoParticipante[];
 
-      const ordenado = [...pontuacoesCalculadas].sort((a, b) =>
-          b.ptsTotalParticipante - a.ptsTotalParticipante ||
-          a.nome.localeCompare(b.nome)
-      );
+  //     const ordenado = [...pontuacoesCalculadas].sort((a, b) =>
+  //         b.ptsTotalParticipante - a.ptsTotalParticipante ||
+  //         a.nome.localeCompare(b.nome)
+  //     );
 
-      const rankingOrdenado = aplicarRankingComEmpate(ordenado,(item) => item.ptsTotalParticipante);
+  //     const rankingOrdenado = aplicarRankingComEmpate(ordenado,(item) => item.ptsTotalParticipante);
 
-      set({
-        pontuacoes: pontuacoesCalculadas,
-        rankingGeral: rankingOrdenado,
-        loading: false,
-      });
+  //     set({
+  //       pontuacoes: pontuacoesCalculadas,
+  //       rankingGeral: rankingOrdenado,
+  //       loading: false,
+  //     });
 
-    } catch (err) {
-      console.error("Erro ao carregar classificação:", err);
-      set({ 
-        loading: false, 
-        error: "Não foi possível carregar a classificação." 
-      });
-    }
-  },
+  //   } catch (err) {
+  //     console.error("Erro ao carregar classificação:", err);
+  //     set({ 
+  //       loading: false, 
+  //       error: "Não foi possível carregar a classificação." 
+  //     });
+  //   }
+  // },
 
-  getRankingOrdenado: async (bolaoId: string) => {
-    try {
-      const { carregarParticipantesBolao } = bolaoStore.getState();
-      const { carregarPalpitesPorBolao } = palpitesStore.getState();
-      const { carregarPartidas } = partidasStore.getState();
-      const { carregarPontuacaoCriterios } = criteriosPontuacaoStore.getState();
-      const { carregarPremiosIndividuaisOriginal } = premiosIndividuaisStore.getState();
+  // getRankingOrdenado: async (bolaoId: string) => {
+  //   try {
+  //     const { carregarParticipantesBolao } = bolaoStore.getState();
+  //     const { carregarPalpitesPorBolao } = palpitesStore.getState();
+  //     const { carregarPartidas } = partidasStore.getState();
+  //     const { carregarPontuacaoCriterios } = criteriosPontuacaoStore.getState();
+  //     const { carregarPremiosIndividuaisOriginal } = premiosIndividuaisStore.getState();
 
-      await Promise.all([
-        carregarParticipantesBolao(bolaoId, retornaUserId()),
-        carregarPalpitesPorBolao(bolaoId),
-        carregarPartidas(1),
-        carregarPontuacaoCriterios(bolaoId),
-        carregarPremiosIndividuaisOriginal(1)
-      ]);
+  //     await Promise.all([
+  //       carregarParticipantesBolao(bolaoId, retornaUserId()),
+  //       carregarPalpitesPorBolao(bolaoId),
+  //       carregarPartidas(1),
+  //       carregarPontuacaoCriterios(bolaoId),
+  //       carregarPremiosIndividuaisOriginal(1)
+  //     ]);
 
-      const { participantesBolao } = bolaoStore.getState();
-      const { palpitesBolao } = palpitesStore.getState();
-      const { partidas } = partidasStore.getState();
-      const { pontuacaoCriterios } = criteriosPontuacaoStore.getState();
-      const { premiosIndividuaisOriginal } = premiosIndividuaisStore.getState();
+  //     const { participantesBolao } = bolaoStore.getState();
+  //     const { palpitesBolao } = palpitesStore.getState();
+  //     const { partidas } = partidasStore.getState();
+  //     const { pontuacaoCriterios } = criteriosPontuacaoStore.getState();
+  //     const { premiosIndividuaisOriginal } = premiosIndividuaisStore.getState();
 
-      if (participantesBolao.length === 0) {
-        set({ pontuacoes: [], rankingGeral: [], loading: false });
-        return [];
-      }
+  //     if (participantesBolao.length === 0) {
+  //       set({ pontuacoes: [], rankingGeral: [], loading: false });
+  //       return [];
+  //     }
 
-      if(premiosIndividuaisOriginal === null) {
-        return [];
-      } 
+  //     if(premiosIndividuaisOriginal === null) {
+  //       return [];
+  //     } 
 
-      const pontuacoesCalculadas = calcularPontuacoesParticipantes(
-        participantesBolao,
-        palpitesBolao,
-        partidas,
-        premiosIndividuaisOriginal,
-        pontuacaoCriterios
-      ) as PontuacaoParticipante[];
+  //     const pontuacoesCalculadas = calcularPontuacoesParticipantes(
+  //       participantesBolao,
+  //       palpitesBolao,
+  //       partidas,
+  //       premiosIndividuaisOriginal,
+  //       pontuacaoCriterios
+  //     ) as PontuacaoParticipante[];
 
-      const ordenado = [...pontuacoesCalculadas].sort((a, b) =>
-          b.ptsTotalParticipante - a.ptsTotalParticipante ||
-          a.nome.localeCompare(b.nome)
-      );
+  //     const ordenado = [...pontuacoesCalculadas].sort((a, b) =>
+  //         b.ptsTotalParticipante - a.ptsTotalParticipante ||
+  //         a.nome.localeCompare(b.nome)
+  //     );
 
-      const rankingOrdenado = aplicarRankingComEmpate(ordenado,(item) => item.ptsTotalParticipante);
+  //     const rankingOrdenado = aplicarRankingComEmpate(ordenado,(item) => item.ptsTotalParticipante);
 
-      return rankingOrdenado as unknown as PontuacaoParticipanteComPosicao[];
+  //     return rankingOrdenado as unknown as PontuacaoParticipanteComPosicao[];
 
-    } catch (err) {
-      console.error("Erro ao carregar classificação:", err);
-      return [];
-    }
-  },
+  //   } catch (err) {
+  //     console.error("Erro ao carregar classificação:", err);
+  //     return [];
+  //   }
+  // },
 
   getClassificacaoPorCriterio: (criterioFiltro: string) => {
     const { pontuacoes } = get();
