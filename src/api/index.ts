@@ -14,7 +14,7 @@ import { Selecao } from '../stores/selecoesStore';
 import { Jogador } from '../stores/jogadoresStore';
 import { BuscarConfiguracoesResponse, Configuracao } from '../stores/configuracoesStore';
 
-const API_URL = 'https://solecorp.com.br/ambiente/api';
+const API_URL = 'https://solecorp.com.br/ambiente-solecorp-app/api';
 
 const buildParticipanteFormData = (participante: Participante): FormData => {
   const formData = new FormData();

@@ -54,7 +54,7 @@ export default tseslint.config({
 ```
 Deploy no cPanel:
 - Rodar npm run build
-- Subir pasta assets e index.html na pasta ambiente do cPanel (dentro do public_html/ambiente)
+- Subir pasta assets e index.html na pasta ambiente do cPanel (dentro do public_html/ambiente-solecorp-app)
 
 Rodar sistema local:
 - Rodar npm dev

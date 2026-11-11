@@ -5,7 +5,7 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react(), vanillaExtractPlugin()],
-  base: process.env.NODE_ENV === 'production' ? '/ambiente/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/ambiente-solecorp-app/' : '/',
   build: {
     outDir: 'dist',
     rollupOptions: {

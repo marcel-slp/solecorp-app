@@ -2,12 +2,12 @@ import { Evento } from "../stores/eventosStore";
 
 export const getImagemURL = (caminho: string) => {
   if (!caminho) return 'uploads/imagens_padrao/default_participante.jpeg';
-  return `https://solecorp.com.br/ambiente/api/${caminho}`;
+  return `https://solecorp.com.br/ambiente-solecorp-app/api/${caminho}`;
 };
 
 export const getImagemSelecoesURL = (caminho: string) => {
   if (!caminho) return 'uploads/imagens_padrao/default_participante.jpeg';
-  return `https://solecorp.com.br/ambiente/assets/${caminho}`;
+  return `https://solecorp.com.br/ambiente-solecorp-app/assets/${caminho}`;
 };
 
 export function existePlayerNoEvento(evento: Evento): boolean {
