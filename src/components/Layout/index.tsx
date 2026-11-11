@@ -4,19 +4,17 @@ import HeaderTop from '../HeaderTop'
 import Footer from '../Footer'
 
 export type Props = {
-    modoBolao?: boolean;
     publicHeader?: boolean;
-    mobile?: boolean;
 };
 
-function Layout({ modoBolao, publicHeader, mobile }: Props) {
+function Layout({ publicHeader }: Props) {
   return (
     <div className={styles.container}>
-      <HeaderTop modoBolao={modoBolao} publicHeader={publicHeader} mobile={mobile}/>
+      <HeaderTop publicHeader={publicHeader} />
       <main className={styles.main}>
         <Outlet />
       </main>
-      <Footer modoBolao={modoBolao} mobile={mobile}/>
+      <Footer />
     </div>
   )
 }

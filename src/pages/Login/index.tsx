@@ -50,7 +50,7 @@ export function Login() {
         })
       );
 
-      navigate(location.state?.redirectTo ?? "/escolher-dispositivo");
+      navigate(location.state?.redirectTo ?? "/home");
     } else {
       console.error("Falha ao fazer login:", res.message);
       setMessage(String(res.message));

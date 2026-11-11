@@ -1,5 +1,5 @@
 import {
-  AddIcon,
+  // AddIcon,
   Button,
   HamburgerIcon,
   Icon,
@@ -30,7 +30,7 @@ import * as styles from "./styles.css";
 import { IoMdLogOut } from "react-icons/io";
 import { BsPersonCircle } from "react-icons/bs";
 import { MdEmojiEvents } from "react-icons/md";
-import { FaFutbol, FaGear, FaHouse, FaPeopleGroup } from "react-icons/fa6";
+import { FaGear, FaHouse, FaPeopleGroup } from "react-icons/fa6";
 import { TbShieldFilled } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -40,16 +40,10 @@ import { configuracoesStore } from "../../stores/configuracoesStore";
 // import { ModalGenerico } from "../ModalGenerico";
 
 export type Props = {
-  modoBolao?: boolean;
   publicHeader?: boolean;
-  mobile?: boolean;
 };
 
 const paginasGerenciamento = [
-  {
-    label: "Inserir Placares",
-    path: "/inserir-placares-copa-2026"
-  },
   {
     label: "Gerenciar Perfis",
     path: "/gerenciar-perfil"
@@ -57,29 +51,13 @@ const paginasGerenciamento = [
   {
     label: "Gerenciar Usuários",
     path: "/gerenciar-usuarios"
-  },
-  {
-    label: "Gerenciar Bolões",
-    path: "/gerenciar-boloes"
-  },
-  {
-    label: "Gerenciar Jogadores",
-    path: "/gerenciar-jogadores"
-  },
-  {
-    label: "Gerenciar Seleções",
-    path: "/gerenciar-selecoes"
-  },
-  {
-    label: "Gerenciar Prêmios Individuais",
-    path: "/gerenciar-premios-individuais"
   }
 ];
 
-export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
+export function HeaderTop({ publicHeader = false }: Props) {
   const { atualizarConfiguracao, getConfig, getValor } = configuracoesStore();
   const logoutModal = useDisclosure(); 
-  const termosModal = useDisclosure();
+  //const termosModal = useDisclosure();
   const navigate = useNavigate();
   const [nomeUsuario, setNomeUsuario] = useState<string | null>(null);
   const [emailUsuario, setEmailUsuario] = useState<string | null>(null);
@@ -122,12 +100,10 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
     }
   }, []);
 
-  const esconderIconesBolaoAdmin =
+  const esconderIconesAdmin =
     publicHeader ||
-    mobile ||
-    (modoBolao && perfilUsuario != PerfilSistema.ADMIN);
-  const esconderIconesBolaoUser = publicHeader || !modoBolao || mobile;
-  const esconderIconesManager = publicHeader || modoBolao || mobile;
+    perfilUsuario != PerfilSistema.ADMIN;
+  const esconderIconesManager = publicHeader;
 
   return (
     <div className={styles.headerTop}>
@@ -139,32 +115,39 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
         <div className={styles.titleWrapper}>
           <div className={styles.titleRow}>
             <Text style={{ marginTop: "5px" }}>
-              {modoBolao ? "Bolão Control" : "SoleCorp"}
+              SoleCorp App
             </Text>
 
             <Link
-              to={mobile ? "/mobile/boloes-mobile" : "/home"}
+              to={"/home"}
               aria-label="Ir para home"
             >
-              <Icon as={mobile ? FaFutbol : FaHouse} className={styles.iconSmall} />
+              <Icon as={FaHouse} className={styles.iconSmall} />
             </Link>
-            <Link
-              to="/boloes"
-              aria-label="Ir para bolões"
-              hidden={esconderIconesBolaoUser}
+            {/* <Link
+              to="/eventos"
+              aria-label="Ir para Eventos"
             >
               <Icon as={FaFutbol} className={styles.iconSmall} />
+            </Link> */}
+            <Link
+              to="/eventos"
+              aria-label="Ir para eventos"
+              hidden={esconderIconesManager}
+            >
+              <Icon as={MdEmojiEvents} className={styles.iconSmall} />
             </Link>
 
+            {!esconderIconesAdmin && (
             <Menu>
               <MenuButton as={Box} cursor={"pointer"}>
-                {!esconderIconesBolaoAdmin && (
+                {/* {!esconderIconesAdmin && ( */}
                   <Icon
                     as={FaGear}
                     className={styles.iconAdmin}
                     aria-label="Admin"
                   />
-                )}
+                {/* )} */}
               </MenuButton>
 
               <MenuList bg={"whiteAlpha"} zIndex={2000}>
@@ -179,14 +162,9 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
                 ))}
               </MenuList>
             </Menu>
+            )}
 
-            <Link
-              to="/eventos"
-              aria-label="Ir para eventos"
-              hidden={esconderIconesManager}
-            >
-              <Icon as={MdEmojiEvents} className={styles.iconSmall} />
-            </Link>
+            
             <Link
               to="/participantes"
               aria-label="Ir para participantes"
@@ -201,7 +179,7 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
             >
               <Icon as={TbShieldFilled} className={styles.iconSmall} />
             </Link>
-            <Link
+            {/* <Link
               to="/novo-participante"
               aria-label="Ir para novo participante"
               hidden={esconderIconesManager}
@@ -211,9 +189,9 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
                 className={styles.iconSmall}
                 marginBottom="5px"
               />
-            </Link>
+            </Link> */}
             <a
-              href="https://www.solecorp.com.br/bolao-help"
+              href="https://www.solecorp.com.br/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Ir para ajuda"
@@ -242,12 +220,12 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
         <Text 
           marginRight={-2} 
           marginTop={2}
-          hidden={esconderIconesBolaoAdmin}
+          hidden={esconderIconesAdmin}
         >
           Modo Manutenção?
         </Text>
         <Switch
-          hidden={esconderIconesBolaoAdmin}
+          hidden={esconderIconesAdmin}
           isChecked={isModoManutencao}
           onChange={toggleModoManutencao}
           colorScheme="orange"
@@ -275,13 +253,13 @@ export function HeaderTop({ modoBolao, publicHeader = false, mobile }: Props) {
                   <Text fontSize="sm">
                     <strong>Email:</strong> {emailUsuario}
                   </Text>
-                  <Link
+                  {/* <Link
                     onClick={() => termosModal.onOpen()}
                     to=''
                     style={{fontSize: '13px'}}
                   >
                     Ver Termos e Condições
-                  </Link>
+                  </Link> */}
                   <Text
                     fontSize="sm"
                     onClick={logoutModal.onOpen}

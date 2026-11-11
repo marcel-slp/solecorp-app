@@ -7,7 +7,7 @@ import Footer from "../../../components/Footer";
 function ManutencaoPage() {
   return (
     <div className={styles.container}>
-      <HeaderTop modoBolao={true} publicHeader={true} mobile={false} />
+      <HeaderTop publicHeader={true} />
       <main className={styles.main}>
         <ErrorPage
           titulo={"Página em Manutenção"}
@@ -18,7 +18,7 @@ function ManutencaoPage() {
           icone={GiGearHammer}
         />
       </main>
-      <Footer modoBolao={true} mobile={false} />
+      <Footer />
     </div>
   );
 }

@@ -1,60 +1,46 @@
 import {
   Box,
-  //Flex,
   Grid,
   GridItem,
   Heading,
   Image,
   VStack,
-  Text,
+  // Text,
   Icon,
   Button,
 } from "@chakra-ui/react";
-//import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import { bolaoStore } from "../../stores/bolaoStore";
-// import { partidasStore } from "../../stores/partidasStore";
-// import { retornaUserId } from "../../utils/Utils";
 import jogadorHome from "@/assets/images/jogador_homebolao.png";
-import logoSmall from "@/assets/images/logosolecorp-2.jpg";
+// import logoSmall from "@/assets/images/logosolecorp-2.jpg";
 import NewsFeed from "../../components/NewsFeed";
 import { FaBell, FaFileCirclePlus, FaFolder } from "react-icons/fa6";
 import * as styles from "./styles.css";
 
 export function Home() {
-  // const { carregarBoloesPorUserId } = bolaoStore();
-  // const { partidas, carregarPartidas } = partidasStore();
 
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   carregarBoloesPorUserId(retornaUserId());
-  //   carregarPartidas(1);
-  // }, [carregarBoloesPorUserId, carregarPartidas]);
-
   return (
     <Box className={styles.homeContainer}>
       <Grid className={styles.mainGrid}>
-        
         <GridItem className={styles.leftColumn}>
           <Grid className={styles.topSection}>
             <Box>
-              <Text fontSize="md" fontWeight="bold" color="white">Solecorp</Text>
-              <Image src={logoSmall} boxSize="40px" alt="Logo" />
+              {/* <Text fontSize="md" fontWeight="bold" color="white">Solecorp App</Text>
+              <Image src={logoSmall} boxSize="40px" alt="Logo" /> */}
 
-              <Heading size="lg" mt={6} color="green.400" fontWeight="bold">
-                Bolão Control
+              <Heading size="xl" mt={6} color="green.400" fontWeight="bold">
+                Sistema Gerenciador de Competições Esportivas
               </Heading>
 
               <VStack spacing={4} mt={6} alignItems="flex-start" className={styles.buttonsContainer}>
-                <Button width="50%" colorScheme="green" onClick={() => navigate("/boloes")}>
+                <Button width="50%" colorScheme="green" onClick={() => navigate("/eventos")}>
                   <Icon as={FaFileCirclePlus} mr={2} />
-                  Criar Bolão
+                  Criar Evento
                 </Button>
 
-                <Button width="50%" colorScheme="green" onClick={() => navigate("/boloes")}>
+                <Button width="50%" colorScheme="green" onClick={() => navigate("/eventos")}>
                   <Icon as={FaFolder} mr={2} />
-                  Meus Bolões
+                  Meus Eventos
                 </Button>
 
                 <Button width="50%" colorScheme="green" disabled>
@@ -70,18 +56,10 @@ export function Home() {
 
             <Box className={styles.card}>
               <VStack spacing={4} align="center">
-                <Heading size="md" mb={4} textAlign="center">Bolões Abertos</Heading>
-                {/* <BolaoTableHome /> */}
+                <Heading size="md" mb={4} textAlign="center">Eventos Abertos</Heading>
               </VStack>
             </Box>
           </Grid>
-{/* 
-          <Box className={styles.card}>
-            <ListaJogosDia
-              partidas={partidas}
-              mostrarPalpites={false}
-            />
-          </Box> */}
         </GridItem>
 
         <GridItem>
@@ -89,7 +67,6 @@ export function Home() {
             <NewsFeed />
           </Box>
         </GridItem>
-
       </Grid>
     </Box>
   );
