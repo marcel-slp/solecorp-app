@@ -3,7 +3,7 @@ import { style } from '@vanilla-extract/css'
 export const navigationContainer = style({
   height: "60px",
   width: "100%",
-  backgroundColor: "rgb(19, 150, 67)",
+  backgroundColor: "#0e5bebff",
   display: "flex",
   alignItems: "center",
   paddingLeft: "5px",
@@ -11,7 +11,7 @@ export const navigationContainer = style({
   boxSizing: "border-box",
   position: "sticky",
   top: 0,
-  zIndex: 100,
+  zIndex: 1000,
   borderTop: "3px solid white",
 });
 
@@ -46,7 +46,6 @@ export const itemLink = style({
   fontSize: "14px",
   textTransform: "uppercase",
   textDecoration: "none",
-  borderRadius: '8px'
 });
 
 export const iconBar = style({
@@ -65,12 +64,4 @@ export const headerIcon = style({
   ':hover': {
     opacity: 0.7,
   },
-});
-
-export const saveButton = style({
-  '@media': {
-    '(max-width: 768px)': {
-      width: '150px'
-    }
-  }
 });

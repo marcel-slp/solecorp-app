@@ -1,9 +1,8 @@
 import { Box } from "@chakra-ui/react";
-//import EventoHeaderTop from "../../../components/EventoHeaderTop";
-// import HeaderNav from "../../../components/HeaderNav";
 import MenuFaseGrupo from "../../../components/MenuFaseGrupo/MenuFaseGrupo";
 import { useLocation } from "react-router-dom";
 import { Evento } from "../../../stores/eventosStore";
+import EventoHeaderNav from "../../../components/EventoHeaderNav";
 
 
 interface EventoLayoutProps {
@@ -18,7 +17,7 @@ export function EventoLayout({ evento, children }: EventoLayoutProps) {
 
   return (
     <>
-      {/* <HeaderNav nome={evento.nome} imagem={String(evento.imagemEvento)}/> */}
+      <EventoHeaderNav nome={evento.nome} imagem={String(evento.imagemEvento)}/>
       <MenuFaseGrupo paginaAtual={paginaAtual} evento={evento}/>
       <Box as="main" flex="1" p={6} bg="white" minH="calc(100vh - 140px)">
         {children}
