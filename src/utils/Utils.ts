@@ -24,6 +24,11 @@ export const retornaUserId = (): number => {
   return auth.userId;
 };
 
+export const retornaEntidadeAtivaId = (): string|null => {
+  const auth = JSON.parse(localStorage.getItem("auth") ?? "{}");
+  return auth.entidadeAtivaId;
+};
+
 export const retornaUserPerfil = (): string => {
   const auth = JSON.parse(localStorage.getItem("auth") ?? "{}");
   return auth.nomePerfil;
@@ -32,6 +37,17 @@ export const retornaUserPerfil = (): string => {
 export const retornaUserHabilitarPalpite = (): string => {
   const auth = JSON.parse(localStorage.getItem("auth") ?? "{}");
   return auth.habilitarPalpite;
+};
+
+export const definirEntidadeAtivaLocal = (entidadeId: string) => {
+  const auth = JSON.parse(localStorage.getItem("auth") ?? "{}");
+  localStorage.setItem(
+    "auth",
+    JSON.stringify({
+      ...auth,
+      entidadeAtivaId: entidadeId,
+    })
+  );
 };
 
 export const recordToArray = <T>(obj?: Record<string, T>): T[] =>

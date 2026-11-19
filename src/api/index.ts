@@ -20,6 +20,7 @@ const buildParticipanteFormData = (participante: Participante): FormData => {
   const formData = new FormData();
   formData.append("id", participante.id);
   formData.append("nome", participante.nome);
+  formData.append("entidadeId", participante.entidadeId);
   formData.append("tipo", participante.tipo);
   formData.append("grupo", String(participante.grupo));
 
@@ -87,12 +88,27 @@ export const editarParticipante = async (
   }
 };
 
-export const buscarParticipantes = async (): Promise<{
+export const buscarTodosParticipantes = async (): Promise<{
   data: Participante[] | null;
   error: string | null;
 }> => {
   try {
     const res = await axios.get<Participante[]>(`${API_URL}/buscar_participantes.php`);
+    return { data: res.data, error: null };
+  } catch (err: unknown) {
+    return {
+      data: null,
+      error: axios.isAxiosError(err) ? err.message : "Erro desconhecido",
+    };
+  }
+};
+
+export const buscarParticipantesEntidadeId = async (entidadeId: string): Promise<{
+  data: Participante[] | null;
+  error: string | null;
+}> => {
+  try {
+    const res = await axios.get<Participante[]>(`${API_URL}/buscar_participantes_entidade_id.php?entidadeId=${entidadeId}`);
     return { data: res.data, error: null };
   } catch (err: unknown) {
     return {
@@ -111,12 +127,27 @@ export const deletarParticipante = async (id: string) => {
   }
 };
 
-export const buscarEventos = async (): Promise<{
+export const buscarTodosEventos = async (): Promise<{
   data: Evento[] | null;
   error: string | null;
 }> => {
   try {
     const res = await axios.get<Evento[]>(`${API_URL}/buscar_eventos.php`);
+    return { data: res.data, error: null };
+  } catch (err: unknown) {
+    return {
+      data: null,
+      error: axios.isAxiosError(err) ? err.message : "Erro desconhecido",
+    };
+  }
+};
+
+export const buscarEventosEntidadeId = async (entidadeId: string): Promise<{
+  data: Evento[] | null;
+  error: string | null;
+}> => {
+  try {
+    const res = await axios.get<Evento[]>(`${API_URL}/buscar_eventos_entidade_id.php?entidadeId=${entidadeId}`);
     return { data: res.data, error: null };
   } catch (err: unknown) {
     return {
@@ -181,7 +212,9 @@ export const buscarEntidadesPorUserId = async (userId: number): Promise<{
   error: string | null;
 }> => {
   try {
-    const res = await axios.get<Entidade[]>(`${API_URL}/buscar_entidades_por_userid.php?userId=${userId}`);
+    const res = await axios.get<Entidade[]>(
+      `${API_URL}/buscar_entidades_por_userid.php?userId=${userId}`
+    );
     return { data: res.data, error: null };
   } catch (err: unknown) {
     return {
@@ -241,6 +274,30 @@ export const deletarEntidade = async (id: string) => {
   }
 };
 
+export const atualizarEntidadeAtivaUsuario = async (entidadeAtivaId: string, userId: number) => {
+  try {
+    await axios.post(`${API_URL}/definir_entidade_ativa.php`, {
+      userId,
+      entidadeAtivaId,
+    });
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+};
+
+export const exportarEntidade = async (entidadeOrigemId: string, entidadeDestinoId: string) => {
+  try {
+    await axios.post(`${API_URL}/exportar_entidade.php`, {
+      entidadeOrigemId,
+      entidadeDestinoId,
+    });
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+};
+
 export const registrarUsuario = async (nome: string, email: string, password: string): Promise<{ success: boolean, message?: string }> => {
   try {
     const res = await axios.post<{ message: string }>(`${API_URL}/registrar_usuario.php`, { nome, email, password });
@@ -255,24 +312,32 @@ export const registrarUsuario = async (nome: string, email: string, password: st
 };
 
 export const loginUsuario = async (email: string, password: string): 
-  Promise<{ success: boolean, message: string, userId?: string, email?: string, nome?: string, nomePerfil?: string }> => 
-{
+  Promise<{ success: boolean, message: string, userId?: string, email?: string, nome?: string, nomePerfil?: string, entidadeAtivaId: string | null }> => {
   try {
     const res = await axios.post<{
       userId: string | undefined; 
       email: string | undefined, 
       nome: string | undefined; 
       nomePerfil: string | undefined;
+      entidadeAtivaId: string | null;
       message: string
     }>(`${API_URL}/login.php`, { email, password });
     
-    return { success: true, message: res.data.message, userId: res.data.userId, email: res.data.email, nome: res.data.nome, nomePerfil: res.data.nomePerfil };
+    return { 
+      success: true, 
+      message: res.data.message, 
+      userId: res.data.userId, 
+      email: res.data.email, 
+      nome: res.data.nome, 
+      nomePerfil: res.data.nomePerfil, 
+      entidadeAtivaId: res.data.entidadeAtivaId
+    };
   } catch (err) {
     if (axios.isAxiosError(err)) {
       const errorMessage = err.response?.data?.error ?? 'Erro desconhecido no servidor';
-      return { success: false, message: errorMessage };
+      return { success: false, message: errorMessage, entidadeAtivaId: null };
     }
-    return { success: false, message: 'Erro inesperado' };
+    return { success: false, message: 'Erro inesperado', entidadeAtivaId: null };
   }
 };
 

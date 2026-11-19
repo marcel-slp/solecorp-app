@@ -19,8 +19,15 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 $id = trim($_GET['id']);
 
 try {
+    $stmt = $pdo->prepare("DELETE FROM eventos WHERE entidadeId = ?");
+    $stmt->execute([$id]);
+
+    $stmt = $pdo->prepare("DELETE FROM participantes WHERE entidadeId = ?");
+    $stmt->execute([$id]);
+
     $stmt = $pdo->prepare("DELETE FROM entidades WHERE id = ?");
     $stmt->execute([$id]);
+
     echo json_encode(['sucesso' => true]);
 } catch (PDOException $e) {
     http_response_code(500);

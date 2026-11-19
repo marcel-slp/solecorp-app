@@ -30,24 +30,36 @@ import { DeleteIcon, EditIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import { FormaSistema } from "../../models/ConfiguracaoEvento";
 import { useNavigate } from "react-router-dom";
 import EventoForm from "../../components/EventoForm";
+import { entidadesStore } from "../../stores/entidadesStore";
 
 function EventosLista() {
-  const { eventos, adicionarEvento, carregarEventos, editarEvento, removerEvento} = eventosStore();
+  const { eventos, adicionarEvento, carregarEventosEntidadeId, editarEvento, removerEvento} = eventosStore();
+  const { entidadeAtivaId } = entidadesStore();
   const [editando, setEditando] = useState<Evento | null>(null);
   const [confirmarRemocaoEventoId, setConfirmarRemocaoEventoId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    carregarEventos();
-  }, [carregarEventos]);
+    if (!entidadeAtivaId) return;
+
+    carregarEventosEntidadeId(entidadeAtivaId);
+  }, [carregarEventosEntidadeId, entidadeAtivaId]);
 
   const handleSalvar = async (novoEvento: NovoEvento, id?: string) => {
+    let sucesso = false;
+
     if (id) {
-      await editarEvento(id, novoEvento);
-      setEditando(null);
+      sucesso = await editarEvento(id, novoEvento);
     } else {
-      await adicionarEvento(novoEvento);
-      setEditando(null);
+      sucesso = await adicionarEvento(novoEvento);
+    }
+
+    setEditando(null);
+
+    if (sucesso) {
+      await carregarEventosEntidadeId(entidadeAtivaId);
+    } else {
+      alert("Ocorreu um erro ao salvar o evento. Verifique os logs.");
     }
   };
 
@@ -132,6 +144,7 @@ function EventosLista() {
         <Button mt={4} mb={4} colorScheme="blue" onClick={() => setEditando({ 
             id: "", 
             nome: "",
+            entidadeId: null,
             imagemEvento: null,
             imagemPatrocinador1: null,
             imagemPatrocinador2: null,

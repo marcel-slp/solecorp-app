@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require 'db.php';
 
 $id = $_POST['id'] ?? null;
+$entidadeId = $_POST['entidadeId'] ?? null;
 $nome = $_POST['nome'] ?? null;
 $modalidade = $_POST['modalidade'] ?? null;
 $tabela = $_POST['tabela'] ?? null;
@@ -46,7 +47,7 @@ $imagemPatrocinador2Path = processarUpload('imagemPatrocinador2', 'imagem_patroc
 $imagemPatrocinador3Path = processarUpload('imagemPatrocinador3', 'imagem_patrocinador3_', 'uploads/imagens_padrao/default_patrocinador3.jpg', $_POST['imagemPatrocinador3'] ?? null);
 $imagemPatrocinador4Path = processarUpload('imagemPatrocinador4', 'imagem_patrocinador4_', 'uploads/imagens_padrao/default_patrocinador4.jpg', $_POST['imagemPatrocinador4'] ?? null);
 
-if (!$id || !$nome || !$modalidade || !$tabela || !$playoff || !$compartilhamento || $numeroFases === null || !$formaSistema || $numeroParticipantes === null) {
+if (!$id || !$nome || !$modalidade || !$tabela || !$playoff || !$compartilhamento || $numeroFases === null || !$formaSistema || $numeroParticipantes === null || !$entidadeId) {
     http_response_code(400);
     echo json_encode(['error' => 'Campos obrigatórios não preenchidos.']);
     exit;
@@ -61,7 +62,7 @@ if (strlen($id) > 6) {
 try {
     $stmt = $pdo->prepare(
         "UPDATE eventos 
-         SET nome = ?, modalidade = ?, tabela = ?, playoff = ?, compartilhamento = ?, 
+         SET entidadeId = ?, nome = ?, modalidade = ?, tabela = ?, playoff = ?, compartilhamento = ?, 
              numeroFases = ?, formaSistema = ?, numeroParticipantes = ?, configuracaoFases = ?, 
              configuracaoEvento = ?, participantes = ?, imagemEvento = ?, 
              imagemPatrocinador1 = ?, imagemPatrocinador2 = ?, imagemPatrocinador3 = ?, 
@@ -69,6 +70,7 @@ try {
          WHERE id = ?"
     );
     $stmt->execute([
+        $entidadeId,
         $nome,
         $modalidade,
         $tabela,

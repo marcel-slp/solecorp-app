@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $id = $_POST['id'] ?? null;
 $nome = $_POST['nome'] ?? null;
+$entidadeId = $_POST['entidadeId'] ?? null;
 $modalidade = $_POST['modalidade'] ?? null;
 $tabela = $_POST['tabela'] ?? null;
 $playoff = $_POST['playoff'] ?? null;
@@ -46,7 +47,7 @@ $imagemPatrocinador2Path = processarUpload('imagemPatrocinador2', 'imagem_patroc
 $imagemPatrocinador3Path = processarUpload('imagemPatrocinador3', 'imagem_patrocinador3_', 'uploads/imagens_padrao/default_patrocinador3.jpg');
 $imagemPatrocinador4Path = processarUpload('imagemPatrocinador4', 'imagem_patrocinador4_', 'uploads/imagens_padrao/default_patrocinador4.jpg');
 
-if (!$id || !$nome || !$modalidade || !$tabela || !$playoff || !$compartilhamento || !$formaSistema || $numeroFases === null || $numeroParticipantes === null) {
+if (!$id || !$nome || !$entidadeId || !$modalidade || !$tabela || !$playoff || !$compartilhamento || !$formaSistema || $numeroFases === null || $numeroParticipantes === null) {
     http_response_code(400);
     echo json_encode(['error' => 'Dados incompletos.']);
     exit;
@@ -61,14 +62,15 @@ if (strlen($id) > 6) {
 try {
     $stmt = $pdo->prepare(
         "INSERT INTO eventos (
-            id, nome, modalidade, tabela, playoff, compartilhamento, formaSistema, numeroFases,
+            id, nome, entidadeId, modalidade, tabela, playoff, compartilhamento, formaSistema, numeroFases,
             numeroParticipantes, configuracaoFases, configuracaoEvento, participantes, 
             imagemEvento, imagemPatrocinador1, imagemPatrocinador2, imagemPatrocinador3, imagemPatrocinador4
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
     $stmt->execute([
         $id,
         $nome,
+        $entidadeId,
         $modalidade,
         $tabela,
         $playoff,

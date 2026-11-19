@@ -26,15 +26,19 @@ import { Participante } from "../../stores/participantesStore";
 import { useEffect, useState } from "react";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import ParticipanteForm from "../../components/ParticipanteForm";
+import { entidadesStore } from "../../stores/entidadesStore";
 
 export default function Participantes() {
-  const { participantes, adicionarParticipante, carregarParticipantes, editarParticipante, removerParticipante } = participantesStore();
+  const { participantes, adicionarParticipante, carregarParticipantesEntidadeId, editarParticipante, removerParticipante } = participantesStore();
+  const { entidadeAtivaId } = entidadesStore();
   const [editando, setEditando] = useState<Participante | null>(null);
   const [confirmarRemocaoParticipanteId, setConfirmarRemocaoParticipanteId] = useState<string | null>(null);
 
   useEffect(() => {
-    carregarParticipantes();
-  }, [carregarParticipantes]);
+    if (!entidadeAtivaId) return;
+
+    carregarParticipantesEntidadeId(entidadeAtivaId);
+  }, [carregarParticipantesEntidadeId, entidadeAtivaId]);
 
   const handleSalvar = async (dados: NovoParticipante, id?: string) => {
     let sucesso = false;
@@ -47,7 +51,7 @@ export default function Participantes() {
 
     if (sucesso) {
       setEditando(null);
-      await carregarParticipantes();
+      carregarParticipantesEntidadeId(entidadeAtivaId);
     } else {
       alert("Ocorreu um erro ao salvar o participante. Verifique os logs.");
     }
@@ -126,6 +130,7 @@ export default function Participantes() {
 
           <Button mt={4} mb={4} colorScheme="blue" onClick={() => setEditando({ 
             id: "", 
+            entidadeId: "",
             nome: "", 
             tipo: "", 
             grupo: null, 

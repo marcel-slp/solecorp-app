@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Participante } from './participantesStore';
-import { buscarEventoPorId, deletarEvento, editarEvento, buscarEventos, salvarEvento } from '../api';
+import { buscarEventoPorId, deletarEvento, editarEvento, buscarEventosEntidadeId, salvarEvento } from '../api';
 import { ClassificacaoFinal, ConfiguracaoPlayoff, DesempatePlayoff, Eliminacao, Formacao, FormaSistema, FormatoFase, FormatoTabela, TipoPlayoff } from '../models/ConfiguracaoEvento';
 import { getImagemURL } from '../utils/Utils';
 
@@ -26,6 +26,7 @@ export type ConfiguracaoFases = {
 export type Evento = {
   id: string
   nome: string,
+  entidadeId: string | null;
   imagemEvento: File | null | string,
   imagemPatrocinador1: File | null,
   imagemPatrocinador2: File | null,
@@ -49,7 +50,7 @@ interface EventoStore {
   eventos: Evento[]
   adicionarEvento: (evento: NovoEvento) => Promise<boolean>
   buscarEvento: (id: string) => Promise<Evento|null>
-  carregarEventos: () => Promise<void>
+  carregarEventosEntidadeId: (entidadeId: string|null) => Promise<void>
   editarEvento: (id: string, dadosEvento: NovoEvento) => Promise<boolean>
   removerEvento: (id: string) => Promise<boolean>
   limparTodos: () => void //TODO: limpar os registros no banco de dados
@@ -107,14 +108,19 @@ export const eventosStore = create<EventoStore>((set) => ({
       }
     },
 
-  carregarEventos: async () => {
-    const response = await buscarEventos();
-    if (response.data) {
-      set({ eventos: response.data });
+  carregarEventosEntidadeId: async (entidadeId) => {
+    if(entidadeId !== null) {
+      const response = await buscarEventosEntidadeId(entidadeId);
+      if (response.data) {
+        set({ eventos: response.data });
+      } else {
+        alert("Erro ao carregar eventos");
+        console.error("Erro ao carregar eventos:", response.error);
+      }
     } else {
-      alert("Erro ao carregar eventos");
-      console.error("Erro ao carregar eventos:", response.error);
+      alert("Entidade ativa não existente. Contate o administrador");
     }
+    
   },
 
   editarEvento: async (id, dadosEvento) => {

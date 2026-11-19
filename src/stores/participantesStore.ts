@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { deletarParticipante, editarParticipante, buscarParticipantes, salvarParticipante } from '../api';
+import { deletarParticipante, editarParticipante, buscarParticipantesEntidadeId, salvarParticipante } from '../api';
 import { Continentes, Paises } from '../models/GruposParticipantesDefault';
 
 export type Atleta = {
@@ -12,6 +12,7 @@ export type Atleta = {
 
 export type Participante = {
   id: string,
+  entidadeId: string,
   nome: string,
   imagemParticipante: File | null | string;
   grupo: Paises | Continentes | null,
@@ -26,7 +27,7 @@ export type NovoParticipante = Omit<Participante, 'id'>
 interface ParticipanteStore {
   participantes: Participante[]
   adicionarParticipante: (participante: NovoParticipante) => Promise<boolean>
-  carregarParticipantes: () => Promise<void>
+  carregarParticipantesEntidadeId: (entidadeId: string|null) => Promise<void>
   editarParticipante: (id: string, dadosParticipante: NovoParticipante) => Promise<boolean>
   removerParticipante: (id: string) => Promise<boolean>
   limparTodos: () => void //TODO: limpar os registros no banco de dados
@@ -63,16 +64,20 @@ export const participantesStore = create<ParticipanteStore>((set) => ({
     }
   },
 
-  carregarParticipantes: async () => {
-    try {
-      const response = await buscarParticipantes();
-      if (response.data) {
-        set({ participantes: response.data });
-      } else {
-        console.error("Erro ao carregar participantes:", response.error);
+  carregarParticipantesEntidadeId: async (entidadeId) => {
+    if(entidadeId !== null) {
+      try {
+        const response = await buscarParticipantesEntidadeId(entidadeId);
+        if (response.data) {
+          set({ participantes: response.data });
+        } else {
+          console.error("Erro ao carregar participantes:", response.error);
+        }
+      } catch (err) {
+        console.error('Erro ao carregar participantes:', err);
       }
-    } catch (err) {
-      console.error('Erro ao carregar participantes:', err);
+    } else {
+      alert("Entidade ativa não existente. Contate o administrador");
     }
   },
 

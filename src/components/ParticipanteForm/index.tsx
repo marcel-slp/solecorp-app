@@ -13,6 +13,8 @@ import GroupedDropdown from "../GroupedDropdown/GroupedDropdown.tsx";
 import { ImageUploader } from "../ImageUploader/ImageUploader.tsx";
 import defaultParticipante from "@/assets/images/default_participante.jpeg";
 import defaultAtleta from "@/assets/images/default_atleta.jpeg";
+import { retornaUserId } from "../../utils/Utils.ts";
+import { entidadesStore } from "../../stores/entidadesStore.ts";
 
 interface ParticipanteFormProps {
   participante?: Participante | null;
@@ -24,6 +26,7 @@ const MAX_ATLETAS = 50;
 
 export default function ParticipanteForm({ participante, onSalvar, onCancelar }: ParticipanteFormProps) {
     const [nomeInterno, setNomeInterno] = useState("");
+    const [entidadeIdInterno, setEntidadeIdInterno] = useState<string>("");
     const [tipoInterno, setTipoInterno] = useState("");
     const [grupoInterno, setGrupoInterno] = useState<Paises|Continentes|null>(null);
     const [imagemParticipanteInterno, setImagemParticipanteInterno] = useState<File|string|null>(null);
@@ -38,19 +41,27 @@ export default function ParticipanteForm({ participante, onSalvar, onCancelar }:
     });
     const [mensagemAlertaParticipante, setMensagemAlertaParticipante] = useState<string|null>(null);
     const [mensagemAlertaAtleta, setMensagemAlertaAtleta] = useState<string|null>(null);
+    const { entidades, entidadeAtivaId, carregarEntidades } = entidadesStore();
+    
+		useEffect(() => {
+			carregarEntidades(retornaUserId());
+		}, [carregarEntidades]);
 
     useEffect(() => {        
-        if (participante) {
-            setNomeInterno(participante.nome);
-            setTipoInterno(participante.tipo);
-            setGrupoInterno(participante.grupo);
-            setImagemParticipanteInterno(participante.imagemParticipante);
-            if(participante.tipo === 'Equipe') {
-                setImagemAtletasInterno(participante.imagemAtletas);
-            }
-            setAtletasInterno(participante.atletas ?? []);
-        }
-    }, [participante]);
+			if (participante) {
+					setNomeInterno(participante.nome);
+					setEntidadeIdInterno(participante.entidadeId ?? "");
+					setTipoInterno(participante.tipo);
+					setGrupoInterno(participante.grupo);
+					setImagemParticipanteInterno(participante.imagemParticipante);
+					if(participante.tipo === 'Equipe') {
+							setImagemAtletasInterno(participante.imagemAtletas);
+					}
+					setAtletasInterno(participante.atletas ?? []);
+			} else {
+					setEntidadeIdInterno(entidadeAtivaId);
+			}
+    }, [entidadeAtivaId, participante]);
 
     //Input pode ser um evento de componente HTML ou uma imagem do tipo File ou imagem nula - regra é que imagem nula é a imagem padrão
     //TODO: verificar se posso retirar o conceito de imagem nula e fazer somente a imagem padrão
@@ -63,17 +74,17 @@ export default function ParticipanteForm({ participante, onSalvar, onCancelar }:
         //         imagem: e
         //     }});
         // } else if(e !== null) {
-            const { name, value } = e.target;
+				const { name, value } = e.target;
 
-            setEditandoAtleta((prev) => {
-                return {
-                ...prev,
-                [name]:
-                    name === "camisa"
-                    ? parseInt(value) || 0
-                    : value
-                };
-            });
+				setEditandoAtleta((prev) => {
+						return {
+						...prev,
+						[name]:
+								name === "camisa"
+								? parseInt(value) || 0
+								: value
+						};
+				});
         //}
     };
 
@@ -109,12 +120,16 @@ export default function ParticipanteForm({ participante, onSalvar, onCancelar }:
         if (!nomeInterno || !tipoInterno || !grupoInterno) {
             setMensagemAlertaParticipante("Preencha todos os dados obrigatórios");
             return;
-        }
+        } else if (!entidadeIdInterno) {
+					setMensagemAlertaParticipante("É preciso escolher uma Entidade");
+					return;
+				}
 
         setMensagemAlertaParticipante(null);
 
         const dados: NovoParticipante = {
             nome: nomeInterno,
+						entidadeId: entidadeIdInterno,
             tipo: tipoInterno,
             grupo: grupoInterno,
             imagemParticipante: imagemParticipanteInterno,
@@ -149,6 +164,19 @@ export default function ParticipanteForm({ participante, onSalvar, onCancelar }:
                     value={nomeInterno}
                     onChange={(e) => setNomeInterno(e.target.value)}
                 />
+
+								<Text>Entidade:</Text>
+								<Select
+									style={{width: 'auto'}}
+									value={entidadeIdInterno}
+									onChange={(e) => setEntidadeIdInterno(e.target.value)}
+								>
+									{entidades.map((entidade) => (
+										<option key={entidade.id} value={entidade.id}>
+											{entidade.nome}
+										</option>
+									))}
+								</Select>
 
                 <Text>Imagem do Participante:</Text>
                 <ImageUploader imagem={imagemParticipanteInterno} imagemDefault={defaultParticipante} onChange={setImagemParticipanteInterno} />

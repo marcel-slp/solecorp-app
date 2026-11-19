@@ -56,8 +56,6 @@ export default function EntidadeForm({ entidade, onSalvar, onCancelar }: entidad
 
     setMensagemAlerta(null);
 
-    //const userIdLogado = userIdEntidadeInterno ?? retornaUserId();
-
     const novaEntidade: NovaEntidade = {
       nome: nomeEntidadeInterno,
       imagemEntidade: imagemEntidadeInterno,
@@ -73,7 +71,7 @@ export default function EntidadeForm({ entidade, onSalvar, onCancelar }: entidad
   return (
     <>
       <Heading size="md" mb={4} mt={4}>
-          {entidade ? "Editar entidade" : "Adicionar entidade"}
+        {entidade ? "Editar entidade" : "Adicionar entidade"}
       </Heading>
 
       <div className={styles.addEntidadesContainer}>

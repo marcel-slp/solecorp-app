@@ -36,6 +36,7 @@ export function Login() {
       const nome = res.nome;
       const email = res.email;
       const nomePerfil = res.nomePerfil;
+      const entidadeAtivaId = res.entidadeAtivaId;
       localStorage.setItem(
         "auth",
         JSON.stringify({
@@ -43,6 +44,7 @@ export function Login() {
           nome,
           email,
           nomePerfil,
+          entidadeAtivaId,
           rememberMe,
           expiresAt: rememberMe
             ? Date.now() + 1000 * 60 * 60 * 24 * 30

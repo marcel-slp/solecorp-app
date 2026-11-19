@@ -14,6 +14,7 @@ import * as styles from "../ParticipanteSelector/styles.css.ts";
 import { useState, useMemo, useEffect } from "react";
 import { Participante, participantesStore } from "../../stores/participantesStore";
 import { ChevronRightIcon, ChevronLeftIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { entidadesStore } from "../../stores/entidadesStore.ts";
 
 type Props = {
   selecionados: Participante[];
@@ -22,14 +23,15 @@ type Props = {
 };
 
 export function ParticipanteSelectorDualBox({selecionados, onChange, numeroMaximo}: Props) {
-  const { participantes, carregarParticipantes } = participantesStore();
+  const { participantes, carregarParticipantesEntidadeId } = participantesStore();
+  const { entidadeAtivaId } = entidadesStore();
   const [ativo, setAtivo] = useState<Participante | null>(null);
   const [grupoAberto, setGrupoAberto] = useState<string | null>(null);
   const [busca, setBusca] = useState("");
 
   useEffect(() => {
-    carregarParticipantes();
-  }, [carregarParticipantes]);
+    carregarParticipantesEntidadeId(entidadeAtivaId);
+  }, [carregarParticipantesEntidadeId, entidadeAtivaId]);
   
   const disponiveis = participantes.filter((p: { id: string; }) => !selecionados.some((s) => s.id === p.id));
 
@@ -68,13 +70,6 @@ export function ParticipanteSelectorDualBox({selecionados, onChange, numeroMaxim
     onChange(novos);
     setAtivo(null);
   };
-
-// const atualizarNomeCustomizado = (id: string, nome: string) => {
-//   const novos = selecionados.map((s) =>
-//     s.id === id ? { ...s, nomeCustomizado: nome } : s
-//   );
-//   onChange(novos);
-// };
   
   return (
     <Flex className={styles.flexContainer}>

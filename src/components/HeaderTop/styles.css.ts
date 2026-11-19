@@ -91,3 +91,8 @@ export const iconAdmin = style({
     color: '#2B6CB0 !important'
   },
 });
+
+export const dropdownStyle = style({
+  textAlign: 'center',
+  color: 'black'
+});

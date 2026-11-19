@@ -27,7 +27,8 @@ import default_patrocinador1 from "@/assets/images/default_patrocinador1.jpg";
 import default_patrocinador2 from "@/assets/images/default_patrocinador2.jpg";
 import default_patrocinador3 from "@/assets/images/default_patrocinador3.jpg";
 import default_patrocinador4 from "@/assets/images/default_patrocinador4.jpg";
-import { existePlayerNoEvento } from "../../utils/Utils.ts";
+import { existePlayerNoEvento, retornaUserId } from "../../utils/Utils.ts";
+import { entidadesStore } from "../../stores/entidadesStore.ts";
 
 const FASE_VAZIA: ConfiguracaoFases = {
   formatoFase: undefined,
@@ -45,6 +46,7 @@ interface EventoFormProps {
 
 export default function EventoForm({ evento, onSalvar, onCancelar }: EventoFormProps) {
   const [nomeEventoInterno, setNomeEventoInterno] = useState("");
+  const [entidadeEventoId, setEntidadeEventoId] = useState<string>("");
   const [imagemEventoInterno, setImagemEventoInterno] = useState<File|string|null>(null);
   const [imagemPatrocinador1Interno, setImagemPatrocinador1Interno] = useState<File|null>(null);
   const [imagemPatrocinador2Interno, setImagemPatrocinador2Interno] = useState<File|null>(null);
@@ -72,9 +74,16 @@ export default function EventoForm({ evento, onSalvar, onCancelar }: EventoFormP
   });
   const [atribuirPlayer, setAtribuirPlayer] = useState<boolean>(false);
 
+  const { entidades, entidadeAtivaId, carregarEntidades } = entidadesStore();
+
+  useEffect(() => {
+    carregarEntidades(retornaUserId());
+  }, [carregarEntidades]);
+
   useEffect(() => {
     if (evento) {
       setNomeEventoInterno(evento.nome);
+      setEntidadeEventoId(evento.entidadeId ?? "");
       setImagemEventoInterno(evento.imagemEvento);
       setImagemPatrocinador1Interno(evento.imagemPatrocinador1);
       setImagemPatrocinador2Interno(evento.imagemPatrocinador2);
@@ -96,8 +105,10 @@ export default function EventoForm({ evento, onSalvar, onCancelar }: EventoFormP
       if(evento.configuracaoEvento) {
         setConfiguracaoEventoInterno(evento.configuracaoEvento);
       }
+    } else {
+      setEntidadeEventoId(entidadeAtivaId);
     }
-  }, [evento]);
+  }, [entidadeAtivaId, evento]);
 
   useEffect(() => {
     if (!existeFaseTipoPlayoff()) {
@@ -190,8 +201,11 @@ export default function EventoForm({ evento, onSalvar, onCancelar }: EventoFormP
     } else if (!camposConfigFasesValidos()) {
       setMensagemAlerta("Preencha a configuração das fases");
       return;
+    } else if (!entidadeEventoId) {
+      setMensagemAlerta("É preciso escolher uma Entidade");
+      return;
     }
-
+    
     setMensagemAlerta(null);
 
     const participantesFinal = atribuirPlayer 
@@ -200,6 +214,7 @@ export default function EventoForm({ evento, onSalvar, onCancelar }: EventoFormP
 
     const novoEvento: NovoEvento = {
       nome: nomeEventoInterno,
+      entidadeId: entidadeEventoId,
       imagemEvento: imagemEventoInterno,
       imagemPatrocinador1: imagemPatrocinador1Interno,
       imagemPatrocinador2: imagemPatrocinador2Interno,
@@ -234,6 +249,21 @@ export default function EventoForm({ evento, onSalvar, onCancelar }: EventoFormP
             value={nomeEventoInterno}
             onChange={(e) => setNomeEventoInterno(e.target.value)}
           />
+        </div>
+
+        <Text>Entidade:</Text>
+        <div className={styles.eventoDropdown}>
+          <Select
+            className={styles.eventoInputs}
+            value={entidadeEventoId}
+            onChange={(e) => setEntidadeEventoId(e.target.value)}
+          >
+            {entidades.map((entidade) => (
+              <option key={entidade.id} value={entidade.id}>
+                {entidade.nome}
+              </option>
+            ))}
+          </Select>
         </div>
 
         <Text>Imagem do Evento:</Text>

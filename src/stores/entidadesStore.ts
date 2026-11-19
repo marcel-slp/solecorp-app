@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { getImagemURL } from '../utils/Utils';
-import { buscarEntidadePorId, deletarEntidade, editarEntidade, buscarEntidadesPorUserId, salvarEntidade } from '../api';
+import { definirEntidadeAtivaLocal, getImagemURL, retornaEntidadeAtivaId } from '../utils/Utils';
+import { buscarEntidadePorId, deletarEntidade, editarEntidade, buscarEntidadesPorUserId, salvarEntidade, atualizarEntidadeAtivaUsuario, exportarEntidade } from '../api';
 
 export type Entidade = {
   id: string
@@ -16,16 +16,20 @@ export type NovaEntidade = Omit<Entidade, 'id'>
 
 interface EntidadesStore {
   entidades: Entidade[]
+  entidadeAtivaId: string
   adicionarEntidade: (entidade: NovaEntidade) => Promise<boolean>
   buscarEntidade: (id: string) => Promise<Entidade|null>
   carregarEntidades: (userId: number) => Promise<void>
   editarEntidade: (id: string, dadosentidade: NovaEntidade) => Promise<boolean>
+  definirEntidadeAtiva: (entidadeAtivaId: string, userId: number) => Promise<boolean>
+  exportarEntidade: (entidadeId: string, novaEntidadeId: string) => Promise<boolean>
   removerEntidade: (id: string) => Promise<boolean>
   limparTodos: () => void //TODO: limpar os registros no banco de dados
 }
 
 export const entidadesStore = create<EntidadesStore>((set) => ({
   entidades: [],
+  entidadeAtivaId: "",
 
   adicionarEntidade: async (entidade) => {
     const novaEntidade = {
@@ -79,7 +83,7 @@ export const entidadesStore = create<EntidadesStore>((set) => ({
   carregarEntidades: async (userId: number) => {
     const response = await buscarEntidadesPorUserId(userId);
     if (response.data) {
-      set({ entidades: response.data });
+      set({ entidades: response.data, entidadeAtivaId: retornaEntidadeAtivaId() || "" });
     } else {
       alert("Erro ao carregar entidades");
       console.error("Erro ao carregar entidades:", response.error);
@@ -95,8 +99,8 @@ export const entidadesStore = create<EntidadesStore>((set) => ({
 
       if(res.success) {
         set((state) => ({
-          entidades: state.entidades.map((p) =>
-            p.id === id ? { ...p, ...dadosEntidade } : p
+          entidades: state.entidades.map((e) =>
+            e.id === id ? { ...e, ...dadosEntidade } : e
           ),
         }));
         return true;
@@ -108,6 +112,52 @@ export const entidadesStore = create<EntidadesStore>((set) => ({
     } catch (err) {
       alert("Falha na edição. Alterações não foram salvas");
       console.error("Falha na edição:", err);
+      return false;
+    }
+  },
+
+  definirEntidadeAtiva: async (entidadeAtivaId: string, userId: number) => {
+    try {
+      const res = await atualizarEntidadeAtivaUsuario(entidadeAtivaId, userId);
+
+      if (res.success) {
+        definirEntidadeAtivaLocal(entidadeAtivaId);
+        set({ entidadeAtivaId: entidadeAtivaId });
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error("Erro ao definir entidade ativa:", err);
+      return false;
+    }
+  },
+
+  exportarEntidade: async (entidadeId: string, novaEntidadeId: string) => {
+    if (!entidadeId || !novaEntidadeId) {
+      alert("Informe a entidade de origem e a entidade de destino");
+      return false;
+    }
+
+    if (entidadeId === novaEntidadeId) {
+      alert("A entidade de origem e destino devem ser diferentes");
+      return false;
+    }
+
+    try {
+      const res = await exportarEntidade(entidadeId, novaEntidadeId);
+
+      if (res.success) {
+        return true;
+      }
+
+      alert("Erro ao transferir eventos e participantes");
+      console.error("Erro ao transferir entidade:", res.message);
+
+      return false;
+    } catch (err) {
+      alert("Falha ao transferir eventos e participantes");
+      console.error("Falha ao transferir entidade:", err);
+
       return false;
     }
   },
@@ -133,5 +183,8 @@ export const entidadesStore = create<EntidadesStore>((set) => ({
       }
     },
 
-  limparTodos: () => set({ entidades: [] })
+  limparTodos: () => set({
+    entidades: [],
+    entidadeAtivaId: ""
+  })
 }))

@@ -23,6 +23,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Select,
   Switch,
   Text
 } from "@chakra-ui/react";
@@ -31,12 +32,14 @@ import { IoMdLogOut } from "react-icons/io";
 import { BsPersonCircle } from "react-icons/bs";
 import { MdEmojiEvents } from "react-icons/md";
 import { FaGear, FaHouse, FaPeopleGroup } from "react-icons/fa6";
-import { TbShieldFilled } from "react-icons/tb";
+import { PiWarehouseFill } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PerfilSistema } from "../../models/PerfilSistema";
 import { FaQuestionCircle } from "react-icons/fa";
 import { configuracoesStore } from "../../stores/configuracoesStore";
+import { retornaUserId } from "../../utils/Utils";
+import { entidadesStore } from "../../stores/entidadesStore";
 // import { ModalGenerico } from "../ModalGenerico";
 
 export type Props = {
@@ -56,12 +59,21 @@ const paginasGerenciamento = [
 
 export function HeaderTop({ publicHeader = false }: Props) {
   const { atualizarConfiguracao, getConfig, getValor } = configuracoesStore();
-  const logoutModal = useDisclosure(); 
+   const { entidades, entidadeAtivaId, carregarEntidades, definirEntidadeAtiva } = entidadesStore();
+  const logoutModal = useDisclosure();
   //const termosModal = useDisclosure();
   const navigate = useNavigate();
   const [nomeUsuario, setNomeUsuario] = useState<string | null>(null);
   const [emailUsuario, setEmailUsuario] = useState<string | null>(null);
   const [perfilUsuario, setPerfilUsuario] = useState<string | null>(null);
+
+  const userLogado = retornaUserId();
+
+  useEffect(() => {
+    if(!publicHeader) {
+      carregarEntidades(userLogado);
+    }
+  }, [carregarEntidades, publicHeader, userLogado]);
 
   const handleLogout = () => {
     localStorage.removeItem("auth");
@@ -75,8 +87,12 @@ export function HeaderTop({ publicHeader = false }: Props) {
 
   const toggleModoManutencao = async () => {
     const novoValor = isModoManutencao ? 0 : 1;
-    if(configManutencao) {
-      const sucesso = await atualizarConfiguracao(configManutencao.id, configManutencao?.nome, novoValor);
+    if (configManutencao) {
+      const sucesso = await atualizarConfiguracao(
+        configManutencao.id,
+        configManutencao?.nome,
+        novoValor
+      );
 
       if (!sucesso) {
         console.error("Falha ao alterar modo de manutenção");
@@ -98,12 +114,18 @@ export function HeaderTop({ publicHeader = false }: Props) {
       setEmailUsuario(null);
       setPerfilUsuario(null);
     }
-  }, []);
+  }, [entidades]);
 
   const esconderIconesAdmin =
-    publicHeader ||
-    perfilUsuario != PerfilSistema.ADMIN;
+    publicHeader || perfilUsuario != PerfilSistema.ADMIN;
   const esconderIconesManager = publicHeader;
+
+  const handleAtivarEntidade = async (entidadeAtivaId: string) => {
+    const ok = await definirEntidadeAtiva(entidadeAtivaId, userLogado);
+    if (!ok) {
+      alert("Não foi possível ativar a entidade");
+    }
+  };
 
   return (
     <div className={styles.headerTop}>
@@ -114,22 +136,11 @@ export function HeaderTop({ publicHeader = false }: Props) {
 
         <div className={styles.titleWrapper}>
           <div className={styles.titleRow}>
-            <Text style={{ marginTop: "5px" }}>
-              SoleCorp App
-            </Text>
+            <Text style={{ marginTop: "5px" }}>SoleCorp App</Text>
 
-            <Link
-              to={"/home"}
-              aria-label="Ir para home"
-            >
+            <Link to={"/home"} aria-label="Ir para home">
               <Icon as={FaHouse} className={styles.iconSmall} />
             </Link>
-            {/* <Link
-              to="/eventos"
-              aria-label="Ir para Eventos"
-            >
-              <Icon as={FaFutbol} className={styles.iconSmall} />
-            </Link> */}
             <Link
               to="/eventos"
               aria-label="Ir para eventos"
@@ -139,32 +150,28 @@ export function HeaderTop({ publicHeader = false }: Props) {
             </Link>
 
             {!esconderIconesAdmin && (
-            <Menu>
-              <MenuButton as={Box} cursor={"pointer"}>
-                {/* {!esconderIconesAdmin && ( */}
+              <Menu>
+                <MenuButton as={Box} cursor={"pointer"}>
                   <Icon
                     as={FaGear}
                     className={styles.iconAdmin}
                     aria-label="Admin"
                   />
-                {/* )} */}
-              </MenuButton>
+                </MenuButton>
 
-              <MenuList bg={"whiteAlpha"} zIndex={2000}>
-                {paginasGerenciamento.map((pagina) => (
-                  <MenuItem
-                    key={pagina.path}
-                    bg={"green.500"}
-                    onClick={() => navigate(pagina.path)}
-                  >
-                    {pagina.label}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
+                <MenuList bg={"whiteAlpha"} zIndex={2000}>
+                  {paginasGerenciamento.map((pagina) => (
+                    <MenuItem
+                      key={pagina.path}
+                      bg={"green.500"}
+                      onClick={() => navigate(pagina.path)}
+                    >
+                      {pagina.label}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
             )}
-
-            
             <Link
               to="/participantes"
               aria-label="Ir para participantes"
@@ -174,10 +181,10 @@ export function HeaderTop({ publicHeader = false }: Props) {
             </Link>
             <Link
               to="/entidades"
-              aria-label="Ir para novo evento"
+              aria-label="Ir para Entidades"
               hidden={esconderIconesManager}
             >
-              <Icon as={TbShieldFilled} className={styles.iconSmall} />
+              <Icon as={PiWarehouseFill} className={styles.iconSmall} />
             </Link>
             {/* <Link
               to="/novo-participante"
@@ -217,11 +224,7 @@ export function HeaderTop({ publicHeader = false }: Props) {
       </div>
 
       <div className={styles.rightSection}>
-        <Text 
-          marginRight={-2} 
-          marginTop={2}
-          hidden={esconderIconesAdmin}
-        >
+        <Text marginRight={-2} marginTop={2} hidden={esconderIconesAdmin}>
           Modo Manutenção?
         </Text>
         <Switch
@@ -233,6 +236,25 @@ export function HeaderTop({ publicHeader = false }: Props) {
           marginRight={2}
           marginTop={2}
         />
+
+        <Select
+          value={entidadeAtivaId ?? ""}
+          hidden={esconderIconesManager}
+          variant={'flushed'}
+          colorScheme={'blue'}
+          marginRight={4}
+          onChange={(e) => handleAtivarEntidade(e.target.value)}
+        >
+          {entidades.map((entidade) => (
+            <option 
+              className={styles.dropdownStyle} 
+              key={entidade.id} 
+              value={entidade.id}
+            >
+              {entidade.nome}
+            </option>
+          ))}
+        </Select>
 
         <Popover placement="bottom">
           <PopoverTrigger>
